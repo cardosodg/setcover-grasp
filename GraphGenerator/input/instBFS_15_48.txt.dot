@@ -1,0 +1,39 @@
+graph G {
+size="8.5,11;"
+ratio = "expand;"
+fixedsize="true;"
+overlap="scale;"
+node[shape=circle,width=.12,hight=.12,fontsize=12]
+edge[fontsize=12]
+
+0[label=" 0" color=black, pos="1.0008325,0.10226969!"];
+1[label=" 1" color=black, pos="1.3905923,0.043166753!"];
+2[label=" 2" color=black, pos="2.4397795,1.6351847!"];
+3[label=" 3" color=black, pos="1.555044,2.0969513!"];
+4[label=" 4" color=black, pos="2.609485,1.6525101!"];
+5[label=" 5" color=black, pos="2.4324084,2.359946!"];
+6[label=" 6" color=black, pos="1.2801923,0.12802886!"];
+7[label=" 7" color=black, pos="1.907565,0.58505756!"];
+8[label=" 8" color=black, pos="2.3410219,2.202336!"];
+9[label=" 9" color=black, pos="0.79386855,0.23904856!"];
+10[label=" 10" color=black, pos="1.5716146,0.47177373!"];
+11[label=" 11" color=black, pos="0.1660141,0.69473587!"];
+12[label=" 12" color=black, pos="0.32515587,1.9595266!"];
+13[label=" 13" color=black, pos="1.1366448,0.14802386!"];
+14[label=" 14" color=black, pos="1.1890766,2.3555766!"];
+0--1[label="1"]
+0--3[label="1"]
+0--5[label="1"]
+0--10[label="1"]
+1--2[label="1"]
+1--13[label="1"]
+3--4[label="1"]
+4--7[label="1"]
+5--6[label="1"]
+5--9[label="1"]
+6--11[label="1"]
+6--12[label="1"]
+6--14[label="1"]
+7--8[label="1"]
+
+}

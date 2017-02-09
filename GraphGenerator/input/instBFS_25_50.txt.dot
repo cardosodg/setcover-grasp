@@ -1,0 +1,59 @@
+graph G {
+size="8.5,11;"
+ratio = "expand;"
+fixedsize="true;"
+overlap="scale;"
+node[shape=circle,width=.12,hight=.12,fontsize=12]
+edge[fontsize=12]
+
+0[label=" 0" color=black, pos="2.3795123,2.3330007!"];
+1[label=" 1" color=black, pos="0.19078187,2.2388797!"];
+2[label=" 2" color=black, pos="2.9502236,2.2683474!"];
+3[label=" 3" color=black, pos="1.2846832,1.8835547!"];
+4[label=" 4" color=black, pos="2.4102143,2.9856825!"];
+5[label=" 5" color=black, pos="2.1530563,2.8481588!"];
+6[label=" 6" color=black, pos="0.77689178,1.6821454!"];
+7[label=" 7" color=black, pos="0.21034903,2.2842552!"];
+8[label=" 8" color=black, pos="2.1667224,0.31911489!"];
+9[label=" 9" color=black, pos="0.11844955,2.6203831!"];
+10[label=" 10" color=black, pos="1.2991063,0.3707807!"];
+11[label=" 11" color=black, pos="0.14022668,0.71953531!"];
+12[label=" 12" color=black, pos="2.4236222,0.80958173!"];
+13[label=" 13" color=black, pos="2.934763,1.0606804!"];
+14[label=" 14" color=black, pos="1.3425457,1.2352445!"];
+15[label=" 15" color=black, pos="0.47839803,0.14275604!"];
+16[label=" 16" color=black, pos="0.13675551,1.0026247!"];
+17[label=" 17" color=black, pos="0.019865495,1.3238782!"];
+18[label=" 18" color=black, pos="0.51173822,1.9027613!"];
+19[label=" 19" color=black, pos="0.94899427,1.2024059!"];
+20[label=" 20" color=black, pos="2.3275144,1.9492949!"];
+21[label=" 21" color=black, pos="0.66972813,0.97393221!"];
+22[label=" 22" color=black, pos="1.7528011,0.5651685!"];
+23[label=" 23" color=black, pos="2.7286763,0.87631955!"];
+24[label=" 24" color=black, pos="2.1697955,1.1206368!"];
+0--1[label="1"]
+0--2[label="1"]
+0--10[label="1"]
+0--13[label="1"]
+0--17[label="1"]
+0--19[label="1"]
+1--12[label="1"]
+1--21[label="1"]
+2--3[label="1"]
+2--4[label="1"]
+2--6[label="1"]
+2--15[label="1"]
+3--11[label="1"]
+4--5[label="1"]
+4--8[label="1"]
+4--16[label="1"]
+6--7[label="1"]
+6--9[label="1"]
+6--22[label="1"]
+13--14[label="1"]
+15--18[label="1"]
+17--23[label="1"]
+19--20[label="1"]
+19--24[label="1"]
+
+}

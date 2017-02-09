@@ -1,0 +1,59 @@
+graph G {
+size="8.5,11;"
+ratio = "expand;"
+fixedsize="true;"
+overlap="scale;"
+node[shape=circle,width=.12,hight=.12,fontsize=12]
+edge[fontsize=12]
+
+0[label=" 0" color=black, pos="1.4809251,2.4397804!"];
+1[label=" 1" color=black, pos="1.3107997,1.8036505!"];
+2[label=" 2" color=black, pos="2.411947,1.2646563!"];
+3[label=" 3" color=black, pos="1.1845891,2.550141!"];
+4[label=" 4" color=black, pos="0.091397279,1.0497337!"];
+5[label=" 5" color=black, pos="0.29364326,0.5999796!"];
+6[label=" 6" color=black, pos="2.6594873,2.3443332!"];
+7[label=" 7" color=black, pos="2.9124523,0.29988738!"];
+8[label=" 8" color=black, pos="2.0260537,2.0578289!"];
+9[label=" 9" color=black, pos="1.7716895,2.278502!"];
+10[label=" 10" color=black, pos="0.46234112,2.6807778!"];
+11[label=" 11" color=black, pos="0.037035693,0.0087941852!"];
+12[label=" 12" color=black, pos="1.7004119,0.99768835!"];
+13[label=" 13" color=black, pos="2.3923584,2.8307685!"];
+14[label=" 14" color=black, pos="1.6250217,0.091255128!"];
+15[label=" 15" color=black, pos="1.676576,1.9308513!"];
+16[label=" 16" color=black, pos="1.1308103,2.0394831!"];
+17[label=" 17" color=black, pos="2.8501595,2.0861362!"];
+18[label=" 18" color=black, pos="0.86114345,0.95943091!"];
+19[label=" 19" color=black, pos="2.9978327,1.0266121!"];
+20[label=" 20" color=black, pos="1.026753,2.6922998!"];
+21[label=" 21" color=black, pos="0.6219684,0.47095714!"];
+22[label=" 22" color=black, pos="2.6981699,2.784464!"];
+23[label=" 23" color=black, pos="2.9533548,0.077375689!"];
+24[label=" 24" color=black, pos="0.70399545,0.98666483!"];
+0--1[label="1"]
+0--2[label="1"]
+0--3[label="1"]
+0--6[label="1"]
+0--9[label="1"]
+1--4[label="1"]
+1--5[label="1"]
+1--10[label="1"]
+1--15[label="1"]
+2--16[label="1"]
+4--7[label="1"]
+4--19[label="1"]
+4--20[label="1"]
+5--11[label="1"]
+5--18[label="1"]
+7--8[label="1"]
+7--12[label="1"]
+7--17[label="1"]
+9--14[label="1"]
+11--23[label="1"]
+12--13[label="1"]
+13--22[label="1"]
+16--24[label="1"]
+17--21[label="1"]
+
+}

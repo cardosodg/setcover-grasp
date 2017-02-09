@@ -1,0 +1,59 @@
+graph G {
+size="8.5,11;"
+ratio = "expand;"
+fixedsize="true;"
+overlap="scale;"
+node[shape=circle,width=.12,hight=.12,fontsize=12]
+edge[fontsize=12]
+
+0[label=" 0" color=black, pos="0.75116691,0.23554007!"];
+1[label=" 1" color=black, pos="2.7006671,2.6121855!"];
+2[label=" 2" color=black, pos="0.18225582,2.3075817!"];
+3[label=" 3" color=black, pos="0.8958973,0.68814163!"];
+4[label=" 4" color=black, pos="2.9153458,0.71453454!"];
+5[label=" 5" color=black, pos="0.33508827,1.6927811!"];
+6[label=" 6" color=black, pos="2.6102602,0.48791426!"];
+7[label=" 7" color=black, pos="0.63471485,0.00036688382!"];
+8[label=" 8" color=black, pos="2.2233249,1.8392109!"];
+9[label=" 9" color=black, pos="0.47337232,1.2809375!"];
+10[label=" 10" color=black, pos="0.19323628,1.9537836!"];
+11[label=" 11" color=black, pos="2.3881582,0.25298302!"];
+12[label=" 12" color=black, pos="1.319897,0.76900122!"];
+13[label=" 13" color=black, pos="0.30911237,0.043869609!"];
+14[label=" 14" color=black, pos="0.77362231,2.2909065!"];
+15[label=" 15" color=black, pos="0.36051765,0.79421892!"];
+16[label=" 16" color=black, pos="1.5271803,1.5078346!"];
+17[label=" 17" color=black, pos="1.0848262,0.6561808!"];
+18[label=" 18" color=black, pos="1.3772913,1.3671961!"];
+19[label=" 19" color=black, pos="1.2518895,0.068953563!"];
+20[label=" 20" color=black, pos="2.5876967,2.2267718!"];
+21[label=" 21" color=black, pos="1.2997371,0.81618159!"];
+22[label=" 22" color=black, pos="0.80242524,1.4816966!"];
+23[label=" 23" color=black, pos="0.39836147,0.74678547!"];
+24[label=" 24" color=black, pos="1.9093453,0.92609447!"];
+0--1[label="1"]
+0--2[label="1"]
+0--6[label="1"]
+0--24[label="1"]
+1--3[label="1"]
+1--7[label="1"]
+1--11[label="1"]
+1--14[label="1"]
+1--20[label="1"]
+1--22[label="1"]
+2--4[label="1"]
+3--5[label="1"]
+3--10[label="1"]
+3--15[label="1"]
+5--8[label="1"]
+6--13[label="1"]
+7--21[label="1"]
+8--9[label="1"]
+11--12[label="1"]
+11--16[label="1"]
+12--19[label="1"]
+13--17[label="1"]
+13--23[label="1"]
+16--18[label="1"]
+
+}

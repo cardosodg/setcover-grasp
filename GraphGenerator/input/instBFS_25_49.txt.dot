@@ -1,0 +1,59 @@
+graph G {
+size="8.5,11;"
+ratio = "expand;"
+fixedsize="true;"
+overlap="scale;"
+node[shape=circle,width=.12,hight=.12,fontsize=12]
+edge[fontsize=12]
+
+0[label=" 0" color=black, pos="2.7900697,0.82500256!"];
+1[label=" 1" color=black, pos="1.3251139,1.3334104!"];
+2[label=" 2" color=black, pos="1.6474895,2.6903497!"];
+3[label=" 3" color=black, pos="1.2160125,1.7046922!"];
+4[label=" 4" color=black, pos="0.15358082,0.42523147!"];
+5[label=" 5" color=black, pos="1.5190305,0.53524446!"];
+6[label=" 6" color=black, pos="1.5145061,0.870883!"];
+7[label=" 7" color=black, pos="0.93373231,1.9187489!"];
+8[label=" 8" color=black, pos="0.53435446,0.33070175!"];
+9[label=" 9" color=black, pos="1.0374899,0.93055685!"];
+10[label=" 10" color=black, pos="1.832721,0.62201698!"];
+11[label=" 11" color=black, pos="1.0443084,0.26615163!"];
+12[label=" 12" color=black, pos="2.4747219,2.5146389!"];
+13[label=" 13" color=black, pos="2.3950518,2.6491387!"];
+14[label=" 14" color=black, pos="2.5075367,0.89586739!"];
+15[label=" 15" color=black, pos="0.98808552,2.165071!"];
+16[label=" 16" color=black, pos="1.5583677,0.38190836!"];
+17[label=" 17" color=black, pos="2.1598849,2.280837!"];
+18[label=" 18" color=black, pos="1.9333717,0.04133944!"];
+19[label=" 19" color=black, pos="1.2295632,2.1755694!"];
+20[label=" 20" color=black, pos="1.9988742,0.69803738!"];
+21[label=" 21" color=black, pos="0.74009164,2.3034839!"];
+22[label=" 22" color=black, pos="0.86719784,2.6888974!"];
+23[label=" 23" color=black, pos="1.0139676,2.3777233!"];
+24[label=" 24" color=black, pos="2.3497412,1.1681929!"];
+0--1[label="1"]
+0--2[label="1"]
+0--7[label="1"]
+0--8[label="1"]
+1--3[label="1"]
+1--4[label="1"]
+2--6[label="1"]
+2--17[label="1"]
+2--21[label="1"]
+3--9[label="1"]
+3--19[label="1"]
+3--24[label="1"]
+4--5[label="1"]
+5--12[label="1"]
+6--10[label="1"]
+6--14[label="1"]
+7--11[label="1"]
+8--18[label="1"]
+9--23[label="1"]
+10--20[label="1"]
+11--13[label="1"]
+12--22[label="1"]
+13--15[label="1"]
+13--16[label="1"]
+
+}
