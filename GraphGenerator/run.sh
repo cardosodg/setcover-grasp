@@ -8,7 +8,9 @@ mkdir input
 
 ./gerador 1 config.txt
 
+python shortest_paths.py
+
 rm gerador
 
-mv instBFS_* input
+mv instGraph_* input
 

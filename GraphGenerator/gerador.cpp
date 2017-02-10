@@ -101,8 +101,8 @@ string montaNomeArquivo(int numVert, int posInst)
 {
 	string saida;
 	stringstream arqNumeracao;
-	string arqBfsPre = "instBFS_";
-	string arqBfsPos = ".txt";
+	string arqBfsPre = "instGraph_";
+	string arqBfsPos = "";
 	
 	saida.clear();
 	arqNumeracao.seekp(0);
@@ -168,7 +168,7 @@ main(int argc, char** argv)
 			
 			
 			nomeArquivoGraphviz = nomeArquivoSaida + ".dot";
-			graphOutput(strdup(nomeArquivoGraphviz.c_str()),G);
+			//graphOutput(strdup(nomeArquivoGraphviz.c_str()),G);
 		}
 	}
 	
