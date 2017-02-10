@@ -1,9 +1,7 @@
 import glob
 import networkx as nx
 
-
 filesArray = glob.glob("instGraph*")
-
 for i in xrange(0,len(filesArray)):
     G = nx.Graph()
     numVert = 0
