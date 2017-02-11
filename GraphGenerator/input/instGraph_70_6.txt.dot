@@ -6,144 +6,244 @@ overlap="scale;"
 node[shape=circle,width=.12,hight=.12,fontsize=12]
 edge[fontsize=12]
 
-0[label=" 0" color=black, pos="0.30996092,1.0093524!"];
-1[label=" 1" color=black, pos="0.60563698,2.8313229!"];
-2[label=" 2" color=black, pos="0.52645028,1.2442772!"];
-3[label=" 3" color=black, pos="2.5395486,0.83534571!"];
-4[label=" 4" color=black, pos="2.881521,0.16959214!"];
-5[label=" 5" color=black, pos="0.020347432,1.1385393!"];
-6[label=" 6" color=black, pos="0.60047542,0.58451555!"];
-7[label=" 7" color=black, pos="0.35155718,0.56171184!"];
-8[label=" 8" color=black, pos="0.61589928,1.2712542!"];
-9[label=" 9" color=black, pos="2.5749262,1.7707738!"];
-10[label=" 10" color=black, pos="2.2253753,0.55172143!"];
-11[label=" 11" color=black, pos="1.4323638,2.7698618!"];
-12[label=" 12" color=black, pos="2.4808261,1.2312534!"];
-13[label=" 13" color=black, pos="2.2080124,1.5903345!"];
-14[label=" 14" color=black, pos="1.883896,1.3357123!"];
-15[label=" 15" color=black, pos="0.13696218,0.89697126!"];
-16[label=" 16" color=black, pos="2.4684884,0.97439771!"];
-17[label=" 17" color=black, pos="2.2708026,1.1447911!"];
-18[label=" 18" color=black, pos="0.76022254,0.26110167!"];
-19[label=" 19" color=black, pos="0.083579706,0.50647108!"];
-20[label=" 20" color=black, pos="2.9704174,0.065579279!"];
-21[label=" 21" color=black, pos="2.1075172,0.98691755!"];
-22[label=" 22" color=black, pos="2.8307638,2.2268664!"];
-23[label=" 23" color=black, pos="1.220054,0.72058739!"];
-24[label=" 24" color=black, pos="2.2920631,2.7319569!"];
-25[label=" 25" color=black, pos="2.4401566,1.0590435!"];
-26[label=" 26" color=black, pos="0.57326064,0.3929655!"];
-27[label=" 27" color=black, pos="1.3511086,0.22124612!"];
-28[label=" 28" color=black, pos="1.6371611,1.4999557!"];
-29[label=" 29" color=black, pos="0.94273915,1.7360915!"];
-30[label=" 30" color=black, pos="1.8095031,1.7412288!"];
-31[label=" 31" color=black, pos="2.0867955,2.7180994!"];
-32[label=" 32" color=black, pos="0.15680132,1.9417242!"];
-33[label=" 33" color=black, pos="1.3268044,0.79733712!"];
-34[label=" 34" color=black, pos="2.3209128,2.5569054!"];
-35[label=" 35" color=black, pos="1.0897392,2.9935474!"];
-36[label=" 36" color=black, pos="1.0649769,2.4715786!"];
-37[label=" 37" color=black, pos="2.9803764,1.781219!"];
-38[label=" 38" color=black, pos="0.17062797,0.81943651!"];
-39[label=" 39" color=black, pos="2.984264,0.63628203!"];
-40[label=" 40" color=black, pos="1.9875922,0.73802329!"];
-41[label=" 41" color=black, pos="2.5787739,1.2144617!"];
-42[label=" 42" color=black, pos="1.725663,2.5717082!"];
-43[label=" 43" color=black, pos="1.5495186,0.54230251!"];
-44[label=" 44" color=black, pos="2.0587587,2.6222116!"];
-45[label=" 45" color=black, pos="1.2215512,1.8290145!"];
-46[label=" 46" color=black, pos="2.9258783,1.6496026!"];
-47[label=" 47" color=black, pos="1.1859869,0.051207679!"];
-48[label=" 48" color=black, pos="1.8638909,0.48797577!"];
-49[label=" 49" color=black, pos="2.3245914,0.34235163!"];
-50[label=" 50" color=black, pos="0.47380453,2.8656566!"];
-51[label=" 51" color=black, pos="2.4793154,0.63781864!"];
-52[label=" 52" color=black, pos="0.42184023,1.5772092!"];
-53[label=" 53" color=black, pos="1.6634608,0.035570632!"];
-54[label=" 54" color=black, pos="1.0546747,1.4994814!"];
-55[label=" 55" color=black, pos="2.9710579,2.4142407!"];
-56[label=" 56" color=black, pos="1.3399201,2.2776137!"];
-57[label=" 57" color=black, pos="2.604654,1.7147659!"];
-58[label=" 58" color=black, pos="2.5340252,1.1017816!"];
-59[label=" 59" color=black, pos="1.9883816,2.5514147!"];
-60[label=" 60" color=black, pos="1.9996305,1.0536133!"];
-61[label=" 61" color=black, pos="1.5348476,1.2524304!"];
-62[label=" 62" color=black, pos="2.7743572,2.8301838!"];
-63[label=" 63" color=black, pos="1.3026009,1.580364!"];
-64[label=" 64" color=black, pos="0.14664109,0.30703248!"];
-65[label=" 65" color=black, pos="2.477943,2.8297535!"];
-66[label=" 66" color=black, pos="2.6022208,2.0253088!"];
-67[label=" 67" color=black, pos="1.6711354,1.0008242!"];
-68[label=" 68" color=black, pos="0.70534742,0.33385715!"];
-69[label=" 69" color=black, pos="2.1436214,0.82971722!"];
+0[label=" 0" color=black, pos="0.53035444,2.3790008!"];
+1[label=" 1" color=black, pos="1.3802834,1.7553304!"];
+2[label=" 2" color=black, pos="2.0139921,2.256095!"];
+3[label=" 3" color=black, pos="2.1699661,0.48720216!"];
+4[label=" 4" color=black, pos="1.9200564,1.0247298!"];
+5[label=" 5" color=black, pos="2.7372636,0.3268425!"];
+6[label=" 6" color=black, pos="1.1293396,0.94372344!"];
+7[label=" 7" color=black, pos="0.038409508,0.84118417!"];
+8[label=" 8" color=black, pos="2.8916267,1.1407225!"];
+9[label=" 9" color=black, pos="0.58074824,2.4083394!"];
+10[label=" 10" color=black, pos="1.5643158,2.0846709!"];
+11[label=" 11" color=black, pos="1.2896921,1.4272438!"];
+12[label=" 12" color=black, pos="1.3489692,0.39693067!"];
+13[label=" 13" color=black, pos="0.020273156,1.3731305!"];
+14[label=" 14" color=black, pos="2.507496,0.75228634!"];
+15[label=" 15" color=black, pos="0.45146627,0.11466942!"];
+16[label=" 16" color=black, pos="1.8136555,0.61500313!"];
+17[label=" 17" color=black, pos="0.15144486,0.98914403!"];
+18[label=" 18" color=black, pos="0.68777698,0.45004243!"];
+19[label=" 19" color=black, pos="0.64568799,2.1872176!"];
+20[label=" 20" color=black, pos="2.3292597,0.080890054!"];
+21[label=" 21" color=black, pos="1.3079215,0.49914562!"];
+22[label=" 22" color=black, pos="0.77087459,0.36132289!"];
+23[label=" 23" color=black, pos="2.8449025,0.56543385!"];
+24[label=" 24" color=black, pos="0.73138425,2.0529617!"];
+25[label=" 25" color=black, pos="0.20377953,2.5985897!"];
+26[label=" 26" color=black, pos="1.1159206,2.8690256!"];
+27[label=" 27" color=black, pos="0.92591836,1.7562658!"];
+28[label=" 28" color=black, pos="2.6403915,0.604711!"];
+29[label=" 29" color=black, pos="0.29117649,2.7637304!"];
+30[label=" 30" color=black, pos="0.35528859,2.2843919!"];
+31[label=" 31" color=black, pos="0.6010456,0.85874903!"];
+32[label=" 32" color=black, pos="2.0302628,2.215259!"];
+33[label=" 33" color=black, pos="1.9538164,0.12559883!"];
+34[label=" 34" color=black, pos="2.8624809,2.8313457!"];
+35[label=" 35" color=black, pos="2.0508677,0.043577342!"];
+36[label=" 36" color=black, pos="0.42476742,1.6395722!"];
+37[label=" 37" color=black, pos="0.75214497,2.777995!"];
+38[label=" 38" color=black, pos="1.5283559,0.30762463!"];
+39[label=" 39" color=black, pos="0.91221272,0.46183133!"];
+40[label=" 40" color=black, pos="0.078084379,0.17651781!"];
+41[label=" 41" color=black, pos="2.490939,0.10163788!"];
+42[label=" 42" color=black, pos="0.29674108,2.1418191!"];
+43[label=" 43" color=black, pos="1.5205951,0.038867957!"];
+44[label=" 44" color=black, pos="1.8336848,0.66130644!"];
+45[label=" 45" color=black, pos="2.0817427,2.6932634!"];
+46[label=" 46" color=black, pos="2.5016883,0.73950006!"];
+47[label=" 47" color=black, pos="0.16726166,2.3563766!"];
+48[label=" 48" color=black, pos="1.8784217,1.2772468!"];
+49[label=" 49" color=black, pos="0.83501102,0.7227806!"];
+50[label=" 50" color=black, pos="1.3118683,1.4793609!"];
+51[label=" 51" color=black, pos="0.049996209,2.777826!"];
+52[label=" 52" color=black, pos="1.1966689,2.4695108!"];
+53[label=" 53" color=black, pos="1.8784338,1.8885102!"];
+54[label=" 54" color=black, pos="2.1636622,0.79402325!"];
+55[label=" 55" color=black, pos="0.82934169,1.5762699!"];
+56[label=" 56" color=black, pos="2.6832942,2.0771241!"];
+57[label=" 57" color=black, pos="2.2324015,1.6500573!"];
+58[label=" 58" color=black, pos="0.66450442,0.3767332!"];
+59[label=" 59" color=black, pos="1.647647,2.5981817!"];
+60[label=" 60" color=black, pos="2.5936916,0.12272756!"];
+61[label=" 61" color=black, pos="2.2304667,0.8522476!"];
+62[label=" 62" color=black, pos="1.6392481,1.7250527!"];
+63[label=" 63" color=black, pos="1.7966707,1.1763532!"];
+64[label=" 64" color=black, pos="2.1548393,1.9982701!"];
+65[label=" 65" color=black, pos="1.053382,1.9315105!"];
+66[label=" 66" color=black, pos="0.77774553,2.432387!"];
+67[label=" 67" color=black, pos="1.4628029,2.2697084!"];
+68[label=" 68" color=black, pos="2.0982611,0.52861986!"];
+69[label=" 69" color=black, pos="0.40367377,0.72285664!"];
 0--1[label="1"]
-0--3[label="1"]
-0--6[label="1"]
-0--30[label="1"]
-1--2[label="1"]
-1--5[label="1"]
-1--14[label="1"]
-1--27[label="1"]
-1--38[label="1"]
-2--12[label="1"]
-2--17[label="1"]
+0--2[label="1"]
+0--5[label="1"]
+0--29[label="1"]
+0--36[label="1"]
+0--49[label="1"]
+0--53[label="1"]
+0--60[label="1"]
+1--4[label="1"]
+1--6[label="1"]
+1--9[label="1"]
+1--12[label="1"]
+1--20[label="1"]
+1--33[label="1"]
+1--47[label="1"]
+2--3[label="1"]
+2--8[label="1"]
+2--9[label="1"]
+2--11[label="1"]
+2--15[label="1"]
+2--16[label="1"]
+2--41[label="1"]
 3--4[label="1"]
 3--7[label="1"]
-3--37[label="1"]
-4--11[label="1"]
-4--16[label="1"]
-5--43[label="1"]
-6--8[label="1"]
-6--34[label="1"]
-6--41[label="1"]
-7--9[label="1"]
-7--26[label="1"]
-8--13[label="1"]
-8--22[label="1"]
-8--24[label="1"]
-8--36[label="1"]
-9--10[label="1"]
-9--20[label="1"]
+3--8[label="1"]
+3--15[label="1"]
+3--18[label="1"]
+3--35[label="1"]
+4--5[label="1"]
+4--6[label="1"]
+4--27[label="1"]
+4--28[label="1"]
+4--40[label="1"]
+5--7[label="1"]
+5--10[label="1"]
+5--13[label="1"]
+5--14[label="1"]
+5--29[label="1"]
+6--7[label="1"]
+6--9[label="1"]
+6--19[label="1"]
+6--21[label="1"]
+6--24[label="1"]
+6--35[label="1"]
+6--49[label="1"]
+7--10[label="1"]
+7--11[label="1"]
+7--23[label="1"]
+7--31[label="1"]
+7--60[label="1"]
+7--69[label="1"]
+8--14[label="1"]
+8--17[label="1"]
+8--30[label="1"]
+8--68[label="1"]
+9--29[label="1"]
+9--58[label="1"]
+10--13[label="1"]
 10--15[label="1"]
-10--68[label="1"]
-11--31[label="1"]
-12--29[label="1"]
-12--35[label="1"]
-14--32[label="1"]
-14--61[label="1"]
-15--21[label="1"]
-15--33[label="1"]
-15--42[label="1"]
+10--16[label="1"]
+10--19[label="1"]
+10--21[label="1"]
+10--22[label="1"]
+10--37[label="1"]
+10--42[label="1"]
+10--43[label="1"]
+10--54[label="1"]
+10--57[label="1"]
+10--64[label="1"]
+11--12[label="1"]
+11--45[label="1"]
+11--55[label="1"]
+11--65[label="1"]
+12--13[label="1"]
+12--23[label="1"]
+12--25[label="1"]
+12--31[label="1"]
+12--40[label="1"]
+13--20[label="1"]
+13--32[label="1"]
+13--48[label="1"]
+14--18[label="1"]
+14--25[label="1"]
+14--36[label="1"]
+14--41[label="1"]
+15--16[label="1"]
+15--17[label="1"]
+15--19[label="1"]
+15--26[label="1"]
+15--43[label="1"]
+15--63[label="1"]
 16--18[label="1"]
-16--28[label="1"]
-18--19[label="1"]
-18--25[label="1"]
-18--51[label="1"]
-19--48[label="1"]
-19--49[label="1"]
-19--65[label="1"]
-20--39[label="1"]
-20--67[label="1"]
-21--23[label="1"]
-23--56[label="1"]
-24--64[label="1"]
-25--44[label="1"]
-27--55[label="1"]
-28--40[label="1"]
-28--47[label="1"]
-32--60[label="1"]
-33--46[label="1"]
-33--53[label="1"]
-35--52[label="1"]
-36--58[label="1"]
-37--45[label="1"]
-38--54[label="1"]
-43--69[label="1"]
-46--62[label="1"]
-48--57[label="1"]
-49--50[label="1"]
-49--66[label="1"]
-52--63[label="1"]
-56--59[label="1"]
+16--36[label="1"]
+16--39[label="1"]
+16--44[label="1"]
+16--47[label="1"]
+16--49[label="1"]
+16--50[label="1"]
+16--60[label="1"]
+17--46[label="1"]
+17--67[label="1"]
+18--20[label="1"]
+18--41[label="1"]
+19--22[label="1"]
+19--26[label="1"]
+19--34[label="1"]
+19--62[label="1"]
+20--24[label="1"]
+20--33[label="1"]
+20--51[label="1"]
+20--53[label="1"]
+20--54[label="1"]
+20--61[label="1"]
+21--30[label="1"]
+21--34[label="1"]
+21--51[label="1"]
+21--66[label="1"]
+22--28[label="1"]
+22--45[label="1"]
+23--24[label="1"]
+23--27[label="1"]
+24--27[label="1"]
+24--32[label="1"]
+24--44[label="1"]
+24--47[label="1"]
+24--50[label="1"]
+24--58[label="1"]
+25--32[label="1"]
+26--30[label="1"]
+26--38[label="1"]
+27--33[label="1"]
+28--52[label="1"]
+28--65[label="1"]
+29--34[label="1"]
+29--43[label="1"]
+29--45[label="1"]
+29--57[label="1"]
+31--37[label="1"]
+31--38[label="1"]
+31--58[label="1"]
+33--64[label="1"]
+34--59[label="1"]
+34--67[label="1"]
+35--39[label="1"]
+35--51[label="1"]
+35--59[label="1"]
+37--46[label="1"]
+37--54[label="1"]
+39--42[label="1"]
+39--46[label="1"]
+39--48[label="1"]
+41--55[label="1"]
+41--62[label="1"]
+42--56[label="1"]
+43--44[label="1"]
+43--66[label="1"]
+44--56[label="1"]
+44--61[label="1"]
+46--63[label="1"]
+49--53[label="1"]
+50--52[label="1"]
+51--59[label="1"]
+52--69[label="1"]
+54--61[label="1"]
+55--67[label="1"]
+59--68[label="1"]
+60--63[label="1"]
+60--66[label="1"]
+63--69[label="1"]
 
 }

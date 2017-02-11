@@ -66,18 +66,28 @@ Graph criaGrafo(int qtdNos)
  return G;
 }
 
-Graph insereArestas(Graph G)
+Graph insereArestas(Graph G, int boolAG)
 {
  double valAresta;
  int origem = 0;
+ int novoNo;
  List elemento;
+ vector<bool> linkDisp, linkDispAux;
  
  valAresta = 1;
  
+ linkDisp.resize(G.V.size(), true);
+ linkDispAux.resize(G.V.size(), true);
+ 
  for(int i=1;i<G.V.size();i++)
  {
+	 linkDisp = linkDispAux;
+	 
 	 origem = rand()%i;
+	 linkDisp[origem] = false;
 	 elemento.v = G.V[i];
+	 linkDisp[elemento.v] = false;
+	 
 	 elemento.cost = valAresta;
 	 G.listAdj[origem].push_back(elemento);
 	 
@@ -85,6 +95,35 @@ Graph insereArestas(Graph G)
 	 elemento.v = origem;
 	 origem = swap;
 	 G.listAdj[origem].push_back(elemento);
+	 
+	 if ((i > 3) && (boolAG == 1))
+	 {
+		 int extraLinks = rand()%2 + 1;
+		 
+		 for(int it=0;it<extraLinks;it++)
+		 {
+			 novoNo = G.V[rand()%i];
+			 while(!linkDisp[novoNo])
+			 {
+				 novoNo = G.V[rand()%i];
+			 }
+			 
+			 origem = novoNo;
+			 linkDisp[origem] = false;
+			 elemento.v = G.V[i];
+			 linkDisp[elemento.v] = false;
+			 
+			 elemento.cost = valAresta;
+			 G.listAdj[origem].push_back(elemento);
+	 
+			 int swap = elemento.v;
+			 elemento.v = origem;
+			 origem = swap;
+			 G.listAdj[origem].push_back(elemento);
+			 
+		 }
+		 
+	 }
  }
  
 return G;
@@ -143,13 +182,14 @@ main(int argc, char** argv)
 	string nomeArquivoSaida, nomeArquivoGraphviz;
 	fstream config;
 	Graph G;
-	int linhas, numInst, numVert, seed;
+	int linhas, numInst, numVert, seed, boolAG;
 	
 	seed = atoi(argv[1]);
 	srand(seed);
 	
-	
 	config.open(argv[2],ios::in);
+	
+	boolAG = atoi(argv[3]);
 	
 	config >> linhas;
 	
@@ -162,7 +202,7 @@ main(int argc, char** argv)
 		{
 			cout << "gerando instancia " << j << " de " << numVert << " vertices." << endl;
 			G = criaGrafo(numVert);
-			G = insereArestas(G);
+			G = insereArestas(G, boolAG);
 			
 			nomeArquivoSaida = montaNomeArquivo(numVert,j);
 			escreveSaida(nomeArquivoSaida,G);
