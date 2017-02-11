@@ -2,8 +2,11 @@
 /* Includes                           */
 /*------------------------------------*/
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include <vector>
+#include <algorithm>
+#include <utility>
 
 /*------------------------------------*/
 /* Namespaces                         */
@@ -17,23 +20,25 @@ class Linha;
 class Coluna;
 
 class Coluna{
-private:
+public:
 	/*--------------*/
 	/* Atributos    */
 	/*--------------*/
 	int i_aID;                          /* ID do nó                                           */
 	int i_aLinhasCobertas;				/* Quantidade de linhas que a coluna cobre no momento */
+	bool b_aSelecionada;                /* Indica se a coluna foi selecionada                 */
 	std::vector<Linha*> v_aLinhas;		/* Linhas cobertas pela coluna                        */
 
-public:
 	/*--------------*/
 	/* Construtores */
 	/*--------------*/
 	//TODO: Ver como criar e deletar para não ter vazamento de memória
 	Coluna(){
+		b_aSelecionada = false;
 		i_aLinhasCobertas = 0;
 	}
 	Coluna(int i_pID){
+		b_aSelecionada = false;
 		i_aLinhasCobertas = 0;
 		i_aID = i_pID;
 	}
@@ -54,10 +59,26 @@ public:
 		i_aLinhasCobertas++;
 	}
 
+	/*--------------------------------------------------------------*/
+	/* Método CobreLinhas											*/
+	/*   Realiza a corbertura das linhas apontadas pela coluna		*/
+	/*    passada como parâmetro									*/
+	/* Parâmetros                                                   */
+	/*   int i_pIndiceColuna - input - Índice da coluna selecionada */
+	/*--------------------------------------------------------------*/
+	//void CobreLinhas(){
+	//	int i_wI;
+
+	//	for (i_wI = 0; i_wI < v_aLinhas.size(); i_wI++){
+	//		v_aLinhas[i_wI]->CobreLinha();
+	//	}
+
+	//}
+
 };
 
 class Linha{
-private:
+public:
 	/*--------------*/
 	/* Atributos    */
 	/*--------------*/
@@ -66,7 +87,7 @@ private:
 	bool b_aCoberta;					/* Indica se a linha está coberta */
 	std::vector<Coluna*> v_aColunas;	/* Colunas que cobrem a linha     */
 
-public:
+
 	/*--------------*/
 	/* Construtores */
 	/*--------------*/
@@ -95,18 +116,35 @@ public:
 		v_aColunas.push_back(p_pColuna);
 	}
 
+	/*--------------------------------------------------------------*/
+	/* Método CobreLinha											*/
+	/*   Realiza a corbertura da linha e atualiza colunas que		*/
+	/*    cobrem a linha         									*/
+	/* Parâmetros                                                   */
+	/*   int i_pIndiceColuna - input - Índice da coluna selecionada */
+	/*--------------------------------------------------------------*/
+	void CobreLinha(){
+		int i_wI;
+		if (!b_aCoberta){
+			for (i_wI = 0; i_wI < v_aColunas.size(); i_wI++){
+				v_aColunas[i_wI]->i_aLinhasCobertas--;
+			}
+		}
+		b_aCoberta = true;
+	}
 };
 
 /* Matriz Esparsa */
 class MatrizEsparsa{
-private:
+public:
 	/*--------------*/
 	/* Atributos    */
 	/*--------------*/
-	std::vector<Linha*> v_aLinhas;		/* Linhas da Matriz  */
-	std::vector<Coluna*> v_aColunas;	/* Colunas da Matriz */
+	int i_aLinhasDescobertas;           /* Quantidade de linhas Descobertas    */
+	int i_aColunasSelecionadas;         /* Quantidade de Colunas selecionadas  */
+	std::vector<Linha*> v_aLinhas;		/* Linhas da Matriz                    */
+	std::vector<Coluna*> v_aColunas;	/* Colunas da Matriz                   */
 
-public:
 	/*--------------*/
 	/* Construtores */
 	/*--------------*/
@@ -137,7 +175,7 @@ public:
 		char c_wChar;
 		bool b_wLeuPar;
 		std::ifstream f_wArquivo;
-		
+
 		/*----------------*/
 		/* Logic Start    */
 		/*----------------*/
@@ -148,6 +186,7 @@ public:
 
 		// Cria as colunas da matriz
 		f_wArquivo >> i_wQtdColunas;
+		i_aColunasSelecionadas = 0;
 		v_aColunas.resize(i_wQtdColunas);
 		for (i_wI = 0; i_wI < i_wQtdColunas; i_wI++){
 			v_aColunas[i_wI] = new Coluna(i_wI);
@@ -155,6 +194,7 @@ public:
 
 		// Cria as linhas da Matriz
 		f_wArquivo >> i_wQtdLinhas;
+		i_aLinhasDescobertas = i_wQtdLinhas;
 		v_aLinhas.resize(i_wQtdLinhas);
 
 		// Lê arquivo caracter por caracter
@@ -164,22 +204,24 @@ public:
 			// Realiza ação de acordo com caracter lido e estado da leitura
 			switch (c_wChar)
 			{
-			/* Lendo início do par ordenado ou do caminho */
+				/* Lendo início do par ordenado ou do caminho */
 			case ('[') :
 				if (!b_wLeuPar){
 					// Se está lendo o par origem destino após o [ está a origem
 					f_wArquivo >> i_wOrigem;
 				}
 				else {
-					// Se está lendo o caminho após o [ está o primeiro nó
-					// Deve ser realizada referência cruzada entre Linha e Coluna
+					// Se está lendo o caminho após o [ deve ler outro [ e depois está o primeiro nó
+					f_wArquivo >> c_wChar;
 					f_wArquivo >> i_wNode;
+
+					// Deve ser realizada referência cruzada entre Linha e Coluna
 					v_aLinhas[i_wI]->AddColuna(v_aColunas[i_wNode]);
 					v_aColunas[i_wNode]->AddLinha(v_aLinhas[i_wI]);
 				}
 				break;
-			
-			/* Lendo dentro do par ordenado ou do caminho */
+
+				/* Lendo dentro do par ordenado ou do caminho */
 			case (',') :
 				if (!b_wLeuPar){
 					// Se está lendo o par origem destino após a , está o Destino
@@ -187,14 +229,15 @@ public:
 				}
 				else{
 					// Se está lendo o caminho após a , está um nó
-					// Deve ser realizada referência cruzada entre Linha e Coluna
 					f_wArquivo >> i_wNode;
+
+					// Deve ser realizada referência cruzada entre Linha e Coluna
 					v_aLinhas[i_wI]->AddColuna(v_aColunas[i_wNode]);
 					v_aColunas[i_wNode]->AddLinha(v_aLinhas[i_wI]);
 				}
 				break;
 
-			/* Terminou de ler o par ordenado ou o caminho */
+				/* Terminou de ler o par ordenado ou o caminho */
 			case (']') :
 				if (!b_wLeuPar){
 					// Terminou de ler o par, cria a coluna e seta flag para ler caminho
@@ -202,6 +245,9 @@ public:
 					b_wLeuPar = true;
 				}
 				else {
+					// Deve ler outro ']'
+					f_wArquivo >> c_wChar;
+
 					// Terminou de ler caminho, aponta para ler a próxima linha e seta a flag para ler o Par
 					i_wI++;
 					b_wLeuPar = false;
@@ -214,19 +260,122 @@ public:
 		}
 
 		f_wArquivo.close();
-
 	}
 
+	/*--------------------------------------------------------------*/
+	/* Método SelecionaColuna										*/
+	/*   Realiza a corbertura das linhas apontadas pela coluna		*/
+	/*    passada como parâmetro									*/
+	/* Parâmetros                                                   */
+	/*   int i_pIndiceColuna - input - Índice da coluna selecionada */
+	/*--------------------------------------------------------------*/
+	void SelecionaColuna(int i_pIndiceColuna){
+		int i_wI;
+
+		// Atualiza os contadores de linhas cobertas e colunas selecionadas
+		i_aColunasSelecionadas++;
+		i_aLinhasDescobertas -= v_aColunas[i_pIndiceColuna]->i_aLinhasCobertas;
+
+		// Realiza a cobertura das linhas
+		//TODO: Era pra ter feito um método na coluna, mas não compila porque não reconhece o método da classe Linha
+		v_aColunas[i_pIndiceColuna]->b_aSelecionada = true;
+		for (i_wI = 0; i_wI < v_aColunas[i_pIndiceColuna]->v_aLinhas.size(); i_wI++){
+			v_aColunas[i_pIndiceColuna]->v_aLinhas[i_wI]->CobreLinha();
+		}
+	}
+
+	/*--------------------------------------------------------------*/
+	/* Método Imprime												*/
+	/*   Imprime a matriz											*/
+	/*--------------------------------------------------------------*/
+	void Imprime(){
+		int i_wI;
+		int i_wJ;
+		int i_wK;
+
+		// Imprime cabeçalho das colunas, considera números de até 3 dígitos e um * para indicar se foi ou não selecionada
+		std::cout << "|           ";
+		for (i_wI = 0; i_wI < v_aColunas.size(); i_wI++){
+			std::cout << "| ";
+			if (v_aColunas[i_wI]->b_aSelecionada) std::cout << "*";
+			else std::cout << " ";
+			std::cout << std::setfill(' ') << std::setw(3) << v_aColunas[i_wI]->i_aID << " ";
+		}
+		std::cout << "|" << std::endl;
+
+		// Imprime as linhas, considerando de até 3 dígitos no cabeçalho
+		for (i_wI = 0; i_wI < v_aLinhas.size(); i_wI++){
+			std::cout << "| ";
+			if (v_aLinhas[i_wI]->b_aCoberta) std::cout << "*";
+			else std::cout << " ";
+			std::cout << std::setfill(' ') << std::setw(3) << v_aLinhas[i_wI]->i_aOrigem << "->" << std::setfill(' ') << std::setw(3) << v_aLinhas[i_wI]->i_aDestino << " ";
+			for (i_wJ = 0; i_wJ < v_aColunas.size(); i_wJ++){
+				for (i_wK = 0; i_wK < v_aLinhas[i_wI]->v_aColunas.size(); i_wK++){
+					if (v_aColunas[i_wJ]->i_aID == v_aLinhas[i_wI]->v_aColunas[i_wK]->i_aID){
+						std::cout << "|   1  ";
+						break;
+					}
+				}
+				if (i_wK >= v_aLinhas[i_wI]->v_aColunas.size()){
+					std::cout << "|   0  ";
+				}
+			}
+			std::cout << "|" << std::endl;
+		}
+	}
 };
+
+/*--------------------------------------*/
+/* Funções                              */
+/*--------------------------------------*/
+
+/*-----------------------------------------------------------*/
+/* Função ComparaColuna                                      */
+/*   Função de ordenação das Colunas.						 */
+/*	 Ordena o vetor de colunas de maneira que a coluna que   */
+/*    cobre a maior quantiedade de linhas fique no início    */
+/*	  do vector.		                                     */
+/*   Utilizada apenas na função sort.                        */
+/*-----------------------------------------------------------*/
+bool ComparaColuna(Coluna *c1, Coluna* c2){
+	return c1->i_aLinhasCobertas > c2->i_aLinhasCobertas;
+}
 
 /*--------------------------------------*/
 /* Aplicação                            */
 /*--------------------------------------*/
 int main(int argc, char** argv){
 
-	MatrizEsparsa matriz;
+	MatrizEsparsa o_wMatriz;
+	float f_wAlpha = 0;
+	int i_wTamanhoListaCandidatos;
+	int i_wColunaSelecionada;
 
-	matriz.LeArquivSSP("D:\\Mestrado\\Projetos\\SetCoverGrasp\\GraphGenerator\\input\\instGraph_5_0_SSP");
+	// Lê a instânica
+	//TODO: Fazer um loop para ler a pasta 
+	o_wMatriz.LeArquivSSP("D:\\Mestrado\\Projetos\\SetCoverGrasp\\GraphGenerator\\input\\instGraph_5_0.ssp");
+	o_wMatriz.Imprime();
+
+	while (o_wMatriz.i_aLinhasDescobertas > 0){
+		// Ordena as colunas com relação ao número de linhas cobertas
+		std::sort(o_wMatriz.v_aColunas.begin(), o_wMatriz.v_aColunas.end() - o_wMatriz.i_aColunasSelecionadas, ComparaColuna);
+
+		// Calcula o tamanho da lista de candidatos
+		i_wTamanhoListaCandidatos = (o_wMatriz.v_aColunas.size() - o_wMatriz.i_aColunasSelecionadas) * 1;
+
+		// Seleciona a coluna na lista de candidatos
+		i_wColunaSelecionada = rand() % i_wTamanhoListaCandidatos;
+
+		// Realiza a seleção da coluna na matriz
+		o_wMatriz.SelecionaColuna(i_wColunaSelecionada);
+
+		// move a coluna selecionada para a última posição
+		std::swap(o_wMatriz.v_aColunas[i_wColunaSelecionada], o_wMatriz.v_aColunas[o_wMatriz.v_aColunas.size() - o_wMatriz.i_aColunasSelecionadas]);
+	}
+
+	std::cout << std::endl << "--------------------------------" << std::endl;
+
+	o_wMatriz.Imprime();
 
 	return 0;
 
