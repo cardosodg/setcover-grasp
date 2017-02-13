@@ -6,7 +6,7 @@ rm -r input
 
 mkdir input
 
-./gerador 1 config.txt 1
+./gerador 1 config.txt 0
 
 python shortest_paths.py
 

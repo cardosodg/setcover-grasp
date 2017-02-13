@@ -1,0 +1,19 @@
+graph G {
+size="8.5,11;"
+ratio = "expand;"
+fixedsize="true;"
+overlap="scale;"
+node[shape=circle,width=.12,hight=.12,fontsize=12]
+edge[fontsize=12]
+
+0[label=" 0" color=black, pos="1.997799,1.8705399!"];
+1[label=" 1" color=black, pos="2.0041616,0.59389218!"];
+2[label=" 2" color=black, pos="1.1631315,1.9130267!"];
+3[label=" 3" color=black, pos="2.3590954,1.57943!"];
+4[label=" 4" color=black, pos="2.6873874,1.530808!"];
+0--1[label="1"]
+1--2[label="1"]
+1--4[label="1"]
+2--3[label="1"]
+
+}
