@@ -7,6 +7,8 @@
 #include <vector>
 #include <algorithm>
 #include <utility>
+#include <string>
+#include <dirent.h>
 
 /*------------------------------------*/
 /* Namespaces                         */
@@ -341,6 +343,81 @@ bool ComparaColuna(Coluna *c1, Coluna* c2){
 	return c1->i_aLinhasCobertas > c2->i_aLinhasCobertas;
 }
 
+/*-----------------------------------------------------------*/
+/* Função getNomeSo                                          */
+/*   Função que obtém o sistema operacional da máquina.      */
+/*	 Retorna uma string com o nome do SO.                    */
+/*-----------------------------------------------------------*/
+std::string getNomeSo()
+{
+    #ifdef _WIN32
+    return "Windows 32-bit";
+    #elif _WIN64
+    return "Windows 64-bit";
+    #elif __unix || __unix__
+    return "Unix";
+    #elif __APPLE__ || __MACH__
+    return "Mac OSX";
+    #elif __linux__
+    return "Linux";
+    #elif __FreeBSD__
+    return "FreeBSD";
+    #else
+    return "Other";
+    #endif
+}
+
+/*-----------------------------------------------------------*/
+/* Função getNomeSo                                          */
+/*   Função que obtém o caminho da pasta de instâncias.      */
+/*	 Retorna uma string com o caminho da instância.          */
+/*-----------------------------------------------------------*/
+std::string caminhoInput()
+{
+	if (getNomeSo() == "Unix" || getNomeSo() == "Linux")
+		return "../GraphGenerator/input/";
+	if (getNomeSo() == "Windows 32-bit" || getNomeSo() == "Windows 64-bit")
+		return "..\\GraphGenerator\\input\\";
+	else
+		return "";
+}
+
+/*-----------------------------------------------------------*/
+/* Função listaArquivos                                      */
+/*   Função que obtém lista de instancias dada uma extensao. */
+/*	 Retorna uma lista de strings com os nomes dos arquivos  */
+/*-----------------------------------------------------------*/
+std::vector<std::string> listaArquivos(std::string extensao)
+{
+	std::vector<std::string> lista;
+	
+    DIR *dir = NULL;
+    struct dirent *drnt = NULL;
+    std::string nomeArquivo = "";
+    std::string caminhoPasta = caminhoInput();
+
+    dir=opendir(caminhoPasta.c_str());
+    if(dir)
+    {
+        while(drnt = readdir(dir))
+        {
+			nomeArquivo = drnt->d_name;
+			if (nomeArquivo.find(extensao) != std::string::npos)
+			{
+				lista.push_back(caminhoPasta + nomeArquivo);
+			}
+        }
+        closedir(dir);
+    }
+    else
+    {
+		std::cout << "Can not open directory '" << caminhoPasta << "'" << std::endl;
+		exit(1);
+    }
+    
+    return lista;
+}
+
 /*--------------------------------------*/
 /* Aplicação                            */
 /*--------------------------------------*/
@@ -350,10 +427,13 @@ int main(int argc, char** argv){
 	float f_wAlpha = 0;
 	int i_wTamanhoListaCandidatos;
 	int i_wColunaSelecionada;
+	std::vector<std::string> pasta;
 
 	// Lê a instânica
 	//TODO: Fazer um loop para ler a pasta 
-	o_wMatriz.LeArquivSSP("D:\\Mestrado\\Projetos\\SetCoverGrasp\\GraphGenerator\\input\\instGraph_5_0.ssp");
+	
+	pasta = listaArquivos(".ssp");
+	o_wMatriz.LeArquivSSP("instGraph_5_0.ssp");
 	o_wMatriz.Imprime();
 
 	while (o_wMatriz.i_aLinhasDescobertas > 0){
