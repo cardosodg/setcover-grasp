@@ -459,31 +459,6 @@ int main(int argc, char** argv){
 		o_wMatriz.Imprime();
 	}
 	
-/*
-	o_wMatriz.LeArquivSSP((char *)pasta[0].data());
-	o_wMatriz.Imprime();
-
-	while (o_wMatriz.i_aLinhasDescobertas > 0){
-		// Ordena as colunas com relação ao número de linhas cobertas
-		std::sort(o_wMatriz.v_aColunas.begin(), o_wMatriz.v_aColunas.end() - o_wMatriz.i_aColunasSelecionadas, ComparaColuna);
-
-		// Calcula o tamanho da lista de candidatos
-		i_wTamanhoListaCandidatos = (o_wMatriz.v_aColunas.size() - o_wMatriz.i_aColunasSelecionadas) * 1;
-
-		// Seleciona a coluna na lista de candidatos
-		i_wColunaSelecionada = rand() % i_wTamanhoListaCandidatos;
-
-		// Realiza a seleção da coluna na matriz
-		o_wMatriz.SelecionaColuna(i_wColunaSelecionada);
-
-		// move a coluna selecionada para a última posição
-		std::swap(o_wMatriz.v_aColunas[i_wColunaSelecionada], o_wMatriz.v_aColunas[o_wMatriz.v_aColunas.size() - o_wMatriz.i_aColunasSelecionadas]);
-	}
-
-	std::cout << std::endl << "--------------------------------" << std::endl;
-
-	o_wMatriz.Imprime();
-*/
 	return 0;
 
 }
