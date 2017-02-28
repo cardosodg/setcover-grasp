@@ -32,7 +32,7 @@ main(int argc, char** argv)
  inputFile.open(argv[1]);
  outputFile.open(argv[2]);
  
- while (inputFile >> object.netSize >> object.procTime >> object.nbObservers >> object.steiner)
+ while (inputFile >> object.netSize >> object.nbObservers >> object.procTime >> object.steiner)
  {
 	 results.push_back(object);
  }
@@ -50,7 +50,7 @@ main(int argc, char** argv)
    totalObservers += results[i+j].nbObservers;
   }
   
-  outputFile << netSize << " " << totalTime/nbInstances << " " << totalObservers/nbInstances << endl;
+  outputFile << netSize << " " << totalObservers/nbInstances << " " << totalTime/nbInstances << endl;
   
  }
  
