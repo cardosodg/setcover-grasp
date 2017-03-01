@@ -424,7 +424,7 @@ std::vector<std::string> listaArquivos(std::string extensao)
 int main(int argc, char** argv){
 
 	MatrizEsparsa o_wMatriz;
-	float f_wAlpha = 0;
+	float f_wAlpha = 0.5;
 	int i_wTamanhoListaCandidatos;
 	int i_wColunaSelecionada;
 	std::vector<std::string> pasta;
@@ -443,7 +443,7 @@ int main(int argc, char** argv){
 			std::sort(o_wMatriz.v_aColunas.begin(), o_wMatriz.v_aColunas.end() - o_wMatriz.i_aColunasSelecionadas, ComparaColuna);
 			
 			// Calcula o tamanho da lista de candidatos
-			i_wTamanhoListaCandidatos = (o_wMatriz.v_aColunas.size() - o_wMatriz.i_aColunasSelecionadas) * 1;
+			i_wTamanhoListaCandidatos = (o_wMatriz.v_aColunas.size() - o_wMatriz.i_aColunasSelecionadas) * f_wAlpha;
 			
 			// Seleciona a coluna na lista de candidatos
 			i_wColunaSelecionada = rand() % i_wTamanhoListaCandidatos;
