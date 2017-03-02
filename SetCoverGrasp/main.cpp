@@ -45,7 +45,16 @@ public:
 	Coluna(int i_pID){
 		i_aID = i_pID;
 	}
-	~Coluna(){}
+	Coluna(Coluna * other){
+		i_aID = other->i_aID;
+		i_aLinhasCobertas = other->i_aLinhasCobertas;
+		f_aCusto = other->f_aCusto;
+		b_aSelecionada = other->b_aSelecionada;
+	}
+	~Coluna(){
+		// Clear the vector
+		v_aLinhas.clear();
+	}
 
 	/*--------------*/
 	/* Métodos      */
@@ -87,8 +96,8 @@ public:
 	/*--------------*/
 	int i_aOrigem;						/* Origem do Caminho              */
 	int i_aDestino;						/* Destino do Caminho             */
-	float f_aGanho;                     /* Ganho da linha                 */
-	bool b_aCoberta;					/* Indica se a linha está coberta */
+	float f_aGanho = 1 + EPS;           /* Ganho da linha                 */
+	bool b_aCoberta = false;			/* Indica se a linha está coberta */
 	std::vector<Coluna*> v_aColunas;	/* Colunas que cobrem a linha     */
 
 
@@ -96,17 +105,20 @@ public:
 	/* Construtores */
 	/*--------------*/
 	//TODO: Ver como criar e deletar para não ter vazamento de memória
-	Linha(){
-		b_aCoberta = false;
-		f_aGanho = 1.0 + EPS;
-	}
+	Linha(){}
 	Linha(int i_pOrigem, int i_pDestino){
 		i_aOrigem = i_pOrigem;
 		i_aDestino = i_pDestino;
-		b_aCoberta = false;
-		f_aGanho = 1.0 + EPS;
 	}
-	~Linha(){}
+	Linha(Linha * other){
+		i_aOrigem = other->i_aOrigem;
+		i_aDestino = other->i_aDestino;
+		f_aGanho = other->f_aGanho;
+		b_aCoberta = other->b_aCoberta;
+	}
+	~Linha(){
+		v_aColunas.clear();
+	}
 
 	/*--------------*/
 	/* Métodos      */
@@ -146,17 +158,34 @@ public:
 	/*--------------*/
 	/* Atributos    */
 	/*--------------*/
-	int i_aLinhasDescobertas;           /* Quantidade de linhas Descobertas    */
-	int i_aColunasSelecionadas;         /* Quantidade de Colunas selecionadas  */
-	float f_aFuncaoObjetivo = 0;            /* Função objetivo da busca local      */
-	std::vector<Linha *> v_aLinhas;		/* Linhas da Matriz                    */
-	std::vector<Coluna *> v_aColunas;	    /* Colunas da Matriz                   */
+	int i_aLinhasDescobertas;            /* Quantidade de linhas Descobertas    */
+	int i_aColunasSelecionadas;          /* Quantidade de Colunas selecionadas  */
+	float f_aFuncaoObjetivo = 0;         /* Função objetivo da busca local      */
+	std::vector<Linha *> v_aLinhas;		 /* Linhas da Matriz                    */
+	std::vector<Coluna *> v_aColunas;	 /* Colunas da Matriz                   */
 
 	/*--------------*/
 	/* Construtores */
 	/*--------------*/
 	MatrizEsparsa(){}
-	~MatrizEsparsa(){}
+	~MatrizEsparsa(){
+		/*----------------*/
+		/* Variáveis      */
+		/*----------------*/
+		int i_wI;
+
+		// Deleta as linhas e colunas criadas
+		for (i_wI = 0; i_wI < v_aColunas.size(); i_wI++){
+			delete v_aColunas[i_wI];
+		}
+		for (i_wI = 0; i_wI < v_aLinhas.size(); i_wI++){
+			delete v_aLinhas[i_wI];
+		}
+
+		//Clear the data
+		v_aColunas.clear();
+		v_aLinhas.clear();
+	}
 
 	/*--------------*/
 	/* Métodos      */
@@ -276,9 +305,12 @@ public:
 	/* Parâmetros                                                   */
 	/*   int i_pIndiceColuna - input - Índice da coluna selecionada */
 	/*--------------------------------------------------------------*/
-	void AddColuna(int i_pIndiceColuna){
+	bool AddColuna(int i_pIndiceColuna){
 		int i_wI;
 		int i_wJ;
+
+		/* Verifica se a coluna já foi selecionada */
+		if (v_aColunas[i_pIndiceColuna]->b_aSelecionada) return false;
 
 		// Atualiza os contadores de linhas cobertas e colunas selecionadas
 		i_aColunasSelecionadas++;
@@ -297,6 +329,8 @@ public:
 				f_aFuncaoObjetivo += v_aColunas[i_pIndiceColuna]->v_aLinhas[i_wI]->f_aGanho;
 			}
 		}
+
+		return true;
 	}
 
 	/*--------------------------------------------------------------*/
@@ -332,6 +366,54 @@ public:
 				}
 			}
 		}
+	}
+
+	/*--------------------------------------------------------------*/
+	/* Sobrescrita do operador =									*/
+	/*   http://en.cppreference.com/w/cpp/language/operators        */
+	/*   Atribuição por Cópia      									*/
+	/*--------------------------------------------------------------*/
+	MatrizEsparsa& operator=(const MatrizEsparsa& other) // copy assignment
+	{
+		/*----------------*/
+		/* Variáveis      */
+		/*----------------*/
+		int i_wI;
+		int i_wJ;
+
+		if (this != &other) { // self-assignment check expected
+			/* Copia estado da solução */
+			i_aLinhasDescobertas = other.i_aLinhasDescobertas;
+			i_aColunasSelecionadas = other.i_aColunasSelecionadas;
+			f_aFuncaoObjetivo = other.f_aFuncaoObjetivo;
+
+			/* Deleta as linhas e colunas criadas */
+			for (i_wI = 0; i_wI < v_aColunas.size(); i_wI++){
+				delete v_aColunas[i_wI];
+			}
+			for (i_wI = 0; i_wI < v_aLinhas.size(); i_wI++){
+				delete v_aLinhas[i_wI];
+			}
+
+			/* Recria coluna */
+			v_aColunas.clear();
+			v_aLinhas.clear();
+			v_aColunas.resize(other.v_aColunas.size());
+			v_aLinhas.resize(other.v_aLinhas.size());
+
+			/* Copia os dadas das linhas e colunas */
+			for (i_wI = 0; i_wI < v_aColunas.size(); i_wI++){
+				v_aColunas[i_wI] = new Coluna(other.v_aColunas[i_wI]);
+			}
+			for (i_wI = 0; i_wI < v_aLinhas.size(); i_wI++){
+				v_aLinhas[i_wI] = new Linha(other.v_aLinhas[i_wI]);
+				for (i_wJ = 0; i_wJ < other.v_aLinhas[i_wI]->v_aColunas.size(); i_wJ++){
+					v_aLinhas[i_wI]->v_aColunas.push_back(v_aColunas[other.v_aLinhas[i_wI]->v_aColunas[i_wJ]->i_aID]);
+					v_aColunas[other.v_aLinhas[i_wI]->v_aColunas[i_wJ]->i_aID]->v_aLinhas.push_back(v_aLinhas[i_wI]);
+				}
+			}
+		}
+		return *this;
 	}
 
 	/*--------------------------------------------------------------*/
@@ -472,41 +554,57 @@ std::vector<std::string> listaArquivos(std::string extensao)
 int main(int argc, char** argv){
 
 	MatrizEsparsa o_wMatriz;
+	MatrizEsparsa other;
 	float f_wAlpha = 1;
 	int i_wTamanhoListaCandidatos;
 	int i_wColunaSelecionada;
+	int i_wColunaOrd;
 	std::vector<std::string> pasta;
+	std::vector<Coluna *> v_aColunasOrd; /* Colunas da Matriz ordenadas         */
 
 	// Lê a instânica
 	//TODO: Fazer um loop para ler a pasta 
 
 	//pasta = listaArquivos(".ssp");
-	pasta = listaArquivos("instGraph_5_0.ssp");
+	pasta = listaArquivos("instGraph_10_0.ssp");
 
 	srand(time(NULL));
 	for (int it = 0; it < pasta.size(); it++)
 	{
 		o_wMatriz.LeArquivSSP((char *)pasta[it].data());
+		std::cout << std::endl << "---------------ORI-------------" << std::endl;
 		o_wMatriz.Imprime();
+		other = o_wMatriz;
+		std::cout << std::endl << "--------------OTHER------------" << std::endl;
+		other.Imprime();
+		v_aColunasOrd = o_wMatriz.v_aColunas;
 		while (o_wMatriz.i_aLinhasDescobertas > 0){
 			// Ordena as colunas com relação ao número de linhas cobertas
-			std::sort(o_wMatriz.v_aColunas.begin(), o_wMatriz.v_aColunas.end() - o_wMatriz.i_aColunasSelecionadas, ComparaColuna);
+			std::sort(v_aColunasOrd.begin(), v_aColunasOrd.end() - o_wMatriz.i_aColunasSelecionadas, ComparaColuna);
 
 			// Calcula o tamanho da lista de candidatos
-			i_wTamanhoListaCandidatos = (o_wMatriz.v_aColunas.size() - o_wMatriz.i_aColunasSelecionadas) * f_wAlpha;
+			i_wTamanhoListaCandidatos = (v_aColunasOrd.size() - o_wMatriz.i_aColunasSelecionadas) * f_wAlpha;
 
-			// Seleciona a coluna na lista de candidatos
-			i_wColunaSelecionada = rand() % i_wTamanhoListaCandidatos;
+			do{
+				// Seleciona a coluna na lista de candidatos
+				i_wColunaOrd = rand() % i_wTamanhoListaCandidatos;
+				i_wColunaSelecionada = v_aColunasOrd[i_wColunaOrd]->i_aID;
 
-			// Realiza a seleção da coluna na matriz
-			o_wMatriz.AddColuna(i_wColunaSelecionada);
+				// Realiza a seleção da coluna na matriz
+			} while(!o_wMatriz.AddColuna(i_wColunaSelecionada));
 
 			// move a coluna selecionada para a última posição
-			std::swap(o_wMatriz.v_aColunas[i_wColunaSelecionada], o_wMatriz.v_aColunas[o_wMatriz.v_aColunas.size() - o_wMatriz.i_aColunasSelecionadas]);
+			std::swap(v_aColunasOrd[i_wColunaOrd], v_aColunasOrd[v_aColunasOrd.size() - o_wMatriz.i_aColunasSelecionadas]);
 		}
 
-		// std::cout << std::endl << "--------------------------------" << std::endl;
+		std::cout << std::endl << "----------OTHER BEFORE---------" << std::endl;
+		other = o_wMatriz;
+		other.Imprime();
+		std::cout << std::endl << "---------------ORI-------------" << std::endl;
 		o_wMatriz.Imprime();
+		std::cout << std::endl << "--------------OTHER------------" << std::endl;
+		other = o_wMatriz;
+		other.Imprime();
 	}
 
 	return 0;
