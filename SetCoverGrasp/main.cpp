@@ -352,20 +352,29 @@ public:
 		v_aColunas[i_pIndiceColuna]->b_aSelecionada = false;
 		f_aFuncaoObjetivo += v_aColunas[i_pIndiceColuna]->f_aCusto;
 		for (i_wI = 0; i_wI < v_aColunas[i_pIndiceColuna]->v_aLinhas.size(); i_wI++){
-			if (!v_aColunas[i_pIndiceColuna]->v_aLinhas[i_wI]->b_aCoberta){
+			for (i_wJ = 0; i_wJ < v_aColunas[i_pIndiceColuna]->v_aLinhas[i_wI]->v_aColunas.size(); i_wJ++){
+				if (v_aColunas[i_pIndiceColuna]->v_aLinhas[i_wI]->v_aColunas[i_wJ]->b_aSelecionada) break;
+			}
+			if (i_wJ >= v_aColunas[i_pIndiceColuna]->v_aLinhas[i_wI]->v_aColunas.size()){
+				v_aColunas[i_pIndiceColuna]->v_aLinhas[i_wI]->b_aCoberta = false;
+				f_aFuncaoObjetivo -= v_aColunas[i_pIndiceColuna]->v_aLinhas[i_wI]->f_aGanho;
+				i_aLinhasDescobertas++;
 				for (i_wJ = 0; i_wJ < v_aColunas[i_pIndiceColuna]->v_aLinhas[i_wI]->v_aColunas.size(); i_wJ++){
-					if (v_aColunas[i_pIndiceColuna]->v_aLinhas[i_wI]->v_aColunas[i_wJ]->b_aSelecionada) break;
-				}
-				if (i_wJ >= v_aColunas[i_pIndiceColuna]->v_aLinhas[i_wI]->v_aColunas.size()){
-					v_aColunas[i_pIndiceColuna]->v_aLinhas[i_wI]->b_aCoberta = false;
-					f_aFuncaoObjetivo -= v_aColunas[i_pIndiceColuna]->v_aLinhas[i_wI]->f_aGanho;
-					i_aLinhasDescobertas++;
-					for (i_wJ = 0; i_wJ < v_aColunas[i_pIndiceColuna]->v_aLinhas[i_wI]->v_aColunas.size(); i_wJ++){
-						v_aColunas[i_pIndiceColuna]->v_aLinhas[i_wI]->v_aColunas[i_wJ]->i_aLinhasCobertas++;
-					}
+					v_aColunas[i_pIndiceColuna]->v_aLinhas[i_wI]->v_aColunas[i_wJ]->i_aLinhasCobertas++;
 				}
 			}
 		}
+	}
+
+	/*--------------------------------------------------------------*/
+	/* Método FlipColuna      										*/
+	/*   Realiza o 1-flip da coluna  								*/
+	/* Parâmetros                                                   */
+	/*   int i_pIndiceColuna - input - Índice da coluna selecionada */
+	/*--------------------------------------------------------------*/
+	void FlipColuna(int i_pIndiceColuna){
+		if (v_aColunas[i_pIndiceColuna]->b_aSelecionada)RmvColuna(i_pIndiceColuna);
+		else AddColuna(i_pIndiceColuna);
 	}
 
 	/*--------------------------------------------------------------*/
@@ -548,6 +557,92 @@ std::vector<std::string> listaArquivos(std::string extensao)
 	return lista;
 }
 
+/*-----------------------------------------------------------*/
+/* Função GulosoRandomizado                                   */
+/*   Agoritmo guloso randomizado                             */
+/*-----------------------------------------------------------*/
+void GulosoRandomizado(MatrizEsparsa &o_pMatriz)
+{
+	/*-----------*/
+	/* Variáveis */
+	/*-----------*/
+	int i_wTamanhoListaCandidatos;
+	int i_wColunaSelecionada;
+	int i_wColunaOrd;
+	float f_wAlpha = 0.5;
+	std::vector<Coluna *> v_aColunasOrd; /* Colunas da Matriz ordenadas         */
+
+	/*------------------*/
+	/* Início da Lógica */
+	/*------------------*/
+	v_aColunasOrd = o_pMatriz.v_aColunas;
+	while (o_pMatriz.i_aLinhasDescobertas > 0){
+		// Ordena as colunas com relação ao número de linhas cobertas
+		std::sort(v_aColunasOrd.begin(), v_aColunasOrd.end() - o_pMatriz.i_aColunasSelecionadas, ComparaColuna);
+
+		// Calcula o tamanho da lista de candidatos
+		i_wTamanhoListaCandidatos = (v_aColunasOrd.size() - o_pMatriz.i_aColunasSelecionadas) * f_wAlpha;
+
+		//TODO: Verificar Possível Loop Infinito
+		do{
+			// Seleciona a coluna na lista de candidatos
+			i_wColunaOrd = rand() % i_wTamanhoListaCandidatos;
+			i_wColunaSelecionada = v_aColunasOrd[i_wColunaOrd]->i_aID;
+
+			// Realiza a seleção da coluna na matriz
+		} while (!o_pMatriz.AddColuna(i_wColunaSelecionada));
+
+		// move a coluna selecionada para a última posição
+		std::swap(v_aColunasOrd[i_wColunaOrd], v_aColunasOrd[v_aColunasOrd.size() - o_pMatriz.i_aColunasSelecionadas]);
+	}
+
+}
+
+/*-----------------------------------------------------------*/
+/* Função BuscaLocal                                         */
+/*   Busca Local                                             */
+/*-----------------------------------------------------------*/
+void BuscaLocal(MatrizEsparsa &o_pMatriz)
+{
+	/*-----------*/
+	/* Variáveis */
+	/*-----------*/
+	int i_wI;
+	int i_wCol;
+	float f_wDelta;
+	float f_wRatio;
+
+	/*------------------*/
+	/* Início da Lógica */
+	/*------------------*/
+	while (true)
+	{
+		/* Procura Melhor Vizinho */
+		for (i_wI = 0; i_wI < o_pMatriz.v_aColunas.size(); i_wI++)
+		{
+			f_wDelta = o_pMatriz.f_aFuncaoObjetivo;
+			o_pMatriz.FlipColuna(i_wI);
+			f_wDelta = o_pMatriz.f_aFuncaoObjetivo - f_wDelta;
+			if (i_wI == 0){
+				f_wRatio = f_wDelta;
+				i_wCol = i_wI;
+			}
+			else if ( f_wDelta > f_wRatio ){
+				f_wRatio = f_wDelta;
+				i_wCol = i_wI;
+			}
+			o_pMatriz.FlipColuna(i_wI);
+		}
+
+		/* Verifica se encontrou uma solução melhor */
+		if (f_wRatio > 0) o_pMatriz.FlipColuna(i_wCol);
+		else break;
+	}
+
+}
+
+
+
 /*--------------------------------------*/
 /* Aplicação                            */
 /*--------------------------------------*/
@@ -555,56 +650,30 @@ int main(int argc, char** argv){
 
 	MatrizEsparsa o_wMatriz;
 	MatrizEsparsa other;
-	float f_wAlpha = 1;
-	int i_wTamanhoListaCandidatos;
-	int i_wColunaSelecionada;
-	int i_wColunaOrd;
 	std::vector<std::string> pasta;
-	std::vector<Coluna *> v_aColunasOrd; /* Colunas da Matriz ordenadas         */
 
 	// Lê a instânica
 	//TODO: Fazer um loop para ler a pasta 
 
 	//pasta = listaArquivos(".ssp");
-	pasta = listaArquivos("instGraph_10_0.ssp");
+	pasta = listaArquivos("instGraph_5_0.ssp");
 
 	srand(time(NULL));
 	for (int it = 0; it < pasta.size(); it++)
 	{
 		o_wMatriz.LeArquivSSP((char *)pasta[it].data());
-		std::cout << std::endl << "---------------ORI-------------" << std::endl;
+		std::cout << "-------------------------------" << std::endl;
 		o_wMatriz.Imprime();
-		other = o_wMatriz;
-		std::cout << std::endl << "--------------OTHER------------" << std::endl;
-		other.Imprime();
-		v_aColunasOrd = o_wMatriz.v_aColunas;
-		while (o_wMatriz.i_aLinhasDescobertas > 0){
-			// Ordena as colunas com relação ao número de linhas cobertas
-			std::sort(v_aColunasOrd.begin(), v_aColunasOrd.end() - o_wMatriz.i_aColunasSelecionadas, ComparaColuna);
-
-			// Calcula o tamanho da lista de candidatos
-			i_wTamanhoListaCandidatos = (v_aColunasOrd.size() - o_wMatriz.i_aColunasSelecionadas) * f_wAlpha;
-
-			do{
-				// Seleciona a coluna na lista de candidatos
-				i_wColunaOrd = rand() % i_wTamanhoListaCandidatos;
-				i_wColunaSelecionada = v_aColunasOrd[i_wColunaOrd]->i_aID;
-
-				// Realiza a seleção da coluna na matriz
-			} while(!o_wMatriz.AddColuna(i_wColunaSelecionada));
-
-			// move a coluna selecionada para a última posição
-			std::swap(v_aColunasOrd[i_wColunaOrd], v_aColunasOrd[v_aColunasOrd.size() - o_wMatriz.i_aColunasSelecionadas]);
-		}
-
-		std::cout << std::endl << "----------OTHER BEFORE---------" << std::endl;
-		other = o_wMatriz;
-		other.Imprime();
-		std::cout << std::endl << "---------------ORI-------------" << std::endl;
+		//GulosoRandomizado(o_wMatriz);
+		//std::cout << "-------------------------------" << std::endl;
+		//o_wMatriz.Imprime();
+		//o_wMatriz.RmvColuna(0);
+		//std::cout << "-------------------------------" << std::endl;
+		//o_wMatriz.Imprime();		
+		BuscaLocal(o_wMatriz);
+		std::cout << "-------------------------------" << std::endl;
 		o_wMatriz.Imprime();
-		std::cout << std::endl << "--------------OTHER------------" << std::endl;
-		other = o_wMatriz;
-		other.Imprime();
+
 	}
 
 	return 0;
