@@ -9,6 +9,7 @@
 #include <utility>
 #include <string>
 #include <dirent.h>
+#include <sstream>
 
 /*------------------------------------*/
 /* Namespaces                         */
@@ -146,6 +147,7 @@ public:
 	int i_aColunasSelecionadas;         /* Quantidade de Colunas selecionadas  */
 	std::vector<Linha*> v_aLinhas;		/* Linhas da Matriz                    */
 	std::vector<Coluna*> v_aColunas;	/* Colunas da Matriz                   */
+	std::string s_aNomeArquivo;         /* Nome do arquivo da Matriz lida      */
 
 	/*--------------*/
 	/* Construtores */
@@ -185,6 +187,9 @@ public:
 
 		// Abre arquivo para leitura
 		f_wArquivo.open(s_pNomeArquivo, std::istream::in);
+
+		//Salva o nome do arquivo lido
+		s_aNomeArquivo = s_pNomeArquivo;
 
 		// Cria as colunas da matriz
 		f_wArquivo >> i_wQtdColunas;
@@ -325,6 +330,75 @@ public:
 			std::cout << "|" << std::endl;
 		}
 	}
+	
+	/*--------------------------------------------------------------*/
+	/* Método ImprimeDot											*/
+	/*   Imprime a rede para o graphviz, destacando os observadores */
+	/*--------------------------------------------------------------*/
+	void ImprimeDot(int i_pSeq){
+		std::size_t st_wPosStr;
+		std::string s_wArquivoDot;
+		std::string s_wTexto;
+		std::string s_wHeader;
+		std::string s_wCorpo;
+		std::string s_wFooter;
+		std::stringstream s_wStream;
+		std::ofstream f_wArquivo;
+		int i_wI;
+		int i_wJ;
+		int i_wK;
+		
+		st_wPosStr = s_aNomeArquivo.find("instGraph");
+		s_wArquivoDot = s_aNomeArquivo.substr(st_wPosStr);
+		s_wArquivoDot.resize(s_wArquivoDot.size() - 4);
+		s_wStream << "_Seq_" << i_pSeq << ".dot";
+		s_wArquivoDot += s_wStream.str();
+		
+		s_wHeader = "strict graph G {\n";
+		s_wHeader += "size=\"8.5,11;\"\n";
+		s_wHeader += "ratio = \"expand;\"\n";
+		s_wHeader += "fixedsize=\"true;\"\n";
+		s_wHeader += "overlap=\"scale;\"\n";
+		s_wHeader += "node[shape=circle,width=.12,hight=.12,fontsize=12]\n";
+		s_wHeader += "edge[fontsize=12]\n";
+		s_wHeader += "\n";
+		
+		s_wCorpo = "";
+		
+		s_wFooter = "\n}\n";
+		
+		s_wStream.str("");
+		
+		for (i_wI = 0; i_wI < v_aColunas.size(); i_wI++){
+			s_wStream << v_aColunas[i_wI]->i_aID << " [color="; 
+			if (v_aColunas[i_wI]->b_aSelecionada) s_wStream << "blue";
+			else s_wStream << "black";
+			s_wStream << "];\n";
+			
+			s_wCorpo += s_wStream.str();
+			s_wStream.str("");
+		}
+		
+		s_wCorpo += "\n";
+		s_wStream.str("");
+		for (i_wI = 0; i_wI < v_aLinhas.size(); i_wI++){
+			for (i_wJ = 0; i_wJ < v_aLinhas[i_wI]->v_aColunas.size(); i_wJ++){
+				if(i_wJ < v_aLinhas[i_wI]->v_aColunas.size()-1)
+					s_wStream << v_aLinhas[i_wI]->v_aColunas[i_wJ]->i_aID << " -- ";
+				else
+					s_wStream << v_aLinhas[i_wI]->v_aColunas[i_wJ]->i_aID << ";\n";
+			}
+			s_wCorpo += s_wStream.str();
+			s_wStream.str("");
+			
+		}
+		
+		s_wTexto = s_wHeader + s_wCorpo + s_wFooter;
+		
+		f_wArquivo.open(s_wArquivoDot.c_str());
+		f_wArquivo << s_wTexto;
+		f_wArquivo.close();
+	}
 };
 
 /*--------------------------------------*/
@@ -427,6 +501,7 @@ int main(int argc, char** argv){
 	float f_wAlpha = 0;
 	int i_wTamanhoListaCandidatos;
 	int i_wColunaSelecionada;
+	int i_wSeq = 1;
 	std::vector<std::string> pasta;
 
 	// Lê a instânica
@@ -436,8 +511,12 @@ int main(int argc, char** argv){
 	
 	for(int it=0;it<pasta.size();it++)
 	{
+		i_wSeq = 1;
 		o_wMatriz.LeArquivSSP((char *)pasta[it].data());
-		o_wMatriz.Imprime();
+		o_wMatriz.ImprimeDot(i_wSeq);
+		i_wSeq++;
+		
+		//o_wMatriz.Imprime();
 		while (o_wMatriz.i_aLinhasDescobertas > 0){
 			// Ordena as colunas com relação ao número de linhas cobertas
 			std::sort(o_wMatriz.v_aColunas.begin(), o_wMatriz.v_aColunas.end() - o_wMatriz.i_aColunasSelecionadas, ComparaColuna);
@@ -454,9 +533,8 @@ int main(int argc, char** argv){
 			// move a coluna selecionada para a última posição
 			std::swap(o_wMatriz.v_aColunas[i_wColunaSelecionada], o_wMatriz.v_aColunas[o_wMatriz.v_aColunas.size() - o_wMatriz.i_aColunasSelecionadas]);
 		}
-		
-		std::cout << std::endl << "--------------------------------" << std::endl;
-		o_wMatriz.Imprime();
+		o_wMatriz.ImprimeDot(i_wSeq);
+		i_wSeq++;
 	}
 	
 	return 0;
