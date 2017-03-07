@@ -471,7 +471,7 @@ public:
 			std::cout << "|" << std::endl;
 		}
 	}
-	
+
 	/*--------------------------------------------------------------*/
 	/* Método ImprimeGraphviz										*/
 	/*   Imprime a rede para o graphviz, destacando os observadores */
@@ -490,20 +490,20 @@ public:
 		int i_wI;
 		int i_wJ;
 		int i_wK;
-		
+
 		st_wPosStr = s_aNomeArquivo.find("instGraph");
 		s_wArquivoDot = s_aNomeArquivo.substr(st_wPosStr);
 		s_wArquivoDot.resize(s_wArquivoDot.size() - 4);
 		s_wStream << "Seq_" << i_pSeq << "_";
 		if(s_pClassificacao != "") s_wStream << s_pClassificacao << "_";
 		s_wArquivoDot = s_wStream.str() + s_wArquivoDot;
-		
+
 		s_wArquivoGraphviz = s_wArquivoDot + "." + EXTENSAO;
 		s_wArquivoDot += ".dot";
-		
+
 		s_wComandoSistema = (std::string) "dot -T" + EXTENSAO + " " + s_wArquivoDot + " -o " + s_wArquivoGraphviz;
-		
-		
+
+
 		s_wHeader = "strict graph G {\n";
 		s_wHeader += "size=\"8.5,11;\"\n";
 		s_wHeader += "ratio = \"expand;\"\n";
@@ -512,23 +512,23 @@ public:
 		s_wHeader += "node[shape=circle,width=.12,hight=.12,fontsize=12]\n";
 		s_wHeader += "edge[fontsize=12]\n";
 		s_wHeader += "\n";
-		
+
 		s_wCorpo = "";
-		
+
 		s_wFooter = "\n}\n";
-		
+
 		s_wStream.str("");
-		
+
 		for (i_wI = 0; i_wI < v_aColunas.size(); i_wI++){
-			s_wStream << v_aColunas[i_wI]->i_aID << " [color="; 
+			s_wStream << v_aColunas[i_wI]->i_aID << " [color=";
 			if (v_aColunas[i_wI]->b_aSelecionada) s_wStream << "red";
 			else s_wStream << "black";
 			s_wStream << "];\n";
-			
+
 			s_wCorpo += s_wStream.str();
 			s_wStream.str("");
 		}
-		
+
 		s_wCorpo += "\n";
 		s_wStream.str("");
 		for (i_wI = 0; i_wI < v_aLinhas.size(); i_wI++){
@@ -540,15 +540,15 @@ public:
 			}
 			s_wCorpo += s_wStream.str();
 			s_wStream.str("");
-			
+
 		}
-		
+
 		s_wTexto = s_wHeader + s_wCorpo + s_wFooter;
-		
+
 		f_wArquivo.open(s_wArquivoDot.c_str());
 		f_wArquivo << s_wTexto;
 		f_wArquivo.close();
-		
+
 		system(s_wComandoSistema.c_str());
 	}
 };
@@ -732,9 +732,9 @@ void Grasp (MatrizEsparsa &o_pMatriz, float f_pAlpha, int i_pMaxIteracao)
 	 int i_wI = 0;
 	 int i_wLoop = 0;
 	 MatrizEsparsa o_wMatrizAtual, o_wMelhorSolucao;
-	 
+
 	 o_wMelhorSolucao = o_pMatriz;
-	 
+
 	 while(i_wI < i_pMaxIteracao)
 	 {
 	 	 o_wMatrizAtual = o_pMatriz;
@@ -742,17 +742,15 @@ void Grasp (MatrizEsparsa &o_pMatriz, float f_pAlpha, int i_pMaxIteracao)
 		 i_wLoop++;
 		 GulosoRandomizado(o_wMatrizAtual, f_pAlpha);
 		 BuscaLocal(o_wMatrizAtual);
-		 
-		 if (o_wMatrizAtual.i_aColunasSelecionadas <= o_wMelhorSolucao.i_aColunasSelecionadas)
+
+		 if (o_wMatrizAtual.f_aFuncaoObjetivo > o_wMelhorSolucao.f_aFuncaoObjetivo)
 		 {
 			 o_wMelhorSolucao = o_wMatrizAtual;
 			 i_wI = 0;
-			 std::cout << "Melhor solucao obtida na iteracao " << i_wLoop << std::endl;
 		 }
-		 std::cout << "Loops: " << i_wI << std::endl;
+
 	 }
-	 
-	 
+
 }
 
 /*--------------------------------------*/
@@ -761,7 +759,7 @@ void Grasp (MatrizEsparsa &o_pMatriz, float f_pAlpha, int i_pMaxIteracao)
 int main(int argc, char** argv){
 
 	int i_wSeq = 1;
-	int i_wMaxIteracao = 100;
+	int i_wMaxIteracao = 1000;
 	float f_wAlpha = .0;
 	MatrizEsparsa o_wMatriz, o_wMatrizGrasp;
 	std::vector<std::string> pasta;
@@ -773,24 +771,14 @@ int main(int argc, char** argv){
 	srand(42);
 	for (int it = 0; it < pasta.size(); it++)
 	{
-		i_wSeq = 1;
 		o_wMatriz.LeArquivSSP((char *)pasta[it].data());
-		o_wMatrizGrasp.LeArquivSSP((char *)pasta[it].data());
-		
-		o_wMatriz.ImprimeGraphviz(i_wSeq);
-		i_wSeq++;
+		o_wMatrizGrasp = o_wMatriz;
 
 		GulosoRandomizado(o_wMatriz, 1.0);
-		o_wMatriz.ImprimeGraphviz(i_wSeq);
-		i_wSeq++;
-		
+
 		BuscaLocal(o_wMatriz);
-		o_wMatriz.ImprimeGraphviz(i_wSeq);
-		i_wSeq++;
-		
+
 		Grasp(o_wMatrizGrasp, f_wAlpha, i_wMaxIteracao);
-		o_wMatriz.ImprimeGraphviz(i_wSeq);
-		i_wSeq++;
 	}
 
 	return 0;
