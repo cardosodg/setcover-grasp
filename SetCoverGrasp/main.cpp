@@ -15,6 +15,7 @@
 /* Define                             */
 /*------------------------------------*/
 #define EPS 1.0
+#define EXTENSAO "png"
 
 /*------------------------------------*/
 /* Namespaces                         */
@@ -472,16 +473,18 @@ public:
 	}
 	
 	/*--------------------------------------------------------------*/
-	/* Método ImprimeDot											*/
+	/* Método ImprimeGraphviz										*/
 	/*   Imprime a rede para o graphviz, destacando os observadores */
 	/*--------------------------------------------------------------*/
-	void ImprimeDot(int i_pSeq){
+	void ImprimeGraphviz(int i_pSeq = 0, std::string s_pClassificacao = ""){
 		std::size_t st_wPosStr;
 		std::string s_wArquivoDot;
 		std::string s_wTexto;
 		std::string s_wHeader;
 		std::string s_wCorpo;
 		std::string s_wFooter;
+		std::string s_wArquivoGraphviz;
+		std::string s_wComandoSistema;
 		std::stringstream s_wStream;
 		std::ofstream f_wArquivo;
 		int i_wI;
@@ -491,8 +494,15 @@ public:
 		st_wPosStr = s_aNomeArquivo.find("instGraph");
 		s_wArquivoDot = s_aNomeArquivo.substr(st_wPosStr);
 		s_wArquivoDot.resize(s_wArquivoDot.size() - 4);
-		s_wStream << "_Seq_" << i_pSeq << ".dot";
-		s_wArquivoDot += s_wStream.str();
+		s_wStream << "Seq_" << i_pSeq << "_";
+		if(s_pClassificacao != "") s_wStream << s_pClassificacao << "_";
+		s_wArquivoDot = s_wStream.str() + s_wArquivoDot;
+		
+		s_wArquivoGraphviz = s_wArquivoDot + "." + EXTENSAO;
+		s_wArquivoDot += ".dot";
+		
+		s_wComandoSistema = (std::string) "dot -T" + EXTENSAO + " " + s_wArquivoDot + " -o " + s_wArquivoGraphviz;
+		
 		
 		s_wHeader = "strict graph G {\n";
 		s_wHeader += "size=\"8.5,11;\"\n";
@@ -511,7 +521,7 @@ public:
 		
 		for (i_wI = 0; i_wI < v_aColunas.size(); i_wI++){
 			s_wStream << v_aColunas[i_wI]->i_aID << " [color="; 
-			if (v_aColunas[i_wI]->b_aSelecionada) s_wStream << "blue";
+			if (v_aColunas[i_wI]->b_aSelecionada) s_wStream << "red";
 			else s_wStream << "black";
 			s_wStream << "];\n";
 			
@@ -538,6 +548,8 @@ public:
 		f_wArquivo.open(s_wArquivoDot.c_str());
 		f_wArquivo << s_wTexto;
 		f_wArquivo.close();
+		
+		system(s_wComandoSistema.c_str());
 	}
 };
 
@@ -715,7 +727,33 @@ void BuscaLocal(MatrizEsparsa &o_pMatriz)
 
 }
 
-
+void Grasp (MatrizEsparsa &o_pMatriz, float f_pAlpha, int i_pMaxIteracao)
+{
+	 int i_wI = 0;
+	 int i_wLoop = 0;
+	 MatrizEsparsa o_wMatrizAtual, o_wMelhorSolucao;
+	 
+	 o_wMelhorSolucao = o_pMatriz;
+	 
+	 while(i_wI < i_pMaxIteracao)
+	 {
+	 	 o_wMatrizAtual = o_pMatriz;
+		 i_wI++;
+		 i_wLoop++;
+		 GulosoRandomizado(o_wMatrizAtual, f_pAlpha);
+		 BuscaLocal(o_wMatrizAtual);
+		 
+		 if (o_wMatrizAtual.i_aColunasSelecionadas <= o_wMelhorSolucao.i_aColunasSelecionadas)
+		 {
+			 o_wMelhorSolucao = o_wMatrizAtual;
+			 i_wI = 0;
+			 std::cout << "Melhor solucao obtida na iteracao " << i_wLoop << std::endl;
+		 }
+		 std::cout << "Loops: " << i_wI << std::endl;
+	 }
+	 
+	 
+}
 
 /*--------------------------------------*/
 /* Aplicação                            */
@@ -723,24 +761,35 @@ void BuscaLocal(MatrizEsparsa &o_pMatriz)
 int main(int argc, char** argv){
 
 	int i_wSeq = 1;
-	int f_wAlpha = 0.5;
-	MatrizEsparsa o_wMatriz;
+	int i_wMaxIteracao = 100;
+	float f_wAlpha = .0;
+	MatrizEsparsa o_wMatriz, o_wMatrizGrasp;
 	std::vector<std::string> pasta;
 
 	// Lê a instânica
 	//pasta = listaArquivos(".ssp");
-	pasta = listaArquivos("instGraph_5_0.ssp");
+	pasta = listaArquivos("instGraph_50_0.ssp");
 
 	srand(42);
 	for (int it = 0; it < pasta.size(); it++)
 	{
 		i_wSeq = 1;
 		o_wMatriz.LeArquivSSP((char *)pasta[it].data());
-		o_wMatriz.ImprimeDot(i_wSeq);
-		i_wSeq++;		
-		GulosoRandomizado(o_wMatriz, f_wAlpha);
+		o_wMatrizGrasp.LeArquivSSP((char *)pasta[it].data());
+		
+		o_wMatriz.ImprimeGraphviz(i_wSeq);
+		i_wSeq++;
+
+		GulosoRandomizado(o_wMatriz, 1.0);
+		o_wMatriz.ImprimeGraphviz(i_wSeq);
+		i_wSeq++;
+		
 		BuscaLocal(o_wMatriz);
-		o_wMatriz.ImprimeDot(i_wSeq);
+		o_wMatriz.ImprimeGraphviz(i_wSeq);
+		i_wSeq++;
+		
+		Grasp(o_wMatrizGrasp, f_wAlpha, i_wMaxIteracao);
+		o_wMatriz.ImprimeGraphviz(i_wSeq);
 		i_wSeq++;
 	}
 
