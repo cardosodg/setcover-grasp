@@ -402,6 +402,7 @@ public:
 			i_aLinhasDescobertas = other.i_aLinhasDescobertas;
 			i_aColunasSelecionadas = other.i_aColunasSelecionadas;
 			f_aFuncaoObjetivo = other.f_aFuncaoObjetivo;
+			s_aNomeArquivo = other.s_aNomeArquivo;
 
 			/* Deleta as linhas e colunas criadas */
 			for (i_wI = 0; i_wI < v_aColunas.size(); i_wI++){
@@ -750,6 +751,7 @@ void Grasp (MatrizEsparsa &o_pMatriz, float f_pAlpha, int i_pMaxIteracao)
 		 }
 
 	 }
+	 o_pMatriz = o_wMelhorSolucao;
 
 }
 
@@ -759,8 +761,11 @@ void Grasp (MatrizEsparsa &o_pMatriz, float f_pAlpha, int i_pMaxIteracao)
 int main(int argc, char** argv){
 
 	int i_wSeq = 1;
-	int i_wMaxIteracao = 1000;
-	float f_wAlpha = .0;
+	int i_wMaxIteracao = 100;
+	float f_wAlpha = 0.5;
+	std::ofstream f_wArquivoGuloso;
+	std::ofstream f_wArquivoBl;
+	std::ofstream f_wArquivoGrasp;
 	MatrizEsparsa o_wMatriz, o_wMatrizGrasp;
 	std::vector<std::string> pasta;
 
@@ -768,19 +773,35 @@ int main(int argc, char** argv){
 	//pasta = listaArquivos(".ssp");
 	pasta = listaArquivos("instGraph_50_0.ssp");
 
+	f_wArquivoGuloso.open("execGuloso.txt");
+	f_wArquivoBl.open("execBl.txt");
+	f_wArquivoGrasp.open("execGrasp.txt");
+
 	srand(42);
 	for (int it = 0; it < pasta.size(); it++)
 	{
 		o_wMatriz.LeArquivSSP((char *)pasta[it].data());
 		o_wMatrizGrasp = o_wMatriz;
 
-		GulosoRandomizado(o_wMatriz, 1.0);
+		GulosoRandomizado(o_wMatriz, 0.0);
+        f_wArquivoGuloso << o_wMatriz.v_aColunas.size() << " " << o_wMatriz.i_aColunasSelecionadas << " 1 " << std::endl;
+
+        o_wMatriz.ImprimeGraphviz(1,"Gloso");
 
 		BuscaLocal(o_wMatriz);
+        f_wArquivoBl << o_wMatriz.v_aColunas.size() << " " << o_wMatriz.i_aColunasSelecionadas << " 1 " << std::endl;
+
+        o_wMatriz.ImprimeGraphviz(2,"BuscaLocal");
 
 		Grasp(o_wMatrizGrasp, f_wAlpha, i_wMaxIteracao);
+        f_wArquivoGrasp << o_wMatrizGrasp.v_aColunas.size() << " " << o_wMatrizGrasp.i_aColunasSelecionadas << " 1 " << std::endl;
+
+        o_wMatrizGrasp.ImprimeGraphviz(3,"Grasp");
 	}
 
+	f_wArquivoGuloso.close();
+	f_wArquivoBl.close();
+	f_wArquivoGrasp.close();
 	return 0;
 
 }
