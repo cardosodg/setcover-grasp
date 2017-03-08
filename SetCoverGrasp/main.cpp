@@ -10,6 +10,7 @@
 #include <string>
 #include <dirent.h>
 #include <sstream>
+#include "tempo.cpp"
 
 /*------------------------------------*/
 /* Define                             */
@@ -668,7 +669,7 @@ void GulosoRandomizado(MatrizEsparsa &o_pMatriz, float f_pAlpha)
 		std::sort(v_aColunasOrd.begin(), v_aColunasOrd.end() - o_pMatriz.i_aColunasSelecionadas, ComparaColuna);
 
 		// Calcula o tamanho da lista de candidatos
-		i_wTamanhoListaCandidatos = f_pAlpha != 0 ? (v_aColunasOrd.size() - o_pMatriz.i_aColunasSelecionadas) * f_pAlpha : 1;
+		i_wTamanhoListaCandidatos = f_pAlpha != 0.0 ? 1 + (v_aColunasOrd.size() - o_pMatriz.i_aColunasSelecionadas) * f_pAlpha : 1;
 
 		//TODO: Verificar Possível Loop Infinito
 		do{
@@ -762,7 +763,9 @@ int main(int argc, char** argv){
 
 	int i_wSeq = 1;
 	int i_wMaxIteracao = 100;
-	float f_wAlpha = 0.5;
+	float f_wAlpha = 0.2;
+	double d_wInicio;
+	double d_wFim;
 	std::ofstream f_wArquivoGuloso;
 	std::ofstream f_wArquivoBl;
 	std::ofstream f_wArquivoGrasp;
@@ -770,12 +773,12 @@ int main(int argc, char** argv){
 	std::vector<std::string> pasta;
 
 	// Lê a instânica
-	//pasta = listaArquivos(".ssp");
-	pasta = listaArquivos("instGraph_50_0.ssp");
+	pasta = listaArquivos(".ssp");
+	//pasta = listaArquivos("instGraph_50_0.ssp");
 
-	f_wArquivoGuloso.open("execGuloso.txt");
-	f_wArquivoBl.open("execBl.txt");
-	f_wArquivoGrasp.open("execGrasp.txt");
+	f_wArquivoGuloso.open("../ComputeResult/execGuloso.txt");
+	f_wArquivoBl.open("../ComputeResult/execBl.txt");
+	f_wArquivoGrasp.open("../ComputeResult/execGrasp.txt");
 
 	srand(42);
 	for (int it = 0; it < pasta.size(); it++)
@@ -783,20 +786,20 @@ int main(int argc, char** argv){
 		o_wMatriz.LeArquivSSP((char *)pasta[it].data());
 		o_wMatrizGrasp = o_wMatriz;
 
+		d_wInicio = getcputime();
 		GulosoRandomizado(o_wMatriz, 0.0);
-        f_wArquivoGuloso << o_wMatriz.v_aColunas.size() << " " << o_wMatriz.i_aColunasSelecionadas << " 1 " << std::endl;
+		d_wFim = getcputime();
+        f_wArquivoGuloso << o_wMatriz.v_aColunas.size() << " " << o_wMatriz.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << " 1 " << std::endl;
 
-        o_wMatriz.ImprimeGraphviz(1,"Gloso");
-
+   		d_wInicio = getcputime();
 		BuscaLocal(o_wMatriz);
-        f_wArquivoBl << o_wMatriz.v_aColunas.size() << " " << o_wMatriz.i_aColunasSelecionadas << " 1 " << std::endl;
+		d_wFim = getcputime();
+        f_wArquivoBl << o_wMatriz.v_aColunas.size() << " " << o_wMatriz.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << " 1 " << std::endl;
 
-        o_wMatriz.ImprimeGraphviz(2,"BuscaLocal");
-
+   		d_wInicio = getcputime();
 		Grasp(o_wMatrizGrasp, f_wAlpha, i_wMaxIteracao);
-        f_wArquivoGrasp << o_wMatrizGrasp.v_aColunas.size() << " " << o_wMatrizGrasp.i_aColunasSelecionadas << " 1 " << std::endl;
-
-        o_wMatrizGrasp.ImprimeGraphviz(3,"Grasp");
+		d_wFim = getcputime();
+        f_wArquivoGrasp << o_wMatrizGrasp.v_aColunas.size() << " " << o_wMatrizGrasp.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << " 1 " << std::endl;
 	}
 
 	f_wArquivoGuloso.close();

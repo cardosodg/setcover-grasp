@@ -1,0 +1,69 @@
+graph G {
+size="8.5,11;"
+ratio = "expand;"
+fixedsize="true;"
+overlap="scale;"
+node[shape=circle,width=.12,hight=.12,fontsize=12]
+edge[fontsize=12]
+
+0[label=" 0" color=black, pos="2.4035406,2.4005362!"];
+1[label=" 1" color=black, pos="2.0756249,1.5299697!"];
+2[label=" 2" color=black, pos="1.1002764,0.90612641!"];
+3[label=" 3" color=black, pos="0.14448232,1.4957672!"];
+4[label=" 4" color=black, pos="2.6272185,1.4617058!"];
+5[label=" 5" color=black, pos="2.138082,2.1999382!"];
+6[label=" 6" color=black, pos="2.5765529,2.1007095!"];
+7[label=" 7" color=black, pos="0.46030942,2.1331002!"];
+8[label=" 8" color=black, pos="0.3990623,0.59957268!"];
+9[label=" 9" color=black, pos="2.818716,1.6455065!"];
+10[label=" 10" color=black, pos="2.5462484,1.7621714!"];
+11[label=" 11" color=black, pos="2.1886869,0.4490203!"];
+12[label=" 12" color=black, pos="1.5504939,0.12083392!"];
+13[label=" 13" color=black, pos="1.1960908,1.9436524!"];
+14[label=" 14" color=black, pos="0.093787656,2.3518193!"];
+15[label=" 15" color=black, pos="0.33043621,0.4179471!"];
+16[label=" 16" color=black, pos="2.0185558,0.20418566!"];
+17[label=" 17" color=black, pos="2.1470622,0.75626415!"];
+18[label=" 18" color=black, pos="1.4013251,1.3840413!"];
+19[label=" 19" color=black, pos="0.77637412,0.40591727!"];
+20[label=" 20" color=black, pos="1.7437877,1.0154439!"];
+21[label=" 21" color=black, pos="1.8475233,1.7125223!"];
+22[label=" 22" color=black, pos="0.0034580794,0.495408!"];
+23[label=" 23" color=black, pos="1.5492611,2.0633928!"];
+24[label=" 24" color=black, pos="2.9308749,0.40508866!"];
+25[label=" 25" color=black, pos="1.1172706,2.7712476!"];
+26[label=" 26" color=black, pos="1.6797884,1.1086076!"];
+27[label=" 27" color=black, pos="0.98835062,2.7830305!"];
+28[label=" 28" color=black, pos="2.041276,2.6720169!"];
+29[label=" 29" color=black, pos="0.75757059,1.8301102!"];
+0--1[label="1"]
+0--4[label="1"]
+0--6[label="1"]
+0--26[label="1"]
+0--28[label="1"]
+0--29[label="1"]
+1--2[label="1"]
+2--3[label="1"]
+2--10[label="1"]
+4--5[label="1"]
+4--7[label="1"]
+4--8[label="1"]
+4--18[label="1"]
+4--20[label="1"]
+4--23[label="1"]
+5--9[label="1"]
+5--12[label="1"]
+5--13[label="1"]
+5--15[label="1"]
+6--11[label="1"]
+7--19[label="1"]
+8--14[label="1"]
+9--17[label="1"]
+10--25[label="1"]
+12--16[label="1"]
+13--21[label="1"]
+13--24[label="1"]
+16--27[label="1"]
+21--22[label="1"]
+
+}

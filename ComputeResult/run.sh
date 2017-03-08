@@ -5,11 +5,11 @@ mkdir $1
 g++ media.cpp -o media
 g++ TabelaGrafico.cpp -o tabelagrafico
 
-#./media execGREED.txt GREED.txt
+./media execGuloso.txt GREED.txt
 
-#./media execLS.txt LS.txt
+./media execBl.txt LS.txt
 
-#./media execGRASP.txt GRASP.txt
+./media execGrasp.txt GRASP.txt
 
 ./tabelagrafico
 
