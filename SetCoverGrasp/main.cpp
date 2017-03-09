@@ -729,19 +729,19 @@ void BuscaLocal(MatrizEsparsa &o_pMatriz)
 
 }
 
-void Grasp (MatrizEsparsa &o_pMatriz, float f_pAlpha, int i_pMaxIteracao)
+void Grasp (MatrizEsparsa &o_pMatriz, float f_pAlpha, int i_pMaxIteracao, int &i_pLoops)
 {
 	 int i_wI = 0;
-	 int i_wLoop = 0;
 	 MatrizEsparsa o_wMatrizAtual, o_wMelhorSolucao;
 
 	 o_wMelhorSolucao = o_pMatriz;
+	 i_pLoops = 0;
 
 	 while(i_wI < i_pMaxIteracao)
 	 {
 	 	 o_wMatrizAtual = o_pMatriz;
 		 i_wI++;
-		 i_wLoop++;
+		 i_pLoops++;
 		 GulosoRandomizado(o_wMatrizAtual, f_pAlpha);
 		 BuscaLocal(o_wMatrizAtual);
 
@@ -763,7 +763,8 @@ int main(int argc, char** argv){
 
 	int i_wSeq = 1;
 	int i_wMaxIteracao = 100;
-	float f_wAlpha = 0.2;
+	int i_wLoopsGrasp = 0;
+	float f_wAlpha = 0.1;
 	double d_wInicio;
 	double d_wFim;
 	std::ofstream f_wArquivoGuloso;
@@ -797,9 +798,9 @@ int main(int argc, char** argv){
         f_wArquivoBl << o_wMatriz.v_aColunas.size() << " " << o_wMatriz.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << " 1 " << std::endl;
 
    		d_wInicio = getcputime();
-		Grasp(o_wMatrizGrasp, f_wAlpha, i_wMaxIteracao);
+		Grasp(o_wMatrizGrasp, f_wAlpha, i_wMaxIteracao, i_wLoopsGrasp);
 		d_wFim = getcputime();
-        f_wArquivoGrasp << o_wMatrizGrasp.v_aColunas.size() << " " << o_wMatrizGrasp.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << " 1 " << std::endl;
+        f_wArquivoGrasp << o_wMatrizGrasp.v_aColunas.size() << " " << o_wMatrizGrasp.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << i_wLoopsGrasp << std::endl;
 	}
 
 	f_wArquivoGuloso.close();

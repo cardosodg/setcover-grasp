@@ -6,7 +6,7 @@ cd SetCoverGrasp
 
 cd ../ComputeResult
 
-sh run.sh teste01
+sh run.sh arvores_ssp_caminho_alfa-0,1_Maxit-100
 
 cd ../SetCoverGrasp
 
@@ -14,5 +14,5 @@ cd ../SetCoverGrasp
 
 cd ../ComputeResult
 
-sh run.sh teste02
+sh run.sh arvores_ssp_caminho_alfa-0,2_Maxit-100
 
