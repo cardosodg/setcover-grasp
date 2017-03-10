@@ -10,6 +10,7 @@
 #include <string>
 #include <dirent.h>
 #include <sstream>
+#include <cmath>
 #include "tempo.cpp"
 
 /*------------------------------------*/
@@ -34,7 +35,7 @@ public:
 	/*--------------*/
 	/* Atributos    */
 	/*--------------*/
-	int i_aID;                          /* ID do nÛ                                           */
+	int i_aID;                          /* ID do n√≥                                           */
 	int i_aLinhasCobertas = 0;			/* Quantidade de linhas que a coluna cobre no momento */
 	float f_aCusto = 1.0;               /* Custo da coluna                                    */
 	bool b_aSelecionada = false;        /* Indica se a coluna foi selecionada                 */
@@ -43,7 +44,7 @@ public:
 	/*--------------*/
 	/* Construtores */
 	/*--------------*/
-	//TODO: Ver como criar e deletar para n„o ter vazamento de memÛria
+	//TODO: Ver como criar e deletar para n√£o ter vazamento de mem√≥ria
 	Coluna(){}
 	Coluna(int i_pID){
 		i_aID = i_pID;
@@ -60,13 +61,13 @@ public:
 	}
 
 	/*--------------*/
-	/* MÈtodos      */
+	/* M√©todos      */
 	/*--------------*/
 
 	/*-----------------------------------------------------------*/
-	/* MÈtodo AddLinha                                           */
+	/* M√©todo AddLinha                                           */
 	/*   Adiciona uma linha que a coluna cobre                   */
-	/* Par‚metros                                                */
+	/* Par√¢metros                                                */
 	/*   Coluna* p_pLinha - input  - Ponteiro para uma coluna    */
 	/*-----------------------------------------------------------*/
 	void AddLinha(Linha * p_pLinha){
@@ -75,11 +76,11 @@ public:
 	}
 
 	/*--------------------------------------------------------------*/
-	/* MÈtodo CobreLinhas											*/
+	/* M√©todo CobreLinhas											*/
 	/*   Realiza a corbertura das linhas apontadas pela coluna		*/
-	/*    passada como par‚metro									*/
-	/* Par‚metros                                                   */
-	/*   int i_pIndiceColuna - input - Õndice da coluna selecionada */
+	/*    passada como par√¢metro									*/
+	/* Par√¢metros                                                   */
+	/*   int i_pIndiceColuna - input - √çndice da coluna selecionada */
 	/*--------------------------------------------------------------*/
 	//void CobreLinhas(){
 	//	int i_wI;
@@ -100,14 +101,14 @@ public:
 	int i_aOrigem;						/* Origem do Caminho              */
 	int i_aDestino;						/* Destino do Caminho             */
 	float f_aGanho = 1 + EPS;           /* Ganho da linha                 */
-	bool b_aCoberta = false;			/* Indica se a linha est· coberta */
+	bool b_aCoberta = false;			/* Indica se a linha est√° coberta */
 	std::vector<Coluna*> v_aColunas;	/* Colunas que cobrem a linha     */
 
 
 	/*--------------*/
 	/* Construtores */
 	/*--------------*/
-	//TODO: Ver como criar e deletar para n„o ter vazamento de memÛria
+	//TODO: Ver como criar e deletar para n√£o ter vazamento de mem√≥ria
 	Linha(){}
 	Linha(int i_pOrigem, int i_pDestino){
 		i_aOrigem = i_pOrigem;
@@ -124,13 +125,13 @@ public:
 	}
 
 	/*--------------*/
-	/* MÈtodos      */
+	/* M√©todos      */
 	/*--------------*/
 
 	/*-----------------------------------------------------------*/
-	/* MÈtodo AddColuna                                          */
+	/* M√©todo AddColuna                                          */
 	/*   Adiciona uma coluna que cobre a linha                   */
-	/* Par‚metros                                                */
+	/* Par√¢metros                                                */
 	/*   Coluna* p_pColuna - input  - Ponteiro para uma coluna   */
 	/*-----------------------------------------------------------*/
 	void AddColuna(Coluna * p_pColuna){
@@ -138,11 +139,11 @@ public:
 	}
 
 	/*--------------------------------------------------------------*/
-	/* MÈtodo CobreLinha											*/
+	/* M√©todo CobreLinha											*/
 	/*   Realiza a corbertura da linha e atualiza colunas que		*/
 	/*    cobrem a linha         									*/
-	/* Par‚metros                                                   */
-	/*   int i_pIndiceColuna - input - Õndice da coluna selecionada */
+	/* Par√¢metros                                                   */
+	/*   int i_pIndiceColuna - input - √çndice da coluna selecionada */
 	/*--------------------------------------------------------------*/
 	//void CobreLinha(){
 	//	int i_wI;
@@ -164,7 +165,7 @@ public:
 
 	int i_aLinhasDescobertas;           /* Quantidade de linhas Descobertas    */
 	int i_aColunasSelecionadas;         /* Quantidade de Colunas selecionadas  */
-	float f_aFuncaoObjetivo = 0;        /* FunÁ„o objetivo da busca local      */
+	float f_aFuncaoObjetivo = 0;        /* Fun√ß√£o objetivo da busca local      */
 	std::vector<Linha*> v_aLinhas;		/* Linhas da Matriz                    */
 	std::vector<Coluna*> v_aColunas;	/* Colunas da Matriz                   */
 	std::string s_aNomeArquivo;         /* Nome do arquivo da Matriz lida      */
@@ -175,7 +176,7 @@ public:
 	MatrizEsparsa(){}
 	~MatrizEsparsa(){
 		/*----------------*/
-		/* Vari·veis      */
+		/* Vari√°veis      */
 		/*----------------*/
 		int i_wI;
 
@@ -193,19 +194,19 @@ public:
 	}
 
 	/*--------------*/
-	/* MÈtodos      */
+	/* M√©todos      */
 	/*--------------*/
 
 	/*-----------------------------------------------------------*/
-	/* MÈtodo LeArquivoSSP                                       */
-	/*   LÍ um arquivo no formato de Shortest Paths (SSP) e cria */
-	/*   a inst‚ncia utilizada no problema                       */
-	/* Par‚metros                                                */
+	/* M√©todo LeArquivoSSP                                       */
+	/*   L√™ um arquivo no formato de Shortest Paths (SSP) e cria */
+	/*   a inst√¢ncia utilizada no problema                       */
+	/* Par√¢metros                                                */
 	/*   char* arquivo - input  - Caminho completo arquivo SSP   */
 	/*-----------------------------------------------------------*/
 	void LeArquivSSP(char * s_pNomeArquivo){
 		/*----------------*/
-		/* Vari·veis      */
+		/* Vari√°veis      */
 		/*----------------*/
 		int i_wQtdLinhas;
 		int i_wQtdColunas;
@@ -241,25 +242,25 @@ public:
 		i_aLinhasDescobertas = i_wQtdLinhas;
 		v_aLinhas.resize(i_wQtdLinhas);
 
-		// LÍ arquivo caracter por caracter
+		// L√™ arquivo caracter por caracter
 		i_wI = 0;
 		while (f_wArquivo >> c_wChar) {
 
-			// Realiza aÁ„o de acordo com caracter lido e estado da leitura
+			// Realiza a√ß√£o de acordo com caracter lido e estado da leitura
 			switch (c_wChar)
 			{
-				/* Lendo inÌcio do par ordenado ou do caminho */
+				/* Lendo in√≠cio do par ordenado ou do caminho */
 			case ('[') :
 				if (!b_wLeuPar){
-					// Se est· lendo o par origem destino apÛs o [ est· a origem
+					// Se est√° lendo o par origem destino ap√≥s o [ est√° a origem
 					f_wArquivo >> i_wOrigem;
 				}
 				else {
-					// Se est· lendo o caminho apÛs o [ deve ler outro [ e depois est· o primeiro nÛ
+					// Se est√° lendo o caminho ap√≥s o [ deve ler outro [ e depois est√° o primeiro n√≥
 					f_wArquivo >> c_wChar;
 					f_wArquivo >> i_wNode;
 
-					// Deve ser realizada referÍncia cruzada entre Linha e Coluna
+					// Deve ser realizada refer√™ncia cruzada entre Linha e Coluna
 					v_aLinhas[i_wI]->AddColuna(v_aColunas[i_wNode]);
 					v_aColunas[i_wNode]->AddLinha(v_aLinhas[i_wI]);
 				}
@@ -268,14 +269,14 @@ public:
 				/* Lendo dentro do par ordenado ou do caminho */
 			case (',') :
 				if (!b_wLeuPar){
-					// Se est· lendo o par origem destino apÛs a , est· o Destino
+					// Se est√° lendo o par origem destino ap√≥s a , est√° o Destino
 					f_wArquivo >> i_wDestino;
 				}
 				else{
-					// Se est· lendo o caminho apÛs a , est· um nÛ
+					// Se est√° lendo o caminho ap√≥s a , est√° um n√≥
 					f_wArquivo >> i_wNode;
 
-					// Deve ser realizada referÍncia cruzada entre Linha e Coluna
+					// Deve ser realizada refer√™ncia cruzada entre Linha e Coluna
 					v_aLinhas[i_wI]->AddColuna(v_aColunas[i_wNode]);
 					v_aColunas[i_wNode]->AddLinha(v_aLinhas[i_wI]);
 				}
@@ -292,7 +293,7 @@ public:
 					// Deve ler outro ']'
 					f_wArquivo >> c_wChar;
 
-					// Terminou de ler caminho, aponta para ler a prÛxima linha e seta a flag para ler o Par
+					// Terminou de ler caminho, aponta para ler a pr√≥xima linha e seta a flag para ler o Par
 					i_wI++;
 					b_wLeuPar = false;
 				}
@@ -307,17 +308,17 @@ public:
 	}
 
 	/*--------------------------------------------------------------*/
-	/* MÈtodo AddColuna										*/
+	/* M√©todo AddColuna										*/
 	/*   Realiza a corbertura das linhas apontadas pela coluna		*/
-	/*    passada como par‚metro									*/
-	/* Par‚metros                                                   */
-	/*   int i_pIndiceColuna - input - Õndice da coluna selecionada */
+	/*    passada como par√¢metro									*/
+	/* Par√¢metros                                                   */
+	/*   int i_pIndiceColuna - input - √çndice da coluna selecionada */
 	/*--------------------------------------------------------------*/
 	bool AddColuna(int i_pIndiceColuna){
 		int i_wI;
 		int i_wJ;
 
-		/* Verifica se a coluna j· foi selecionada */
+		/* Verifica se a coluna j√° foi selecionada */
 		if (v_aColunas[i_pIndiceColuna]->b_aSelecionada) return false;
 
 		// Atualiza os contadores de linhas cobertas e colunas selecionadas
@@ -325,7 +326,7 @@ public:
 		i_aLinhasDescobertas -= v_aColunas[i_pIndiceColuna]->i_aLinhasCobertas;
 
 		// Realiza a cobertura das linhas
-		//TODO: Era pra ter feito um mÈtodo na coluna, mas n„o compila porque n„o reconhece o mÈtodo da classe Linha
+		//TODO: Era pra ter feito um m√©todo na coluna, mas n√£o compila porque n√£o reconhece o m√©todo da classe Linha
 		v_aColunas[i_pIndiceColuna]->b_aSelecionada = true;
 		f_aFuncaoObjetivo -= v_aColunas[i_pIndiceColuna]->f_aCusto;
 		for (i_wI = 0; i_wI < v_aColunas[i_pIndiceColuna]->v_aLinhas.size(); i_wI++){
@@ -342,11 +343,11 @@ public:
 	}
 
 	/*--------------------------------------------------------------*/
-	/* MÈtodo RmvColuna      										*/
+	/* M√©todo RmvColuna      										*/
 	/*   Realiza a descobertura das linhas apontadas pela coluna	*/
-	/*    passada como par‚metro									*/
-	/* Par‚metros                                                   */
-	/*   int i_pIndiceColuna - input - Õndice da coluna selecionada */
+	/*    passada como par√¢metro									*/
+	/* Par√¢metros                                                   */
+	/*   int i_pIndiceColuna - input - √çndice da coluna selecionada */
 	/*--------------------------------------------------------------*/
 	void RmvColuna(int i_pIndiceColuna){
 		int i_wI;
@@ -356,7 +357,7 @@ public:
 		i_aColunasSelecionadas--;
 
 		// Realiza a cobertura das linhas
-		//TODO: Era pra ter feito um mÈtodo na coluna, mas n„o compila porque n„o reconhece o mÈtodo da classe Linha
+		//TODO: Era pra ter feito um m√©todo na coluna, mas n√£o compila porque n√£o reconhece o m√©todo da classe Linha
 		v_aColunas[i_pIndiceColuna]->b_aSelecionada = false;
 		f_aFuncaoObjetivo += v_aColunas[i_pIndiceColuna]->f_aCusto;
 		for (i_wI = 0; i_wI < v_aColunas[i_pIndiceColuna]->v_aLinhas.size(); i_wI++){
@@ -375,10 +376,10 @@ public:
 	}
 
 	/*--------------------------------------------------------------*/
-	/* MÈtodo FlipColuna      										*/
+	/* M√©todo FlipColuna      										*/
 	/*   Realiza o 1-flip da coluna  								*/
-	/* Par‚metros                                                   */
-	/*   int i_pIndiceColuna - input - Õndice da coluna selecionada */
+	/* Par√¢metros                                                   */
+	/*   int i_pIndiceColuna - input - √çndice da coluna selecionada */
 	/*--------------------------------------------------------------*/
 	void FlipColuna(int i_pIndiceColuna){
 		if (v_aColunas[i_pIndiceColuna]->b_aSelecionada)RmvColuna(i_pIndiceColuna);
@@ -388,18 +389,18 @@ public:
 	/*--------------------------------------------------------------*/
 	/* Sobrescrita do operador =									*/
 	/*   http://en.cppreference.com/w/cpp/language/operators        */
-	/*   AtribuiÁ„o por CÛpia      									*/
+	/*   Atribui√ß√£o por C√≥pia      									*/
 	/*--------------------------------------------------------------*/
 	MatrizEsparsa& operator=(const MatrizEsparsa& other) // copy assignment
 	{
 		/*----------------*/
-		/* Vari·veis      */
+		/* Vari√°veis      */
 		/*----------------*/
 		int i_wI;
 		int i_wJ;
 
 		if (this != &other) { // self-assignment check expected
-			/* Copia estado da soluÁ„o */
+			/* Copia estado da solu√ß√£o */
 			i_aLinhasDescobertas = other.i_aLinhasDescobertas;
 			i_aColunasSelecionadas = other.i_aColunasSelecionadas;
 			f_aFuncaoObjetivo = other.f_aFuncaoObjetivo;
@@ -435,7 +436,7 @@ public:
 	}
 
 	/*--------------------------------------------------------------*/
-	/* MÈtodo Imprime												*/
+	/* M√©todo Imprime												*/
 	/*   Imprime a matriz											*/
 	/*--------------------------------------------------------------*/
 	void Imprime(){
@@ -443,7 +444,7 @@ public:
 		int i_wJ;
 		int i_wK;
 
-		// Imprime cabeÁalho das colunas, considera n˙meros de atÈ 3 dÌgitos e um * para indicar se foi ou n„o selecionada
+		// Imprime cabe√ßalho das colunas, considera n√∫meros de at√© 3 d√≠gitos e um * para indicar se foi ou n√£o selecionada
 		std::cout << "|           ";
 		for (i_wI = 0; i_wI < v_aColunas.size(); i_wI++){
 			std::cout << "| ";
@@ -453,7 +454,7 @@ public:
 		}
 		std::cout << "|" << std::endl;
 
-		// Imprime as linhas, considerando de atÈ 3 dÌgitos no cabeÁalho
+		// Imprime as linhas, considerando de at√© 3 d√≠gitos no cabe√ßalho
 		for (i_wI = 0; i_wI < v_aLinhas.size(); i_wI++){
 			std::cout << "| ";
 			if (v_aLinhas[i_wI]->b_aCoberta) std::cout << "*";
@@ -475,7 +476,7 @@ public:
 	}
 
 	/*--------------------------------------------------------------*/
-	/* MÈtodo ImprimeGraphviz										*/
+	/* M√©todo ImprimeGraphviz										*/
 	/*   Imprime a rede para o graphviz, destacando os observadores */
 	/*--------------------------------------------------------------*/
 	void ImprimeGraphviz(int i_pSeq = 0, std::string s_pClassificacao = ""){
@@ -556,24 +557,24 @@ public:
 };
 
 /*--------------------------------------*/
-/* FunÁıes                              */
+/* Fun√ß√µes                              */
 /*--------------------------------------*/
 
 /*-----------------------------------------------------------*/
-/* FunÁ„o ComparaColuna                                      */
-/*   FunÁ„o de ordenaÁ„o das Colunas.						 */
+/* Fun√ß√£o ComparaColuna                                      */
+/*   Fun√ß√£o de ordena√ß√£o das Colunas.						 */
 /*	 Ordena o vetor de colunas de maneira que a coluna que   */
-/*    cobre a maior quantiedade de linhas fique no inÌcio    */
+/*    cobre a maior quantiedade de linhas fique no in√≠cio    */
 /*	  do vector.		                                     */
-/*   Utilizada apenas na funÁ„o sort.                        */
+/*   Utilizada apenas na fun√ß√£o sort.                        */
 /*-----------------------------------------------------------*/
 bool ComparaColuna(Coluna *c1, Coluna *c2){
 	return c1->i_aLinhasCobertas > c2->i_aLinhasCobertas;
 }
 
 /*-----------------------------------------------------------*/
-/* FunÁ„o getNomeSo                                          */
-/*   FunÁ„o que obtÈm o sistema operacional da m·quina.      */
+/* Fun√ß√£o getNomeSo                                          */
+/*   Fun√ß√£o que obt√©m o sistema operacional da m√°quina.      */
 /*	 Retorna uma string com o nome do SO.                    */
 /*-----------------------------------------------------------*/
 std::string getNomeSo()
@@ -596,9 +597,9 @@ std::string getNomeSo()
 }
 
 /*-----------------------------------------------------------*/
-/* FunÁ„o getNomeSo                                          */
-/*   FunÁ„o que obtÈm o caminho da pasta de inst‚ncias.      */
-/*	 Retorna uma string com o caminho da inst‚ncia.          */
+/* Fun√ß√£o getNomeSo                                          */
+/*   Fun√ß√£o que obt√©m o caminho da pasta de inst√¢ncias.      */
+/*	 Retorna uma string com o caminho da inst√¢ncia.          */
 /*-----------------------------------------------------------*/
 std::string caminhoInput()
 {
@@ -611,8 +612,8 @@ std::string caminhoInput()
 }
 
 /*-----------------------------------------------------------*/
-/* FunÁ„o listaArquivos                                      */
-/*   FunÁ„o que obtÈm lista de instancias dada uma extensao. */
+/* Fun√ß√£o listaArquivos                                      */
+/*   Fun√ß√£o que obt√©m lista de instancias dada uma extensao. */
 /*	 Retorna uma lista de strings com os nomes dos arquivos  */
 /*-----------------------------------------------------------*/
 std::vector<std::string> listaArquivos(std::string extensao)
@@ -647,13 +648,13 @@ std::vector<std::string> listaArquivos(std::string extensao)
 }
 
 /*-----------------------------------------------------------*/
-/* FunÁ„o GulosoRandomizado                                   */
+/* Fun√ß√£o GulosoRandomizado                                   */
 /*   Agoritmo guloso randomizado                             */
 /*-----------------------------------------------------------*/
 void GulosoRandomizado(MatrizEsparsa &o_pMatriz, float f_pAlpha)
 {
 	/*-----------*/
-	/* Vari·veis */
+	/* Vari√°veis */
 	/*-----------*/
 	int i_wTamanhoListaCandidatos;
 	int i_wColunaSelecionada;
@@ -661,39 +662,39 @@ void GulosoRandomizado(MatrizEsparsa &o_pMatriz, float f_pAlpha)
 	std::vector<Coluna *> v_aColunasOrd; /* Colunas da Matriz ordenadas         */
 
 	/*------------------*/
-	/* InÌcio da LÛgica */
+	/* In√≠cio da L√≥gica */
 	/*------------------*/
 	v_aColunasOrd = o_pMatriz.v_aColunas;
 	while (o_pMatriz.i_aLinhasDescobertas > 0){
-		// Ordena as colunas com relaÁ„o ao n˙mero de linhas cobertas
+		// Ordena as colunas com rela√ß√£o ao n√∫mero de linhas cobertas
 		std::sort(v_aColunasOrd.begin(), v_aColunasOrd.end() - o_pMatriz.i_aColunasSelecionadas, ComparaColuna);
 
 		// Calcula o tamanho da lista de candidatos
 		i_wTamanhoListaCandidatos = f_pAlpha != 0.0 ? 1 + (v_aColunasOrd.size() - o_pMatriz.i_aColunasSelecionadas) * f_pAlpha : 1;
 
-		//TODO: Verificar PossÌvel Loop Infinito
+		//TODO: Verificar Poss√≠vel Loop Infinito
 		do{
 			// Seleciona a coluna na lista de candidatos
 			i_wColunaOrd = rand() % i_wTamanhoListaCandidatos;
 			i_wColunaSelecionada = v_aColunasOrd[i_wColunaOrd]->i_aID;
 
-			// Realiza a seleÁ„o da coluna na matriz
+			// Realiza a sele√ß√£o da coluna na matriz
 		} while (!o_pMatriz.AddColuna(i_wColunaSelecionada));
 
-		// move a coluna selecionada para a ˙ltima posiÁ„o
+		// move a coluna selecionada para a √∫ltima posi√ß√£o
 		std::swap(v_aColunasOrd[i_wColunaOrd], v_aColunasOrd[v_aColunasOrd.size() - o_pMatriz.i_aColunasSelecionadas]);
 	}
 
 }
 
 /*-----------------------------------------------------------*/
-/* FunÁ„o BuscaLocal                                         */
+/* Fun√ß√£o BuscaLocal                                         */
 /*   Busca Local                                             */
 /*-----------------------------------------------------------*/
 void BuscaLocal(MatrizEsparsa &o_pMatriz)
 {
 	/*-----------*/
-	/* Vari·veis */
+	/* Vari√°veis */
 	/*-----------*/
 	int i_wI;
 	int i_wCol;
@@ -701,7 +702,7 @@ void BuscaLocal(MatrizEsparsa &o_pMatriz)
 	float f_wRatio;
 
 	/*------------------*/
-	/* InÌcio da LÛgica */
+	/* In√≠cio da L√≥gica */
 	/*------------------*/
 	while (true)
 	{
@@ -722,7 +723,7 @@ void BuscaLocal(MatrizEsparsa &o_pMatriz)
 			o_pMatriz.FlipColuna(i_wI);
 		}
 
-		/* Verifica se encontrou uma soluÁ„o melhor */
+		/* Verifica se encontrou uma solu√ß√£o melhor */
 		if (f_wRatio > 0) o_pMatriz.FlipColuna(i_wCol);
 		else break;
 	}
@@ -756,14 +757,100 @@ void Grasp (MatrizEsparsa &o_pMatriz, float f_pAlpha, int i_pMaxIteracao, int &i
 
 }
 
+void GraspReativo (MatrizEsparsa &o_pMatriz, int i_pMaxIteracao, int i_pB, int i_pGama, int &i_pLoops)
+{
+	 int i_wI = 0, i_wIndex;
+	 int i_wConstTamAlpha = 10;
+	 double d_wSorteio, d_wQsum, d_wPsum;
+	 vector<double> v_wAlpha, v_wProb, v_wPontuacao, v_wQ, v_wContador;
+	 MatrizEsparsa o_wMatrizAtual, o_wMelhorSolucao;
+
+	 o_wMelhorSolucao = o_pMatriz;
+	 i_pLoops = 0;
+
+	 v_wQ.resize(i_wConstTamAlpha,0.1);
+ 	 v_wPontuacao.resize(i_wConstTamAlpha,0);
+ 	 v_wContador.resize(i_wConstTamAlpha,0);
+	 v_wAlpha.resize(i_wConstTamAlpha);
+	 v_wProb.resize(i_wConstTamAlpha);
+
+	 for(int i_wJ = 0;i_wJ < i_wConstTamAlpha;i_wJ++)
+	 {
+         v_wAlpha[i_wJ] = (double) ((i_wJ+1)/(double)i_wConstTamAlpha);
+         v_wProb[i_wJ] = (double) ((i_wJ+1)/(double)i_wConstTamAlpha);
+	 }
+
+	 while(i_wI < i_pMaxIteracao)
+	 {
+	 	 o_wMatrizAtual = o_pMatriz;
+		 i_wI++;
+		 i_pLoops++;
+
+         d_wSorteio = (double) rand()/RAND_MAX;
+
+         for (int i_wJ =0;i_wJ<i_wConstTamAlpha;i_wJ++)
+         {
+             if(d_wSorteio<v_wProb[i_wJ])
+             {
+                 i_wIndex = i_wJ;
+                 break;
+             }
+             else
+                i_wIndex=i_wConstTamAlpha-1;
+         }
+
+		 GulosoRandomizado(o_wMatrizAtual, v_wAlpha[i_wIndex]);
+		 BuscaLocal(o_wMatrizAtual);
+
+		 v_wPontuacao[i_wIndex] += o_wMatrizAtual.f_aFuncaoObjetivo;
+		 v_wContador[i_wIndex] += 1;
+
+		 if (o_wMatrizAtual.f_aFuncaoObjetivo > o_wMelhorSolucao.f_aFuncaoObjetivo)
+		 {
+			 o_wMelhorSolucao = o_wMatrizAtual;
+			 i_wI = 0;
+		 }
+
+		 if(i_pLoops % i_pB == 0)
+		 {
+             d_wQsum = 0;
+             for(int i_wJ = 0;i_wJ < i_wConstTamAlpha; i_wJ++)
+             {
+                 if (v_wContador[i_wJ] > 0)
+                 {
+                     double media = (double) (v_wPontuacao[i_wJ]/v_wContador[i_wJ]);
+                     v_wQ[i_wJ] = pow(1.0/media,i_pGama);
+                 }
+                 d_wQsum += v_wQ[i_wJ];
+             }
+
+             d_wPsum = 0;
+             for(int i_wJ = 0; i_wJ < i_wConstTamAlpha; i_wJ++)
+             {
+                 double p = v_wQ[i_wJ]/d_wQsum;
+                 d_wPsum += p;
+                 v_wContador[i_wJ] = 0;
+                 v_wPontuacao[i_wJ] = 0;
+                 v_wProb[i_wJ] = d_wPsum;
+             }
+		 }
+
+	 }
+
+	 o_pMatriz = o_wMelhorSolucao;
+}
+
+
 /*--------------------------------------*/
-/* AplicaÁ„o                            */
+/* Aplica√ß√£o                            */
 /*--------------------------------------*/
 int main(int argc, char** argv){
 
 	int i_wSeq = 1;
 	int i_wMaxIteracao = 100;
 	int i_wLoopsGrasp = 0;
+	int i_pB = 10;
+	int i_pGama = 8;
 	float f_wAlpha = 0.1;
 	double d_wInicio;
 	double d_wFim;
@@ -773,7 +860,7 @@ int main(int argc, char** argv){
 	MatrizEsparsa o_wMatriz, o_wMatrizGrasp;
 	std::vector<std::string> pasta;
 
-	// LÍ a inst‚nica
+	// L√™ a inst√¢nica
 	pasta = listaArquivos(".ssp");
 	//pasta = listaArquivos("instGraph_50_0.ssp");
 
