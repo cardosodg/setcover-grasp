@@ -659,6 +659,9 @@ void GulosoRandomizado(MatrizEsparsa &o_pMatriz, float f_pAlpha)
 	int i_wTamanhoListaCandidatos;
 	int i_wColunaSelecionada;
 	int i_wColunaOrd;
+	int i_wMaiorCobertura;
+	int i_wMenorCobertura;
+	float f_wLimiar;
 	std::vector<Coluna *> v_aColunasOrd; /* Colunas da Matriz ordenadas         */
 
 	/*------------------*/
@@ -667,10 +670,16 @@ void GulosoRandomizado(MatrizEsparsa &o_pMatriz, float f_pAlpha)
 	v_aColunasOrd = o_pMatriz.v_aColunas;
 	while (o_pMatriz.i_aLinhasDescobertas > 0){
 		// Ordena as colunas com relação ao número de linhas cobertas
+		//std::sort(v_aColunasOrd.begin(), v_aColunasOrd.end() - o_pMatriz.i_aColunasSelecionadas, ComparaColuna);
 		std::sort(v_aColunasOrd.begin(), v_aColunasOrd.end() - o_pMatriz.i_aColunasSelecionadas, ComparaColuna);
 
 		// Calcula o tamanho da lista de candidatos
-		i_wTamanhoListaCandidatos = f_pAlpha != 0.0 ? 1 + (v_aColunasOrd.size() - o_pMatriz.i_aColunasSelecionadas) * f_pAlpha : 1;
+		//i_wTamanhoListaCandidatos = f_pAlpha != 0.0 ? (v_aColunasOrd.size() - o_pMatriz.i_aColunasSelecionadas) * f_pAlpha : 1;
+		i_wMaiorCobertura = v_aColunasOrd[0]->i_aLinhasCobertas;
+		i_wMenorCobertura = v_aColunasOrd[v_aColunasOrd.size() - 1]->i_aLinhasCobertas;
+		f_wLimiar = (float) i_wMenorCobertura + f_pAlpha*(i_wMaiorCobertura - i_wMenorCobertura);
+
+		for(i_wTamanhoListaCandidatos=0;(i_wTamanhoListaCandidatos<v_aColunasOrd.size())&&(v_aColunasOrd[i_wTamanhoListaCandidatos]->i_aLinhasCobertas >= f_wLimiar);i_wTamanhoListaCandidatos++);
 
 		//TODO: Verificar Possível Loop Infinito
 		do{
@@ -682,7 +691,9 @@ void GulosoRandomizado(MatrizEsparsa &o_pMatriz, float f_pAlpha)
 		} while (!o_pMatriz.AddColuna(i_wColunaSelecionada));
 
 		// move a coluna selecionada para a última posição
-		std::swap(v_aColunasOrd[i_wColunaOrd], v_aColunasOrd[v_aColunasOrd.size() - o_pMatriz.i_aColunasSelecionadas]);
+		std::swap(v_aColunasOrd[i_wColunaOrd], v_aColunasOrd[v_aColunasOrd.size() - 1]);
+		v_aColunasOrd.pop_back();
+
 	}
 
 }
@@ -761,8 +772,8 @@ void GraspReativo (MatrizEsparsa &o_pMatriz, int i_pMaxIteracao, int i_pB, int i
 {
 	 int i_wI = 0, i_wIndex;
 	 int i_wConstTamAlpha = 10;
-	 double d_wSorteio, d_wQsum, d_wPsum;
-	 vector<double> v_wAlpha, v_wProb, v_wPontuacao, v_wQ, v_wContador;
+	 float f_wSorteio, f_wQsum, f_wPsum;
+	 vector<float> v_wAlpha, v_wProb, v_wPontuacao, v_wQ, v_wContador;
 	 MatrizEsparsa o_wMatrizAtual, o_wMelhorSolucao;
 
 	 o_wMelhorSolucao = o_pMatriz;
@@ -776,8 +787,8 @@ void GraspReativo (MatrizEsparsa &o_pMatriz, int i_pMaxIteracao, int i_pB, int i
 
 	 for(int i_wJ = 0;i_wJ < i_wConstTamAlpha;i_wJ++)
 	 {
-         v_wAlpha[i_wJ] = (double) ((i_wJ+1)/(double)i_wConstTamAlpha);
-         v_wProb[i_wJ] = (double) ((i_wJ+1)/(double)i_wConstTamAlpha);
+         v_wAlpha[i_wJ] = (float) ((i_wJ+1)/(float)i_wConstTamAlpha);
+         v_wProb[i_wJ] = (float) ((i_wJ+1)/(float)i_wConstTamAlpha);
 	 }
 
 	 while(i_wI < i_pMaxIteracao)
@@ -786,11 +797,11 @@ void GraspReativo (MatrizEsparsa &o_pMatriz, int i_pMaxIteracao, int i_pB, int i
 		 i_wI++;
 		 i_pLoops++;
 
-         d_wSorteio = (double) rand()/RAND_MAX;
+         f_wSorteio = (float) rand()/RAND_MAX;
 
          for (int i_wJ =0;i_wJ<i_wConstTamAlpha;i_wJ++)
          {
-             if(d_wSorteio<v_wProb[i_wJ])
+             if(f_wSorteio<v_wProb[i_wJ])
              {
                  i_wIndex = i_wJ;
                  break;
@@ -813,25 +824,25 @@ void GraspReativo (MatrizEsparsa &o_pMatriz, int i_pMaxIteracao, int i_pB, int i
 
 		 if(i_pLoops % i_pB == 0)
 		 {
-             d_wQsum = 0;
+             f_wQsum = 0.0;
              for(int i_wJ = 0;i_wJ < i_wConstTamAlpha; i_wJ++)
              {
                  if (v_wContador[i_wJ] > 0)
                  {
-                     double media = (double) (v_wPontuacao[i_wJ]/v_wContador[i_wJ]);
+                     float media = (float) (v_wPontuacao[i_wJ]/v_wContador[i_wJ]);
                      v_wQ[i_wJ] = pow(1.0/media,i_pGama);
                  }
-                 d_wQsum += v_wQ[i_wJ];
+                 f_wQsum += v_wQ[i_wJ];
              }
 
-             d_wPsum = 0;
+             f_wPsum = 0.0;
              for(int i_wJ = 0; i_wJ < i_wConstTamAlpha; i_wJ++)
              {
-                 double p = v_wQ[i_wJ]/d_wQsum;
-                 d_wPsum += p;
+                 float p = v_wQ[i_wJ]/f_wQsum;
+                 f_wPsum += p;
                  v_wContador[i_wJ] = 0;
                  v_wPontuacao[i_wJ] = 0;
-                 v_wProb[i_wJ] = d_wPsum;
+                 v_wProb[i_wJ] = f_wPsum;
              }
 		 }
 
@@ -847,10 +858,10 @@ void GraspReativo (MatrizEsparsa &o_pMatriz, int i_pMaxIteracao, int i_pB, int i
 int main(int argc, char** argv){
 
 	int i_wSeq = 1;
-	int i_wMaxIteracao = 100;
+	int i_wMaxIteracao = 7;
 	int i_wLoopsGrasp = 0;
-	int i_pB = 10;
-	int i_pGama = 8;
+	int i_wB = 10;
+	int i_wGama = 8;
 	float f_wAlpha = 0.1;
 	double d_wInicio;
 	double d_wFim;
@@ -861,8 +872,8 @@ int main(int argc, char** argv){
 	std::vector<std::string> pasta;
 
 	// Lê a instânica
-	pasta = listaArquivos(".ssp");
-	//pasta = listaArquivos("instGraph_50_0.ssp");
+	//pasta = listaArquivos(".ssp");
+	pasta = listaArquivos("instGraph_10_2.ssp");
 
 	f_wArquivoGuloso.open("../ComputeResult/execGuloso.txt");
 	f_wArquivoBl.open("../ComputeResult/execBl.txt");
@@ -885,7 +896,8 @@ int main(int argc, char** argv){
         f_wArquivoBl << o_wMatriz.v_aColunas.size() << " " << o_wMatriz.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << " 1 " << std::endl;
 
    		d_wInicio = getcputime();
-		Grasp(o_wMatrizGrasp, f_wAlpha, i_wMaxIteracao, i_wLoopsGrasp);
+		//Grasp(o_wMatrizGrasp, f_wAlpha, i_wMaxIteracao, i_wLoopsGrasp);
+		GraspReativo(o_wMatrizGrasp, i_wMaxIteracao, i_wB, i_wGama, i_wLoopsGrasp);
 		d_wFim = getcputime();
         f_wArquivoGrasp << o_wMatrizGrasp.v_aColunas.size() << " " << o_wMatrizGrasp.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << i_wLoopsGrasp << std::endl;
 	}
