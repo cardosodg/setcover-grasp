@@ -672,7 +672,13 @@ void GulosoRandomizado(MatrizEsparsa &o_pMatriz, float f_pAlpha)
 		// Ordena as colunas com relação ao número de linhas cobertas
 		//std::sort(v_aColunasOrd.begin(), v_aColunasOrd.end() - o_pMatriz.i_aColunasSelecionadas, ComparaColuna);
 		std::sort(v_aColunasOrd.begin(), v_aColunasOrd.end(), ComparaColuna);
-
+		/*
+		for(int i=0;i<v_aColunasOrd.size();i++)
+		{
+            std::cout << "[" << v_aColunasOrd[i]->i_aID << " - " << v_aColunasOrd[i]->i_aLinhasCobertas << "] ";
+		}
+		std::cout << std::endl;
+        */
 		// Calcula o tamanho da lista de candidatos
 		//i_wTamanhoListaCandidatos = f_pAlpha != 0.0 ? (v_aColunasOrd.size() - o_pMatriz.i_aColunasSelecionadas) * f_pAlpha : 1;
 		i_wMaiorCobertura = v_aColunasOrd[0]->i_aLinhasCobertas;
@@ -693,6 +699,7 @@ void GulosoRandomizado(MatrizEsparsa &o_pMatriz, float f_pAlpha)
 		// move a coluna selecionada para a última posição
 		//std::swap(v_aColunasOrd[i_wColunaOrd], v_aColunasOrd[v_aColunasOrd.size() - o_pMatriz.i_aColunasSelecionadas]);
 		std::swap(v_aColunasOrd[i_wColunaOrd], v_aColunasOrd[v_aColunasOrd.size() - 1]);
+		//std::cout << "Candidato escolhido: " << v_aColunasOrd[v_aColunasOrd.size()-1]->i_aID << std::endl;
 		v_aColunasOrd.pop_back();
 
 	}
@@ -861,20 +868,21 @@ int main(int argc, char** argv){
 	int i_wSeq = 1;
 	int i_wMaxIteracao = 100;
 	int i_wLoopsGrasp = 0;
-	int i_wB = 10;
+	int i_wB = 5;
 	int i_wGama = 8;
-	float f_wAlpha = 0.1;
+	float f_wAlpha = 0.2;
 	double d_wInicio;
 	double d_wFim;
 	std::ofstream f_wArquivoGuloso;
 	std::ofstream f_wArquivoBl;
 	std::ofstream f_wArquivoGrasp;
-	MatrizEsparsa o_wMatriz, o_wMatrizGrasp;
+	MatrizEsparsa o_wMatriz, o_wMatrizGrasp, o_wMatrizLoop;
 	std::vector<std::string> pasta;
 
 	// Lê a instânica
-	//pasta = listaArquivos(".ssp");
-	pasta = listaArquivos("instGraph_10_2.ssp");
+	pasta = listaArquivos(".ssp");
+	//pasta = listaArquivos("instGraph_10_2.ssp");
+	//pasta = listaArquivos("AS1239_TOPOLOGY.sim");
 
 	f_wArquivoGuloso.open("../ComputeResult/execGuloso.txt");
 	f_wArquivoBl.open("../ComputeResult/execBl.txt");
