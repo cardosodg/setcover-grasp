@@ -661,7 +661,7 @@ void GulosoRandomizado(MatrizEsparsa &o_pMatriz, float f_pAlpha)
 	int i_wColunaOrd;
 	int i_wMaiorCobertura;
 	int i_wMenorCobertura;
-	float f_wLimiar;
+	int p_wLimiar;
 	std::vector<Coluna *> v_aColunasOrd; /* Colunas da Matriz ordenadas         */
 
 	/*------------------*/
@@ -671,15 +671,15 @@ void GulosoRandomizado(MatrizEsparsa &o_pMatriz, float f_pAlpha)
 	while (o_pMatriz.i_aLinhasDescobertas > 0){
 		// Ordena as colunas com relação ao número de linhas cobertas
 		//std::sort(v_aColunasOrd.begin(), v_aColunasOrd.end() - o_pMatriz.i_aColunasSelecionadas, ComparaColuna);
-		std::sort(v_aColunasOrd.begin(), v_aColunasOrd.end() - o_pMatriz.i_aColunasSelecionadas, ComparaColuna);
+		std::sort(v_aColunasOrd.begin(), v_aColunasOrd.end(), ComparaColuna);
 
 		// Calcula o tamanho da lista de candidatos
 		//i_wTamanhoListaCandidatos = f_pAlpha != 0.0 ? (v_aColunasOrd.size() - o_pMatriz.i_aColunasSelecionadas) * f_pAlpha : 1;
 		i_wMaiorCobertura = v_aColunasOrd[0]->i_aLinhasCobertas;
 		i_wMenorCobertura = v_aColunasOrd[v_aColunasOrd.size() - 1]->i_aLinhasCobertas;
-		f_wLimiar = (float) i_wMenorCobertura + f_pAlpha*(i_wMaiorCobertura - i_wMenorCobertura);
+		p_wLimiar = i_wMaiorCobertura - f_pAlpha*(i_wMaiorCobertura - i_wMenorCobertura);
 
-		for(i_wTamanhoListaCandidatos=0;(i_wTamanhoListaCandidatos<v_aColunasOrd.size())&&(v_aColunasOrd[i_wTamanhoListaCandidatos]->i_aLinhasCobertas >= f_wLimiar);i_wTamanhoListaCandidatos++);
+		for(i_wTamanhoListaCandidatos=0;(i_wTamanhoListaCandidatos<v_aColunasOrd.size())&&(v_aColunasOrd[i_wTamanhoListaCandidatos]->i_aLinhasCobertas >= p_wLimiar);i_wTamanhoListaCandidatos++);
 
 		//TODO: Verificar Possível Loop Infinito
 		do{
@@ -691,6 +691,7 @@ void GulosoRandomizado(MatrizEsparsa &o_pMatriz, float f_pAlpha)
 		} while (!o_pMatriz.AddColuna(i_wColunaSelecionada));
 
 		// move a coluna selecionada para a última posição
+		//std::swap(v_aColunasOrd[i_wColunaOrd], v_aColunasOrd[v_aColunasOrd.size() - o_pMatriz.i_aColunasSelecionadas]);
 		std::swap(v_aColunasOrd[i_wColunaOrd], v_aColunasOrd[v_aColunasOrd.size() - 1]);
 		v_aColunasOrd.pop_back();
 
@@ -858,7 +859,7 @@ void GraspReativo (MatrizEsparsa &o_pMatriz, int i_pMaxIteracao, int i_pB, int i
 int main(int argc, char** argv){
 
 	int i_wSeq = 1;
-	int i_wMaxIteracao = 7;
+	int i_wMaxIteracao = 100;
 	int i_wLoopsGrasp = 0;
 	int i_wB = 10;
 	int i_wGama = 8;
