@@ -781,8 +781,17 @@ void GraspReativo (MatrizEsparsa &o_pMatriz, int i_pMaxIteracao, int i_pB, int i
 	 int i_wI = 0, i_wIndex;
 	 int i_wConstTamAlpha = 10;
 	 float f_wSorteio, f_wQsum, f_wPsum;
-	 vector<float> v_wAlpha, v_wProb, v_wPontuacao, v_wQ, v_wContador;
+	 std::vector<float> v_wAlpha, v_wProb, v_wPontuacao, v_wQ, v_wContador;
 	 MatrizEsparsa o_wMatrizAtual, o_wMelhorSolucao;
+
+	 /*----------Variaveis para fazer distribuicao de escolha------------------*/
+	 /*------------------------------------------------------------------------*/
+	 std::vector<int> v_wContadorSolucao, v_wContadorAlfas;
+	 std::ofstream f_wDistribuicao;
+
+	 v_wContadorSolucao.resize(o_pMatriz.v_aColunas.size(),0);
+	 v_wContadorAlfas.resize(i_wConstTamAlpha,0);
+ 	 /*------------------------------------------------------------------------*/
 
 	 o_wMelhorSolucao = o_pMatriz;
 	 i_pLoops = 0;
@@ -819,7 +828,13 @@ void GraspReativo (MatrizEsparsa &o_pMatriz, int i_pMaxIteracao, int i_pB, int i
          }
 
 		 GulosoRandomizado(o_wMatrizAtual, v_wAlpha[i_wIndex]);
-		 BuscaLocal(o_wMatrizAtual);
+		 //BuscaLocal(o_wMatrizAtual);
+
+		 /*---Contagem para grafico de distribuicao das solucoes do grasp e dos alfas escolhidos-----*/
+		 /*------------------------------------------------------------------------------------------*/
+		 v_wContadorSolucao[o_wMatrizAtual.i_aColunasSelecionadas-1] += 1;
+		 v_wContadorAlfas[i_wIndex] += 1;
+		 /*------------------------------------------------------------------------------------------*/
 
 		 v_wPontuacao[i_wIndex] += o_wMatrizAtual.f_aFuncaoObjetivo;
 		 v_wContador[i_wIndex] += 1;
@@ -855,8 +870,28 @@ void GraspReativo (MatrizEsparsa &o_pMatriz, int i_pMaxIteracao, int i_pB, int i
 		 }
 
 	 }
-
 	 o_pMatriz = o_wMelhorSolucao;
+
+	 /*-----------------Salvar distribuicao das solucoes do grasp-----------------------------------------------*/
+	 /*---------------------------------------------------------------------------------------------------------*/
+	 f_wDistribuicao.open("../ComputeResult/distribuicaoGrasp.txt");
+	 for(int i_wIt = 0; i_wIt < v_wContadorSolucao.size();i_wIt++)
+	 {
+        //if(v_wContadorSolucao[i_wIt] != 0)
+        {
+            f_wDistribuicao << (i_wIt+1) << " - " << v_wContadorSolucao[i_wIt] << std::endl;
+        }
+	 }
+	 f_wDistribuicao << std::endl;
+	 for(int i_wIt = 0; i_wIt < v_wContadorAlfas.size();i_wIt++)
+	 {
+        //if(v_wContadorAlfas[i_wIt] != 0)
+        {
+            f_wDistribuicao << v_wAlpha[i_wIt] << " - " << v_wContadorAlfas[i_wIt] << std::endl;
+        }
+	 }
+	 f_wDistribuicao.close();
+	 /*---------------------------------------------------------------------------------------------------------*/
 }
 
 
@@ -866,9 +901,9 @@ void GraspReativo (MatrizEsparsa &o_pMatriz, int i_pMaxIteracao, int i_pB, int i
 int main(int argc, char** argv){
 
 	int i_wSeq = 1;
-	int i_wMaxIteracao = 100;
+	int i_wMaxIteracao = 100000;
 	int i_wLoopsGrasp = 0;
-	int i_wB = 5;
+	int i_wB = 100;
 	int i_wGama = 8;
 	float f_wAlpha = 0.2;
 	double d_wInicio;
@@ -879,14 +914,23 @@ int main(int argc, char** argv){
 	MatrizEsparsa o_wMatriz, o_wMatrizGrasp, o_wMatrizLoop;
 	std::vector<std::string> pasta;
 
+	/*---------------DELETAR---------------------------------------------*/
+	std::vector<int> contador;
+	std::ofstream distribuicaoGuloso;
+	/*-------------------------------------------------------------------*/
+
 	// Lê a instânica
-	pasta = listaArquivos(".ssp");
-	//pasta = listaArquivos("instGraph_10_2.ssp");
+	//pasta = listaArquivos(".ssp");
+	pasta = listaArquivos("instGraph_350_0.ssp");
 	//pasta = listaArquivos("AS1239_TOPOLOGY.sim");
 
 	f_wArquivoGuloso.open("../ComputeResult/execGuloso.txt");
 	f_wArquivoBl.open("../ComputeResult/execBl.txt");
 	f_wArquivoGrasp.open("../ComputeResult/execGrasp.txt");
+
+	/*----------------------DELETAR------------------------------------------------*/
+	distribuicaoGuloso.open("../ComputeResult/distribuicaoGuloso.txt");
+	/*----------------------DELETAR------------------------------------------------*/
 
 	srand(42);
 	for (int it = 0; it < pasta.size(); it++)
@@ -894,26 +938,42 @@ int main(int argc, char** argv){
 		o_wMatriz.LeArquivSSP((char *)pasta[it].data());
 		o_wMatrizGrasp = o_wMatriz;
 
-		d_wInicio = getcputime();
-		GulosoRandomizado(o_wMatriz, 0.0);
-		d_wFim = getcputime();
-        f_wArquivoGuloso << o_wMatriz.v_aColunas.size() << " " << o_wMatriz.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << " 1 " << std::endl;
+		contador.resize(o_wMatriz.v_aColunas.size(),0);
 
-   		d_wInicio = getcputime();
-		BuscaLocal(o_wMatriz);
-		d_wFim = getcputime();
-        f_wArquivoBl << o_wMatriz.v_aColunas.size() << " " << o_wMatriz.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << " 1 " << std::endl;
+		//d_wInicio = getcputime();
+		for(int i=0;i<i_wMaxIteracao;i++)
+		{
+		 GulosoRandomizado(o_wMatriz, 0.0);
+		 contador[o_wMatriz.i_aColunasSelecionadas-1] += 1;
+		}
+		for(int i=0;i<contador.size();i++)
+		{
+        distribuicaoGuloso << (i+1) << " - " << contador[i] << std::endl;
+		}
 
-   		d_wInicio = getcputime();
+		//d_wFim = getcputime();
+        //f_wArquivoGuloso << o_wMatriz.v_aColunas.size() << " " << o_wMatriz.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << " 1 " << std::endl;
+
+   		//d_wInicio = getcputime();
+		//BuscaLocal(o_wMatriz);
+		//d_wFim = getcputime();
+        //f_wArquivoBl << o_wMatriz.v_aColunas.size() << " " << o_wMatriz.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << " 1 " << std::endl;
+
+   		//d_wInicio = getcputime();
 		//Grasp(o_wMatrizGrasp, f_wAlpha, i_wMaxIteracao, i_wLoopsGrasp);
 		GraspReativo(o_wMatrizGrasp, i_wMaxIteracao, i_wB, i_wGama, i_wLoopsGrasp);
-		d_wFim = getcputime();
-        f_wArquivoGrasp << o_wMatrizGrasp.v_aColunas.size() << " " << o_wMatrizGrasp.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << i_wLoopsGrasp << std::endl;
+		//d_wFim = getcputime();
+        //f_wArquivoGrasp << o_wMatrizGrasp.v_aColunas.size() << " " << o_wMatrizGrasp.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << i_wLoopsGrasp << std::endl;
 	}
 
 	f_wArquivoGuloso.close();
 	f_wArquivoBl.close();
 	f_wArquivoGrasp.close();
+
+	/*----------------------DELETAR------------------------------------------------*/
+	distribuicaoGuloso.close();
+	/*----------------------DELETAR------------------------------------------------*/
+
 	return 0;
 
 }
