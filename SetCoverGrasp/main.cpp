@@ -780,6 +780,7 @@ void GraspReativo (MatrizEsparsa &o_pMatriz, int i_pMaxIteracao, int i_pB, int i
 {
 	 int i_wI = 0, i_wIndex;
 	 int i_wConstTamAlpha = 10;
+	 int i_wLoopsB = 0;
 	 float f_wSorteio, f_wQsum, f_wPsum;
 	 std::vector<float> v_wAlpha, v_wProb, v_wPontuacao, v_wQ, v_wContador;
 	 MatrizEsparsa o_wMatrizAtual, o_wMelhorSolucao;
@@ -813,6 +814,7 @@ void GraspReativo (MatrizEsparsa &o_pMatriz, int i_pMaxIteracao, int i_pB, int i
 	 	 o_wMatrizAtual = o_pMatriz;
 		 i_wI++;
 		 i_pLoops++;
+		 i_wLoopsB++;
 
          f_wSorteio = (float) rand()/RAND_MAX;
 
@@ -836,17 +838,18 @@ void GraspReativo (MatrizEsparsa &o_pMatriz, int i_pMaxIteracao, int i_pB, int i
 		 v_wContadorAlfas[i_wIndex] += 1;
 		 /*------------------------------------------------------------------------------------------*/
 
-		 v_wPontuacao[i_wIndex] += o_wMatrizAtual.f_aFuncaoObjetivo;
+		 v_wPontuacao[i_wIndex] += o_wMatrizAtual.i_aColunasSelecionadas;
 		 v_wContador[i_wIndex] += 1;
 
-		 if (o_wMatrizAtual.f_aFuncaoObjetivo > o_wMelhorSolucao.f_aFuncaoObjetivo)
+		 if (o_wMatrizAtual.i_aColunasSelecionadas < o_wMelhorSolucao.i_aColunasSelecionadas)
 		 {
 			 o_wMelhorSolucao = o_wMatrizAtual;
 			 i_wI = 0;
 		 }
 
-		 if(i_pLoops % i_pB == 0)
+		 if(i_wLoopsB == i_pB)
 		 {
+             i_wLoopsB = 0;
              f_wQsum = 0.0;
              for(int i_wJ = 0;i_wJ < i_wConstTamAlpha; i_wJ++)
              {
@@ -901,11 +904,11 @@ void GraspReativo (MatrizEsparsa &o_pMatriz, int i_pMaxIteracao, int i_pB, int i
 int main(int argc, char** argv){
 
 	int i_wSeq = 1;
-	int i_wMaxIteracao = 100000;
+	int i_wMaxIteracao = 100;
 	int i_wLoopsGrasp = 0;
-	int i_wB = 100;
+	int i_wB = 10;
 	int i_wGama = 8;
-	float f_wAlpha = 0.2;
+	float f_wAlpha = 0.1;
 	double d_wInicio;
 	double d_wFim;
 	std::ofstream f_wArquivoGuloso;
@@ -921,7 +924,7 @@ int main(int argc, char** argv){
 
 	// Lê a instânica
 	//pasta = listaArquivos(".ssp");
-	pasta = listaArquivos("instGraph_350_0.ssp");
+	pasta = listaArquivos("instGraph_50_0.ssp");
 	//pasta = listaArquivos("AS1239_TOPOLOGY.sim");
 
 	f_wArquivoGuloso.open("../ComputeResult/execGuloso.txt");
@@ -940,7 +943,7 @@ int main(int argc, char** argv){
 
 		contador.resize(o_wMatriz.v_aColunas.size(),0);
 
-		//d_wInicio = getcputime();
+/*
 		for(int i=0;i<i_wMaxIteracao;i++)
 		{
 		 GulosoRandomizado(o_wMatriz, 0.0);
@@ -950,20 +953,23 @@ int main(int argc, char** argv){
 		{
         distribuicaoGuloso << (i+1) << " - " << contador[i] << std::endl;
 		}
+*/
+        /*
+        d_wInicio = getcputime();
+        GulosoRandomizado(o_wMatriz, 0.0);
+		d_wFim = getcputime();
+        f_wArquivoGuloso << o_wMatriz.v_aColunas.size() << " " << o_wMatriz.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << " 1 " << std::endl;
 
-		//d_wFim = getcputime();
-        //f_wArquivoGuloso << o_wMatriz.v_aColunas.size() << " " << o_wMatriz.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << " 1 " << std::endl;
-
-   		//d_wInicio = getcputime();
-		//BuscaLocal(o_wMatriz);
-		//d_wFim = getcputime();
-        //f_wArquivoBl << o_wMatriz.v_aColunas.size() << " " << o_wMatriz.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << " 1 " << std::endl;
-
-   		//d_wInicio = getcputime();
+   		d_wInicio = getcputime();
+		BuscaLocal(o_wMatriz);
+		d_wFim = getcputime();
+        f_wArquivoBl << o_wMatriz.v_aColunas.size() << " " << o_wMatriz.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << " 1 " << std::endl;
+        */
+   		d_wInicio = getcputime();
 		//Grasp(o_wMatrizGrasp, f_wAlpha, i_wMaxIteracao, i_wLoopsGrasp);
 		GraspReativo(o_wMatrizGrasp, i_wMaxIteracao, i_wB, i_wGama, i_wLoopsGrasp);
-		//d_wFim = getcputime();
-        //f_wArquivoGrasp << o_wMatrizGrasp.v_aColunas.size() << " " << o_wMatrizGrasp.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << i_wLoopsGrasp << std::endl;
+		d_wFim = getcputime();
+        f_wArquivoGrasp << o_wMatrizGrasp.v_aColunas.size() << " " << o_wMatrizGrasp.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << i_wLoopsGrasp << std::endl;
 	}
 
 	f_wArquivoGuloso.close();
