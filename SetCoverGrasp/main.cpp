@@ -809,13 +809,11 @@ void GraspReativo (MatrizEsparsa &o_pMatriz, int i_pMaxIteracao, int i_pB, int i
          v_wProb[i_wJ] = (float) ((i_wJ+1)/(float)i_wConstTamAlpha);
 	 }
 
+	 GulosoRandomizado(o_wMelhorSolucao, 0.5);
+	 o_wMatrizAtual = o_pMatriz;
+
 	 while(i_wI < i_pMaxIteracao)
 	 {
-	 	 o_wMatrizAtual = o_pMatriz;
-		 i_wI++;
-		 i_pLoops++;
-		 i_wLoopsB++;
-
          f_wSorteio = (float) rand()/RAND_MAX;
 
          for (int i_wJ =0;i_wJ<i_wConstTamAlpha;i_wJ++)
@@ -845,6 +843,7 @@ void GraspReativo (MatrizEsparsa &o_pMatriz, int i_pMaxIteracao, int i_pB, int i
 		 {
 			 o_wMelhorSolucao = o_wMatrizAtual;
 			 i_wI = 0;
+			 std::cout << "best solution: " << o_wMelhorSolucao.i_aColunasSelecionadas << std::endl;
 		 }
 
 		 if(i_wLoopsB == i_pB)
@@ -871,6 +870,11 @@ void GraspReativo (MatrizEsparsa &o_pMatriz, int i_pMaxIteracao, int i_pB, int i
                  v_wProb[i_wJ] = f_wPsum;
              }
 		 }
+
+		 o_wMatrizAtual = o_pMatriz;
+		 i_wI++;
+		 i_pLoops++;
+		 i_wLoopsB++;
 
 	 }
 	 o_pMatriz = o_wMelhorSolucao;
@@ -904,9 +908,9 @@ void GraspReativo (MatrizEsparsa &o_pMatriz, int i_pMaxIteracao, int i_pB, int i
 int main(int argc, char** argv){
 
 	int i_wSeq = 1;
-	int i_wMaxIteracao = 100;
+	int i_wMaxIteracao = 100000;
 	int i_wLoopsGrasp = 0;
-	int i_wB = 10;
+	int i_wB = 100;
 	int i_wGama = 8;
 	float f_wAlpha = 0.1;
 	double d_wInicio;
@@ -943,7 +947,7 @@ int main(int argc, char** argv){
 
 		contador.resize(o_wMatriz.v_aColunas.size(),0);
 
-/*
+
 		for(int i=0;i<i_wMaxIteracao;i++)
 		{
 		 GulosoRandomizado(o_wMatriz, 0.0);
@@ -953,7 +957,7 @@ int main(int argc, char** argv){
 		{
         distribuicaoGuloso << (i+1) << " - " << contador[i] << std::endl;
 		}
-*/
+
         /*
         d_wInicio = getcputime();
         GulosoRandomizado(o_wMatriz, 0.0);
