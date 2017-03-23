@@ -670,8 +670,8 @@ void GulosoRandomizado(MatrizEsparsa &o_pMatriz, float f_pAlpha)
 	v_aColunasOrd = o_pMatriz.v_aColunas;
 	while (o_pMatriz.i_aLinhasDescobertas > 0){
 		// Ordena as colunas com relação ao número de linhas cobertas
-		//std::sort(v_aColunasOrd.begin(), v_aColunasOrd.end() - o_pMatriz.i_aColunasSelecionadas, ComparaColuna);
-		std::sort(v_aColunasOrd.begin(), v_aColunasOrd.end(), ComparaColuna);
+		std::sort(v_aColunasOrd.begin(), v_aColunasOrd.end() - o_pMatriz.i_aColunasSelecionadas, ComparaColuna);
+		//std::sort(v_aColunasOrd.begin(), v_aColunasOrd.end(), ComparaColuna);
 		/*
 		for(int i=0;i<v_aColunasOrd.size();i++)
 		{
@@ -681,11 +681,13 @@ void GulosoRandomizado(MatrizEsparsa &o_pMatriz, float f_pAlpha)
         */
 		// Calcula o tamanho da lista de candidatos
 		//i_wTamanhoListaCandidatos = f_pAlpha != 0.0 ? (v_aColunasOrd.size() - o_pMatriz.i_aColunasSelecionadas) * f_pAlpha : 1;
-		i_wMaiorCobertura = v_aColunasOrd[0]->i_aLinhasCobertas;
-		i_wMenorCobertura = v_aColunasOrd[v_aColunasOrd.size() - 1]->i_aLinhasCobertas;
-		p_wLimiar = i_wMaiorCobertura - f_pAlpha*(i_wMaiorCobertura - i_wMenorCobertura);
+		i_wTamanhoListaCandidatos = (v_aColunasOrd.size() - o_pMatriz.i_aColunasSelecionadas) * f_pAlpha;
+		if(i_wTamanhoListaCandidatos <= 0) i_wTamanhoListaCandidatos = 1;
+		//i_wMaiorCobertura = v_aColunasOrd[0]->i_aLinhasCobertas;
+		//i_wMenorCobertura = v_aColunasOrd[v_aColunasOrd.size() - 1]->i_aLinhasCobertas;
+		//p_wLimiar = i_wMaiorCobertura - f_pAlpha*(i_wMaiorCobertura - i_wMenorCobertura);
 
-		for(i_wTamanhoListaCandidatos=0;(i_wTamanhoListaCandidatos<v_aColunasOrd.size())&&(v_aColunasOrd[i_wTamanhoListaCandidatos]->i_aLinhasCobertas >= p_wLimiar);i_wTamanhoListaCandidatos++);
+		//for(i_wTamanhoListaCandidatos=0;(i_wTamanhoListaCandidatos<v_aColunasOrd.size())&&(v_aColunasOrd[i_wTamanhoListaCandidatos]->i_aLinhasCobertas >= p_wLimiar);i_wTamanhoListaCandidatos++);
 
 		//TODO: Verificar Possível Loop Infinito
 		do{
@@ -697,10 +699,10 @@ void GulosoRandomizado(MatrizEsparsa &o_pMatriz, float f_pAlpha)
 		} while (!o_pMatriz.AddColuna(i_wColunaSelecionada));
 
 		// move a coluna selecionada para a última posição
-		//std::swap(v_aColunasOrd[i_wColunaOrd], v_aColunasOrd[v_aColunasOrd.size() - o_pMatriz.i_aColunasSelecionadas]);
-		std::swap(v_aColunasOrd[i_wColunaOrd], v_aColunasOrd[v_aColunasOrd.size() - 1]);
+		std::swap(v_aColunasOrd[i_wColunaOrd], v_aColunasOrd[v_aColunasOrd.size() - o_pMatriz.i_aColunasSelecionadas]);
+		//std::swap(v_aColunasOrd[i_wColunaOrd], v_aColunasOrd[v_aColunasOrd.size() - 1]);
 		//std::cout << "Candidato escolhido: " << v_aColunasOrd[v_aColunasOrd.size()-1]->i_aID << std::endl;
-		v_aColunasOrd.pop_back();
+		//v_aColunasOrd.pop_back();
 
 	}
 
@@ -809,8 +811,9 @@ void GraspReativo (MatrizEsparsa &o_pMatriz, int i_pMaxIteracao, int i_pB, int i
          v_wProb[i_wJ] = (float) ((i_wJ+1)/(float)i_wConstTamAlpha);
 	 }
 
-	 GulosoRandomizado(o_wMelhorSolucao, 0.5);
+
 	 o_wMatrizAtual = o_pMatriz;
+	 o_wMelhorSolucao.i_aColunasSelecionadas = o_wMelhorSolucao.v_aColunas.size()*10;
 
 	 while(i_wI < i_pMaxIteracao)
 	 {
@@ -837,13 +840,15 @@ void GraspReativo (MatrizEsparsa &o_pMatriz, int i_pMaxIteracao, int i_pB, int i
 		 /*------------------------------------------------------------------------------------------*/
 
 		 v_wPontuacao[i_wIndex] += o_wMatrizAtual.i_aColunasSelecionadas;
+		 //v_wPontuacao[i_wIndex] += o_wMatrizAtual.f_aFuncaoObjetivo;
 		 v_wContador[i_wIndex] += 1;
 
 		 if (o_wMatrizAtual.i_aColunasSelecionadas < o_wMelhorSolucao.i_aColunasSelecionadas)
+		 //if (o_wMatrizAtual.f_aFuncaoObjetivo > o_wMelhorSolucao.f_aFuncaoObjetivo)
 		 {
 			 o_wMelhorSolucao = o_wMatrizAtual;
+			 std::cout << "best solution: " << o_wMelhorSolucao.i_aColunasSelecionadas << " Iteration: " << i_wI << std::endl;
 			 i_wI = 0;
-			 std::cout << "best solution: " << o_wMelhorSolucao.i_aColunasSelecionadas << std::endl;
 		 }
 
 		 if(i_wLoopsB == i_pB)
@@ -870,7 +875,6 @@ void GraspReativo (MatrizEsparsa &o_pMatriz, int i_pMaxIteracao, int i_pB, int i
                  v_wProb[i_wJ] = f_wPsum;
              }
 		 }
-
 		 o_wMatrizAtual = o_pMatriz;
 		 i_wI++;
 		 i_pLoops++;
