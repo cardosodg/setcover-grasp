@@ -914,7 +914,7 @@ int main(int argc, char** argv){
 	int i_wSeq = 1;
 	int i_wMaxIteracao = 100000;
 	int i_wLoopsGrasp = 0;
-	int i_wB = 100;
+	int i_wB = 200;
 	int i_wGama = 8;
 	float f_wAlpha = 0.1;
 	double d_wInicio;
