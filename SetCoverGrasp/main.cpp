@@ -932,7 +932,7 @@ int main(int argc, char** argv){
 
 	// Lê a instânica
 	//pasta = listaArquivos(".ssp");
-	pasta = listaArquivos("instGraph_50_0.ssp");
+	pasta = listaArquivos("instGraph_350_0.ssp");
 	//pasta = listaArquivos("AS1239_TOPOLOGY.sim");
 
 	f_wArquivoGuloso.open("../ComputeResult/execGuloso.txt");
