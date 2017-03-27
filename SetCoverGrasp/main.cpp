@@ -12,6 +12,7 @@
 #include <sstream>
 #include <cmath>
 #include "tempo.cpp"
+#include "grafo.cpp"
 
 /*------------------------------------*/
 /* Define                             */
