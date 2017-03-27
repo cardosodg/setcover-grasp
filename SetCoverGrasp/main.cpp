@@ -751,6 +751,35 @@ void BuscaLocal(MatrizEsparsa &o_pMatriz)
 
 }
 
+/*
+void Grasp (grafo G, float f_pAlpha, int i_pMaxIteracao, int &i_pLoops)
+{
+	 int i_wI = 0;
+	 MatrizEsparsa o_wMatrizAtual, o_wMelhorSolucao;
+
+	 o_wMelhorSolucao = o_pMatriz;
+	 i_pLoops = 0;
+
+	 while(i_wI < i_pMaxIteracao)
+	 {
+	 	 o_wMatrizAtual = DIJKSTRAALEATORIO(G,alfa);
+		 i_wI++;
+		 i_pLoops++;
+		 GulosoRandomizado(o_wMatrizAtual, 0);
+		 BuscaLocal(o_wMatrizAtual);
+
+		 if (o_wMatrizAtual.f_aFuncaoObjetivo > o_wMelhorSolucao.f_aFuncaoObjetivo)
+		 {
+			 o_wMelhorSolucao = o_wMatrizAtual;
+			 i_wI = 0;
+		 }
+
+	 }
+	 o_pMatriz = o_wMelhorSolucao;
+
+}
+*/
+
 void Grasp (MatrizEsparsa &o_pMatriz, float f_pAlpha, int i_pMaxIteracao, int &i_pLoops)
 {
 	 int i_wI = 0;
@@ -831,7 +860,7 @@ void GraspReativo (MatrizEsparsa &o_pMatriz, int i_pMaxIteracao, int i_pB, int i
          }
 
 		 GulosoRandomizado(o_wMatrizAtual, v_wAlpha[i_wIndex]);
-		 //BuscaLocal(o_wMatrizAtual);
+		 BuscaLocal(o_wMatrizAtual);
 
 		 /*---Contagem para grafico de distribuicao das solucoes do grasp e dos alfas escolhidos-----*/
 		 /*------------------------------------------------------------------------------------------*/
@@ -839,7 +868,7 @@ void GraspReativo (MatrizEsparsa &o_pMatriz, int i_pMaxIteracao, int i_pB, int i
 		 v_wContadorAlfas[i_wIndex] += 1;
 		 /*------------------------------------------------------------------------------------------*/
 
-		 v_wPontuacao[i_wIndex] += o_wMatrizAtual.i_aColunasSelecionadas;
+		 v_wPontuacao[i_wIndex] += (float) o_wMatrizAtual.i_aColunasSelecionadas;
 		 //v_wPontuacao[i_wIndex] += o_wMatrizAtual.f_aFuncaoObjetivo;
 		 v_wContador[i_wIndex] += 1;
 
@@ -912,9 +941,9 @@ void GraspReativo (MatrizEsparsa &o_pMatriz, int i_pMaxIteracao, int i_pB, int i
 int main(int argc, char** argv){
 
 	int i_wSeq = 1;
-	int i_wMaxIteracao = 50000;
+	int i_wMaxIteracao = 100000;
 	int i_wLoopsGrasp = 0;
-	int i_wB = 100;
+	int i_wB = 200;
 	int i_wGama = 8;
 	float f_wAlpha = 0.1;
 	double d_wInicio;
@@ -931,8 +960,8 @@ int main(int argc, char** argv){
 	/*-------------------------------------------------------------------*/
 
 	// Lê a instânica
-	pasta = listaArquivos(".ssp");
-	//pasta = listaArquivos("instGraph_50_0.ssp");
+	//pasta = listaArquivos(".ssp");
+	pasta = listaArquivos("instGraph_50_0.ssp");
 	//pasta = listaArquivos("AS1239_TOPOLOGY.sim");
 
 	f_wArquivoGuloso.open("../ComputeResult/execGuloso.txt");
@@ -951,7 +980,7 @@ int main(int argc, char** argv){
 
 		contador.resize(o_wMatriz.v_aColunas.size(),0);
 
-/*
+
 		for(int i=0;i<i_wMaxIteracao;i++)
 		{
 		 GulosoRandomizado(o_wMatriz, 0.0);
@@ -961,8 +990,8 @@ int main(int argc, char** argv){
 		{
         distribuicaoGuloso << (i+1) << " - " << contador[i] << std::endl;
 		}
-*/
 
+/*
         std::cout << "Executando guloso para instancia " << pasta[it].data() << std::endl;
         d_wInicio = getcputime();
         GulosoRandomizado(o_wMatriz, 0.0);
@@ -976,7 +1005,7 @@ int main(int argc, char** argv){
 		d_wFim = getcputime();
         f_wArquivoBl << o_wMatriz.v_aColunas.size() << " " << o_wMatriz.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << " 1 " << std::endl;
         std::cout << "Busca local finalizada!" << std::endl;
-
+*/
         std::cout << "Executando GRASP para instancia " << pasta[it].data() << std::endl;
    		d_wInicio = getcputime();
 		//Grasp(o_wMatrizGrasp, f_wAlpha, i_wMaxIteracao, i_wLoopsGrasp);
