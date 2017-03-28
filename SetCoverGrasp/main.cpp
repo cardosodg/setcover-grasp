@@ -981,7 +981,7 @@ int main(int argc, char** argv){
 
 		contador.resize(o_wMatriz.v_aColunas.size(),0);
 
-/*
+ /*
 		for(int i=0;i<i_wMaxIteracao;i++)
 		{
 		 GulosoRandomizado(o_wMatriz, 0.0);
@@ -1027,4 +1027,3 @@ int main(int argc, char** argv){
 	return 0;
 
 }
-
