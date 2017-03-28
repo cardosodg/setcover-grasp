@@ -942,7 +942,7 @@ void GraspReativo (MatrizEsparsa &o_pMatriz, int i_pMaxIteracao, int i_pB, int i
 int main(int argc, char** argv){
 
 	int i_wSeq = 1;
-	int i_wMaxIteracao = 100000;
+	int i_wMaxIteracao = 50000;
 	int i_wLoopsGrasp = 0;
 	int i_wB = 200;
 	int i_wGama = 8;
@@ -962,8 +962,8 @@ int main(int argc, char** argv){
 
 	// Lê a instânica
 	//pasta = listaArquivos(".ssp");
-	pasta = listaArquivos("instGraph_50_0.ssp");
-	//pasta = listaArquivos("AS1239_TOPOLOGY.sim");
+	//pasta = listaArquivos("instGraph_50_0.ssp");
+	pasta = listaArquivos(".sim");
 
 	f_wArquivoGuloso.open("../ComputeResult/execGuloso.txt");
 	f_wArquivoBl.open("../ComputeResult/execBl.txt");
@@ -981,7 +981,7 @@ int main(int argc, char** argv){
 
 		contador.resize(o_wMatriz.v_aColunas.size(),0);
 
-
+/*
 		for(int i=0;i<i_wMaxIteracao;i++)
 		{
 		 GulosoRandomizado(o_wMatriz, 0.0);
@@ -991,8 +991,8 @@ int main(int argc, char** argv){
 		{
         distribuicaoGuloso << (i+1) << " - " << contador[i] << std::endl;
 		}
+*/
 
-/*
         std::cout << "Executando guloso para instancia " << pasta[it].data() << std::endl;
         d_wInicio = getcputime();
         GulosoRandomizado(o_wMatriz, 0.0);
@@ -1006,7 +1006,7 @@ int main(int argc, char** argv){
 		d_wFim = getcputime();
         f_wArquivoBl << o_wMatriz.v_aColunas.size() << " " << o_wMatriz.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << " 1 " << std::endl;
         std::cout << "Busca local finalizada!" << std::endl;
-*/
+
         std::cout << "Executando GRASP para instancia " << pasta[it].data() << std::endl;
    		d_wInicio = getcputime();
 		//Grasp(o_wMatrizGrasp, f_wAlpha, i_wMaxIteracao, i_wLoopsGrasp);
