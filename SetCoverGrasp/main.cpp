@@ -12,7 +12,6 @@
 #include <sstream>
 #include <cmath>
 #include "tempo.cpp"
-#include "grafo.cpp"
 
 /*------------------------------------*/
 /* Define                             */
@@ -30,6 +29,7 @@
 /*------------------------------------*/
 class Linha;
 class Coluna;
+class ElementoLista;
 
 class Coluna{
 public:
@@ -557,6 +557,131 @@ public:
 	}
 };
 
+
+class Vertice{
+public:
+	/*--------------*/
+	/* Atributos    */
+	/*--------------*/
+	int i_aID;                              /* Identificação do nó             */
+	int i_aDistancia;                       /* Distancia do vértice até a raíz */
+	int i_aPai;                             /* Predecessor do nó               */
+	float f_aCusto;                         /* Custo do arco do nó             */
+
+	Vertice(){}
+    ~Vertice(){}
+
+};
+
+
+class Grafo{
+public:
+	/*--------------*/
+	/* Atributos    */
+	/*--------------*/
+	std::vector<Vertice> v_aListaVertice;		             /* Lista dos nós da rede          */
+	std::vector<float> v_aCoordX;                            /* Coordenada no eixo x           */
+    std::vector<float> v_aCoordY;                            /* Coordenada no eixo y           */
+    std::vector<std::vector<Vertice> > l_aListaAdj;          /* Lista de adjacência do grafo   */
+    std::vector<Vertice> v_aArvore;                          /* Árvore resultado do dijkstra   */
+
+    Grafo(){}
+    ~Grafo(){
+    	v_aListaVertice.clear();
+    	v_aCoordX.clear();
+    	v_aCoordY.clear();
+    	for(int i_wIt=0;i_wIt<l_aListaAdj.size();i_wIt++)
+            l_aListaAdj[i_wIt].clear();
+    }
+
+    void LeArquivoGrafo (char* s_pNomeArquivo)
+    {
+        int i_wNumVert;
+        int i_wNumLinks;
+        int i_wOrigem;
+        Vertice o_wVertex;
+        std::string s_wLinhaArquivo;
+        std::ifstream f_wArquivoGrafo;
+
+        f_wArquivoGrafo.open(s_pNomeArquivo);
+
+        f_wArquivoGrafo >> s_wLinhaArquivo;
+        while(s_wLinhaArquivo.compare("COORD_X_Y")!=0)
+            f_wArquivoGrafo >> s_wLinhaArquivo;
+
+        f_wArquivoGrafo >> i_wNumVert;
+
+        v_aListaVertice.resize(i_wNumVert);
+        v_aCoordX.resize(i_wNumVert);
+        v_aCoordY.resize(i_wNumVert);
+        l_aListaAdj.resize(i_wNumVert);
+
+        for(int i_wIt = 0; i_wIt < i_wNumVert; i_wIt++)
+        {
+            f_wArquivoGrafo >> v_aCoordX[i_wIt] >> v_aCoordY[i_wIt];
+            v_aListaVertice[i_wIt].i_aID = i_wIt;
+        }
+
+        f_wArquivoGrafo >> s_wLinhaArquivo;
+        while(s_wLinhaArquivo.compare("LINKS_SOURCE_DESTINATION_DISTANCE")!=0)
+            f_wArquivoGrafo >> s_wLinhaArquivo;
+
+        f_wArquivoGrafo >> i_wNumLinks;
+
+        for(int i_wIt = 0; i_wIt < i_wNumLinks; i_wIt++)
+        {
+            f_wArquivoGrafo >> i_wOrigem >> o_wVertex.i_aID >> o_wVertex.f_aCusto;
+            l_aListaAdj[i_wOrigem].push_back(o_wVertex);
+        }
+
+        f_wArquivoGrafo.close();
+    }
+
+    void ImprimeGrafo()
+    {
+        for (int i=0;i<v_aCoordX.size();i++)
+            std::cout << i << " " << v_aCoordX[i] << " " << v_aCoordY[i] << std::endl;
+
+        for (int i=0;i<l_aListaAdj.size();i++)
+            for (int j=0;j<l_aListaAdj[i].size();j++)
+                std::cout << i << " " << l_aListaAdj[i][j].i_aID << " " << l_aListaAdj[i][j].f_aCusto << std::endl;
+    }
+
+    void Dijkstra (Vertice o_pS, float f_pAlpha)
+    {
+        Vertice o_wU;
+        std::vector<Vertice> v_wListaVerticeQ;
+
+        v_aArvore.clear();
+
+        v_wListaVerticeQ = v_aListaVertice;
+        for(int i_wI = 0; i_wI < v_wListaVerticeQ.size();i_wI++)
+        {
+            if (v_wListaVerticeQ[i_wI].i_aID != o_pS.i_aID) v_wListaVerticeQ[i_wI].i_aDistancia = l_aListaAdj.size()*1000;
+            else v_wListaVerticeQ[i_wI].i_aDistancia = 0;
+            v_wListaVerticeQ[i_wI].i_aPai = -1;
+        }
+
+        while(!v_wListaVerticeQ.empty())
+        {
+            //o_wU = ExtrairVertice(v_wListaVerticeQ, f_pAlpha);
+            v_aArvore.push_back(o_wU);
+
+//            for(int i_wI = 0; i_wI < l_aListaAdj[o_wU.i_aID].size();i_wI++)
+//            {
+//                if(l_aListaAdj[o_wU.i_aID][i_wI].i_aDistancia > o_wU.i_aDistancia + 1)
+//                {
+//                    l_aListaAdj[o_wU.i_aID][i_wI].i_aDistancia = o_wU.i_aDistancia + 1;
+//                    l_aListaAdj[o_wU.i_aID][i_wI].i_aPai = o_wU.i_aID;
+//                }
+//            }
+            v_wListaVerticeQ.pop_back();
+        }
+    }
+
+};
+
+
 /*--------------------------------------*/
 /* Funções                              */
 /*--------------------------------------*/
@@ -955,6 +1080,8 @@ int main(int argc, char** argv){
 	MatrizEsparsa o_wMatriz, o_wMatrizGrasp, o_wMatrizLoop;
 	std::vector<std::string> pasta;
 
+	Grafo grafo;
+
 	/*---------------DELETAR---------------------------------------------*/
 	std::vector<int> contador;
 	std::ofstream distribuicaoGuloso;
@@ -962,8 +1089,8 @@ int main(int argc, char** argv){
 
 	// Lê a instânica
 	//pasta = listaArquivos(".ssp");
-	//pasta = listaArquivos("instGraph_50_0.ssp");
-	pasta = listaArquivos(".sim");
+	pasta = listaArquivos("instGraph_50_0.ssp");
+	//pasta = listaArquivos(".sim");
 
 	f_wArquivoGuloso.open("../ComputeResult/execGuloso.txt");
 	f_wArquivoBl.open("../ComputeResult/execBl.txt");
@@ -976,10 +1103,13 @@ int main(int argc, char** argv){
 	srand(42);
 	for (int it = 0; it < pasta.size(); it++)
 	{
-		o_wMatriz.LeArquivSSP((char *)pasta[it].data());
-		o_wMatrizGrasp = o_wMatriz;
+		//o_wMatriz.LeArquivSSP((char *)pasta[it].data());
+		//o_wMatrizGrasp = o_wMatriz;
 
 		contador.resize(o_wMatriz.v_aColunas.size(),0);
+
+		grafo.LeArquivoGrafo("../GraphGenerator/input/instGraph_10_0.txt");
+		grafo.Dijkstra(grafo.v_aListaVertice[0], f_wAlpha);
 
  /*
 		for(int i=0;i<i_wMaxIteracao;i++)
@@ -992,7 +1122,7 @@ int main(int argc, char** argv){
         distribuicaoGuloso << (i+1) << " - " << contador[i] << std::endl;
 		}
 */
-
+/*
         std::cout << "Executando guloso para instancia " << pasta[it].data() << std::endl;
         d_wInicio = getcputime();
         GulosoRandomizado(o_wMatriz, 0.0);
@@ -1014,6 +1144,7 @@ int main(int argc, char** argv){
 		d_wFim = getcputime();
         f_wArquivoGrasp << o_wMatrizGrasp.v_aColunas.size() << " " << o_wMatrizGrasp.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << i_wLoopsGrasp << std::endl;
         std::cout << "GRASP finalizado!" << std::endl;
+*/
 	}
 
 	f_wArquivoGuloso.close();
@@ -1027,3 +1158,4 @@ int main(int argc, char** argv){
 	return 0;
 
 }
+
