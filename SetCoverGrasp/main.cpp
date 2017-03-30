@@ -567,7 +567,7 @@ public:
 	int i_aID;                              /* Identificação do nó             */
 	int i_aDistancia;                       /* Distancia do vértice até a raíz */
 	int i_aPai;                             /* Predecessor do nó               */
-	float f_aCusto;                         /* Custo do arco do nó             */
+	int f_aCusto;                         /* Custo do arco do nó             */
 
 	Vertice(){}
     ~Vertice(){}
@@ -669,13 +669,15 @@ public:
     {
         Vertice o_wU;
         std::vector<Vertice> v_wListaVerticeQ;
+        std::vector<std::vector<Vertice> > l_wAdj;
 
         v_aArvore.clear();
-
         v_wListaVerticeQ = v_aListaVertice;
+        l_wAdj = l_aListaAdj;
+
         for(int i_wI = 0; i_wI < v_wListaVerticeQ.size();i_wI++)
         {
-            if (v_wListaVerticeQ[i_wI].i_aID != o_pS.i_aID) v_wListaVerticeQ[i_wI].i_aDistancia = l_aListaAdj.size()*1000;
+            if (v_wListaVerticeQ[i_wI].i_aID != o_pS.i_aID) v_wListaVerticeQ[i_wI].i_aDistancia = l_wAdj.size()*1000;
             else v_wListaVerticeQ[i_wI].i_aDistancia = 0;
             v_wListaVerticeQ[i_wI].i_aPai = -1;
         }
@@ -684,12 +686,21 @@ public:
         {
             o_wU = ExtrairVertice(v_wListaVerticeQ, f_pAlpha);
 
-            for(int i_wI = 0; i_wI < l_aListaAdj[o_wU.i_aID].size();i_wI++)
+            v_aArvore.push_back(o_wU);
+
+            for(int i_wI = 0; i_wI < l_wAdj[o_wU.i_aID].size();i_wI++)
             {
-                if(l_aListaAdj[o_wU.i_aID][i_wI].i_aDistancia > o_wU.i_aDistancia + 1)
+                Vertice o_wV1 = l_wAdj[o_wU.i_aID][i_wI];
+
+                for(int i_wJ=0; i_wJ < v_wListaVerticeQ.size();i_wJ++)
                 {
-                    l_aListaAdj[o_wU.i_aID][i_wI].i_aDistancia = o_wU.i_aDistancia + 1;
-                    l_aListaAdj[o_wU.i_aID][i_wI].i_aPai = o_wU.i_aID;
+                    Vertice o_wV2 = v_wListaVerticeQ[i_wJ];
+
+                    if((o_wV1.i_aID == o_wV2.i_aID)&&(o_wV2.i_aDistancia > o_wU.i_aDistancia + o_wU.f_aCusto))
+                    {
+                        v_wListaVerticeQ[i_wJ].i_aDistancia = o_wU.i_aDistancia + o_wU.f_aCusto;
+                        v_wListaVerticeQ[i_wJ].i_aPai = o_wU.i_aID;
+                    }
                 }
             }
         }
@@ -1124,8 +1135,8 @@ int main(int argc, char** argv){
 
 		contador.resize(o_wMatriz.v_aColunas.size(),0);
 
-		grafo.LeArquivoGrafo("../GraphGenerator/input/instGraph_10_0.txt");
-		grafo.Dijkstra(f_wAlpha, grafo.v_aListaVertice[0]);
+		grafo.LeArquivoGrafo("../GraphGenerator/instGraph_15_0.txt");
+		grafo.Dijkstra(f_wAlpha, grafo.v_aListaVertice[1]);
 
  /*
 		for(int i=0;i<i_wMaxIteracao;i++)
