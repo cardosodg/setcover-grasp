@@ -11,6 +11,7 @@
 #include <dirent.h>
 #include <sstream>
 #include <cmath>
+#include <algorithm>
 #include "tempo.cpp"
 
 /*------------------------------------*/
@@ -647,7 +648,24 @@ public:
                 std::cout << i << " " << l_aListaAdj[i][j].i_aID << " " << l_aListaAdj[i][j].f_aCusto << std::endl;
     }
 
-    void Dijkstra (Vertice o_pS, float f_pAlpha)
+    static bool ComparadorVertices (Vertice &v1, Vertice &v2)
+    {
+        return v1.i_aDistancia < v2.i_aDistancia;
+    }
+
+    Vertice ExtrairVertice(std::vector<Vertice> &v_pListaVerticeQ, float f_pAlpha)
+    {
+        Vertice i_wVerticeEscolhido;
+        std::sort(v_pListaVerticeQ.begin(),v_pListaVerticeQ.end(),ComparadorVertices);
+
+        i_wVerticeEscolhido = v_pListaVerticeQ[0];
+
+        v_pListaVerticeQ.erase(v_pListaVerticeQ.begin());
+
+        return i_wVerticeEscolhido;
+    }
+
+    void Dijkstra (float f_pAlpha, Vertice o_pS)
     {
         Vertice o_wU;
         std::vector<Vertice> v_wListaVerticeQ;
@@ -664,18 +682,16 @@ public:
 
         while(!v_wListaVerticeQ.empty())
         {
-            //o_wU = ExtrairVertice(v_wListaVerticeQ, f_pAlpha);
-            v_aArvore.push_back(o_wU);
+            o_wU = ExtrairVertice(v_wListaVerticeQ, f_pAlpha);
 
-//            for(int i_wI = 0; i_wI < l_aListaAdj[o_wU.i_aID].size();i_wI++)
-//            {
-//                if(l_aListaAdj[o_wU.i_aID][i_wI].i_aDistancia > o_wU.i_aDistancia + 1)
-//                {
-//                    l_aListaAdj[o_wU.i_aID][i_wI].i_aDistancia = o_wU.i_aDistancia + 1;
-//                    l_aListaAdj[o_wU.i_aID][i_wI].i_aPai = o_wU.i_aID;
-//                }
-//            }
-            v_wListaVerticeQ.pop_back();
+            for(int i_wI = 0; i_wI < l_aListaAdj[o_wU.i_aID].size();i_wI++)
+            {
+                if(l_aListaAdj[o_wU.i_aID][i_wI].i_aDistancia > o_wU.i_aDistancia + 1)
+                {
+                    l_aListaAdj[o_wU.i_aID][i_wI].i_aDistancia = o_wU.i_aDistancia + 1;
+                    l_aListaAdj[o_wU.i_aID][i_wI].i_aPai = o_wU.i_aID;
+                }
+            }
         }
     }
 
@@ -1067,9 +1083,9 @@ void GraspReativo (MatrizEsparsa &o_pMatriz, int i_pMaxIteracao, int i_pB, int i
 int main(int argc, char** argv){
 
 	int i_wSeq = 1;
-	int i_wMaxIteracao = 50000;
+	int i_wMaxIteracao = 100;
 	int i_wLoopsGrasp = 0;
-	int i_wB = 200;
+	int i_wB = 10;
 	int i_wGama = 8;
 	float f_wAlpha = 0.1;
 	double d_wInicio;
@@ -1089,7 +1105,7 @@ int main(int argc, char** argv){
 
 	// Lê a instânica
 	//pasta = listaArquivos(".ssp");
-	pasta = listaArquivos("instGraph_50_0.ssp");
+	pasta = listaArquivos("instGraph_10_0.ssp");
 	//pasta = listaArquivos(".sim");
 
 	f_wArquivoGuloso.open("../ComputeResult/execGuloso.txt");
@@ -1109,7 +1125,7 @@ int main(int argc, char** argv){
 		contador.resize(o_wMatriz.v_aColunas.size(),0);
 
 		grafo.LeArquivoGrafo("../GraphGenerator/input/instGraph_10_0.txt");
-		grafo.Dijkstra(grafo.v_aListaVertice[0], f_wAlpha);
+		grafo.Dijkstra(f_wAlpha, grafo.v_aListaVertice[0]);
 
  /*
 		for(int i=0;i<i_wMaxIteracao;i++)
