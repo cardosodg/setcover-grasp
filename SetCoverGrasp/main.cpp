@@ -660,7 +660,9 @@ public:
 
         i_wVerticeEscolhido = v_pListaVerticeQ[0];
 
-        v_pListaVerticeQ.erase(v_pListaVerticeQ.begin());
+        std::swap(v_pListaVerticeQ[0], v_pListaVerticeQ[v_pListaVerticeQ.size()-1]);
+
+        v_pListaVerticeQ.pop_back();
 
         return i_wVerticeEscolhido;
     }
@@ -1135,7 +1137,7 @@ int main(int argc, char** argv){
 
 		contador.resize(o_wMatriz.v_aColunas.size(),0);
 
-		grafo.LeArquivoGrafo("../GraphGenerator/instGraph_15_0.txt");
+		grafo.LeArquivoGrafo("../GraphGenerator/instGraph_10_0.txt");
 		grafo.Dijkstra(f_wAlpha, grafo.v_aListaVertice[1]);
 
  /*
