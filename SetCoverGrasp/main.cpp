@@ -633,6 +633,7 @@ public:
         {
             f_wArquivoGrafo >> i_wOrigem >> o_wVertex.i_aID >> o_wVertex.f_aCusto;
             l_aListaAdj[i_wOrigem].push_back(o_wVertex);
+            v_aListaVertice[o_wVertex.i_aID].f_aCusto = o_wVertex.f_aCusto;
         }
 
         f_wArquivoGrafo.close();
@@ -653,14 +654,21 @@ public:
         return v1.i_aDistancia < v2.i_aDistancia;
     }
 
-    Vertice ExtrairVertice(std::vector<Vertice> &v_pListaVerticeQ, float f_pAlpha)
+    Vertice ExtrairVertice(std::vector<Vertice> &v_pListaVerticeQ, float f_pAlpha, int i_pControleLCR)
     {
+        int i_wTamanhoListaLCR;
+        int i_wElementoEscolhido;
         Vertice i_wVerticeEscolhido;
         std::sort(v_pListaVerticeQ.begin(),v_pListaVerticeQ.end(),ComparadorVertices);
 
-        i_wVerticeEscolhido = v_pListaVerticeQ[0];
+        i_wTamanhoListaLCR = f_pAlpha*(i_pControleLCR - 1);
+        if (i_wTamanhoListaLCR == 0) i_wTamanhoListaLCR = 1;
 
-        std::swap(v_pListaVerticeQ[0], v_pListaVerticeQ[v_pListaVerticeQ.size()-1]);
+        i_wElementoEscolhido = rand()%i_wTamanhoListaLCR;
+
+        i_wVerticeEscolhido = v_pListaVerticeQ[i_wElementoEscolhido];
+
+        std::swap(v_pListaVerticeQ[i_wElementoEscolhido], v_pListaVerticeQ[v_pListaVerticeQ.size()-1]);
 
         v_pListaVerticeQ.pop_back();
 
@@ -669,6 +677,7 @@ public:
 
     void Dijkstra (float f_pAlpha, Vertice o_pS)
     {
+        int i_wControleLCR;
         Vertice o_wU;
         std::vector<Vertice> v_wListaVerticeQ;
         std::vector<std::vector<Vertice> > l_wAdj;
@@ -684,9 +693,11 @@ public:
             v_wListaVerticeQ[i_wI].i_aPai = -1;
         }
 
+        i_wControleLCR = 1;
         while(!v_wListaVerticeQ.empty())
         {
-            o_wU = ExtrairVertice(v_wListaVerticeQ, f_pAlpha);
+            o_wU = ExtrairVertice(v_wListaVerticeQ, f_pAlpha, i_wControleLCR);
+            i_wControleLCR--;
 
             v_aArvore.push_back(o_wU);
 
@@ -702,6 +713,7 @@ public:
                     {
                         v_wListaVerticeQ[i_wJ].i_aDistancia = o_wU.i_aDistancia + o_wU.f_aCusto;
                         v_wListaVerticeQ[i_wJ].i_aPai = o_wU.i_aID;
+                        i_wControleLCR++;
                     }
                 }
             }
@@ -1100,7 +1112,7 @@ int main(int argc, char** argv){
 	int i_wLoopsGrasp = 0;
 	int i_wB = 10;
 	int i_wGama = 8;
-	float f_wAlpha = 0.1;
+	float f_wAlpha = 1.0;
 	double d_wInicio;
 	double d_wFim;
 	std::ofstream f_wArquivoGuloso;
@@ -1129,7 +1141,7 @@ int main(int argc, char** argv){
 	distribuicaoGuloso.open("../ComputeResult/distribuicaoGuloso.txt");
 	/*----------------------DELETAR------------------------------------------------*/
 
-	srand(42);
+	srand(3);
 	for (int it = 0; it < pasta.size(); it++)
 	{
 		//o_wMatriz.LeArquivSSP((char *)pasta[it].data());
