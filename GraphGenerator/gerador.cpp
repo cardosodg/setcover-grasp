@@ -208,7 +208,7 @@ main(int argc, char** argv)
 			escreveSaida(nomeArquivoSaida,G);
 
 			nomeArquivoGraphviz = nomeArquivoSaida + ".dot";
-			graphOutput(strdup(nomeArquivoGraphviz.c_str()),G);
+			//graphOutput(strdup(nomeArquivoGraphviz.c_str()),G);
 		}
 	}
 
