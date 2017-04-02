@@ -15,7 +15,7 @@
 #include <cstdlib>
 #include <time.h>
 #include <stdlib.h>
-#include "tempo.cpp"
+//#include "tempo.cpp"
 
 /*------------------------------------*/
 /* Define                             */
@@ -321,18 +321,23 @@ public:
 	void Dijkstra (float f_pAlpha, Vertice o_pS)
 	{
 		int i_wControleLCR;
+		int i_wValorMaximo;
 		Vertice o_wU;
 		std::vector<Vertice> v_wListaVerticeQ;
-			std::vector<Vertice> v_wArvore;
+		std::vector<Vertice> v_wArvore;
 		std::vector<std::vector<Vertice> > l_wAdj;
+
+
 
 		v_wArvore.clear();
 		v_wListaVerticeQ = v_aListaVertice;
 		l_wAdj = l_aListaAdj;
 
+		i_wValorMaximo = l_wAdj.size() * 1000;
+
 		for(int i_wI = 0; i_wI < v_wListaVerticeQ.size();i_wI++)
 		{
-			if (v_wListaVerticeQ[i_wI].i_aID != o_pS.i_aID) v_wListaVerticeQ[i_wI].i_aDistancia = l_wAdj.size()*1000;
+			if (v_wListaVerticeQ[i_wI].i_aID != o_pS.i_aID) v_wListaVerticeQ[i_wI].i_aDistancia = i_wValorMaximo;
 			else v_wListaVerticeQ[i_wI].i_aDistancia = 0;
 			v_wListaVerticeQ[i_wI].i_aPai = -1;
 		}
@@ -355,9 +360,9 @@ public:
 
 					if((o_wV1.i_aID == o_wV2.i_aID)&&(o_wV2.i_aDistancia > o_wU.i_aDistancia + o_wU.f_aCusto))
 					{
+						if ( v_wListaVerticeQ[i_wJ].i_aDistancia >= i_wValorMaximo ) i_wControleLCR++;
 						v_wListaVerticeQ[i_wJ].i_aDistancia = o_wU.i_aDistancia + o_wU.f_aCusto;
 						v_wListaVerticeQ[i_wJ].i_aPai = o_wU.i_aID;
-						i_wControleLCR++;
 					}
 				}
 			}
@@ -368,6 +373,9 @@ public:
 
 	void DijkstraTodosVertices(float f_pAlpha)
 	{
+		for (int j = 0; j < v_aArvores.size(); j++)
+			v_aArvores[j].clear();
+		v_aArvores.clear();
 		for (int i=0;i<v_aListaVertice.size();i++)
 			Dijkstra(f_pAlpha, v_aListaVertice[i]);
 	}
@@ -827,8 +835,25 @@ public:
 		/* Logic Start    */
 		/*----------------*/
 
-		// Cria as colunas da matriz
+		// Limpa a matriz
+		i_aLinhasDescobertas = 0;
+		i_aColunasSelecionadas = 0;
+		f_aFuncaoObjetivo = 0.0;
+		s_aNomeArquivo = "";
 
+		/* Deleta as linhas e colunas criadas */
+		for (i_wI = 0; i_wI < v_aColunas.size(); i_wI++){
+			delete v_aColunas[i_wI];
+		}
+		for (i_wI = 0; i_wI < v_aLinhas.size(); i_wI++){
+			delete v_aLinhas[i_wI];
+		}
+
+		/* Recria coluna */
+		v_aColunas.clear();
+		v_aLinhas.clear();
+
+		// Cria as colunas da matriz
 		i_wQtdColunas = o_pGrafo.v_aListaVertice.size();
 		i_aColunasSelecionadas = 0;
 		v_aColunas.resize(i_wQtdColunas);
@@ -855,6 +880,10 @@ public:
 				i_wQtdLinhas++;
 			}
 		}
+
+		// Configura quantidade de linhas descobertas
+		i_aLinhasDescobertas = i_wQtdLinhas;
+
 	}
 
 };
@@ -909,7 +938,7 @@ std::string caminhoInput()
 	if (getNomeSo() == "Unix" || getNomeSo() == "Linux")
 		return "../GraphGenerator/input/";
 	if (getNomeSo() == "Windows 32-bit" || getNomeSo() == "Windows 64-bit")
-		return "..\\..\\GraphGenerator\\input\\";
+		return "..\\GraphGenerator\\input\\";
 	else
 		return "";
 }
@@ -1217,7 +1246,7 @@ void GraspReativo (MatrizEsparsa &o_pMatriz, int i_pMaxIteracao, int i_pB, int i
 
 	 /*-----------------Salvar distribuicao das solucoes do grasp-----------------------------------------------*/
 	 /*---------------------------------------------------------------------------------------------------------*/
-	 f_wDistribuicao.open("../ComputeResult/distribuicaoGrasp.txt");
+	 f_wDistribuicao.open("..\\ComputeResult\\distribuicaoGrasp.txt");
 	 for(int i_wIt = 0; i_wIt < v_wContadorSolucao.size();i_wIt++)
 	 {
 		//if(v_wContadorSolucao[i_wIt] != 0)
@@ -1237,14 +1266,14 @@ void GraspReativo (MatrizEsparsa &o_pMatriz, int i_pMaxIteracao, int i_pB, int i
 	 /*---------------------------------------------------------------------------------------------------------*/
 }
 
-MatrizEsparsa GraspReativo (Grafo o_pGrafo, int i_pMaxIteracao, int i_pB, int i_pGama, int &i_pLoops)
+void GraspReativo (MatrizEsparsa &o_pMatriz, Grafo o_pGrafo, int i_pMaxIteracao, int i_pB, int i_pGama, int &i_pLoops)
 {
 	 int i_wI = 0, i_wIndex;
 	 int i_wConstTamAlpha = 10;
 	 int i_wLoopsB = 0;
 	 float f_wSorteio, f_wQsum, f_wPsum;
 	 std::vector<float> v_wAlpha, v_wProb, v_wPontuacao, v_wQ, v_wContador;
-	 MatrizEsparsa o_wMatrizAtual, o_wMelhorSolucao;
+	 MatrizEsparsa o_wMatrizAtual;
 
 	 /*----------Variaveis para fazer distribuicao de escolha------------------*/
 	 /*------------------------------------------------------------------------*/
@@ -1269,7 +1298,7 @@ MatrizEsparsa GraspReativo (Grafo o_pGrafo, int i_pMaxIteracao, int i_pB, int i_
 		 v_wProb[i_wJ] = (float) ((i_wJ+1)/(float)i_wConstTamAlpha);
 	 }
 
-	 o_wMelhorSolucao.i_aColunasSelecionadas = o_pGrafo.v_aListaVertice.size()*10;
+	 o_pMatriz.i_aColunasSelecionadas = o_pGrafo.v_aListaVertice.size() * 10;
 
 	 while(i_wI < i_pMaxIteracao)
 	 {
@@ -1302,11 +1331,11 @@ MatrizEsparsa GraspReativo (Grafo o_pGrafo, int i_pMaxIteracao, int i_pB, int i_
 		 //v_wPontuacao[i_wIndex] += o_wMatrizAtual.f_aFuncaoObjetivo;
 		 v_wContador[i_wIndex] += 1;
 
-		 if (o_wMatrizAtual.i_aColunasSelecionadas < o_wMelhorSolucao.i_aColunasSelecionadas)
+		 if (o_wMatrizAtual.i_aColunasSelecionadas < o_pMatriz.i_aColunasSelecionadas)
 		 //if (o_wMatrizAtual.f_aFuncaoObjetivo > o_wMelhorSolucao.f_aFuncaoObjetivo)
 		 {
-			 o_wMelhorSolucao = o_wMatrizAtual;
-			 std::cout << "best solution: " << o_wMelhorSolucao.i_aColunasSelecionadas << " Iteration: " << i_wI << std::endl;
+			 o_pMatriz = o_wMatrizAtual;
+			 std::cout << "best solution: " << o_pMatriz.i_aColunasSelecionadas << " Iteration: " << i_wI << std::endl;
 			 i_wI = 0;
 		 }
 
@@ -1341,7 +1370,7 @@ MatrizEsparsa GraspReativo (Grafo o_pGrafo, int i_pMaxIteracao, int i_pB, int i_
 	 }
 	 /*-----------------Salvar distribuicao das solucoes do grasp-----------------------------------------------*/
 	 /*---------------------------------------------------------------------------------------------------------*/
-	 f_wDistribuicao.open("../ComputeResult/distribuicaoGrasp.txt");
+	 f_wDistribuicao.open("..\\ComputeResult\\distribuicaoGrasp.txt");
 	 for(int i_wIt = 0; i_wIt < v_wContadorSolucao.size();i_wIt++)
 	 {
 		//if(v_wContadorSolucao[i_wIt] != 0)
@@ -1369,13 +1398,13 @@ MatrizEsparsa GraspReativo (Grafo o_pGrafo, int i_pMaxIteracao, int i_pB, int i_
 int main(int argc, char** argv){
 
 	int i_wSeq = 1;
-	int i_wMaxIteracao = 100000;
+	int i_wMaxIteracao = 100;
 	int i_wLoopsGrasp = 0;
-	int i_wB = 100;
+	int i_wB = 10;
 	int i_wGama = 8;
 	float f_wAlpha = 1.0;
-	double d_wInicio;
-	double d_wFim;
+	double d_wInicio = 0.0;
+	double d_wFim = 0.0;
 	std::ofstream f_wArquivoGuloso;
 	std::ofstream f_wArquivoBl;
 	std::ofstream f_wArquivoGrasp;
@@ -1394,12 +1423,12 @@ int main(int argc, char** argv){
 	pasta = listaArquivos("instGraph_50_0.txt");
 	//pasta = listaArquivos(".sim");
 
-	f_wArquivoGuloso.open("../ComputeResult/execGuloso.txt");
-	f_wArquivoBl.open("../ComputeResult/execBl.txt");
-	f_wArquivoGrasp.open("../ComputeResult/execGrasp.txt");
+	f_wArquivoGuloso.open("..\\ComputeResult\\execGuloso.txt");
+	f_wArquivoBl.open("..\\ComputeResult\\execBl.txt");
+	f_wArquivoGrasp.open("..\\ComputeResult\\execGrasp.txt");
 
 	/*----------------------DELETAR------------------------------------------------*/
-	distribuicaoGuloso.open("../ComputeResult/distribuicaoGuloso.txt");
+	distribuicaoGuloso.open("..\\ComputeResult\\distribuicaoGuloso.txt");
 	/*----------------------DELETAR------------------------------------------------*/
 
 	srand(42);
@@ -1407,20 +1436,20 @@ int main(int argc, char** argv){
 	{
 		//o_wMatriz.LeArquivSSP((char *)pasta[it].data());
 		//o_wMatrizGrasp = o_wMatriz;
-        grafo.LeArquivoGrafo((char *)pasta[it].data());
+		grafo.LeArquivoGrafo((char *)pasta[it].data());
 
-		contador.resize(o_wMatriz.v_aColunas.size(),0);
+		contador.resize(grafo.v_aListaVertice.size(), 0);
 
 		for(int i=0;i<i_wMaxIteracao;i++)
 		{
-            grafo.DijkstraTodosVertices(0.0);
-            o_wMatrizGrasp.ConverteGrafo(grafo);
-            GulosoRandomizado(o_wMatrizGrasp, 0.0);
-            contador[o_wMatrizGrasp.i_aColunasSelecionadas-1] += 1;
+			grafo.DijkstraTodosVertices(0.0);
+			o_wMatrizGrasp.ConverteGrafo(grafo);
+			GulosoRandomizado(o_wMatrizGrasp, 0.0);
+			contador[o_wMatrizGrasp.i_aColunasSelecionadas-1] += 1;
 		}
 		for(int i=0;i<contador.size();i++)
 		{
-		distribuicaoGuloso << (i+1) << " - " << contador[i] << std::endl;
+			distribuicaoGuloso << (i+1) << " - " << contador[i] << std::endl;
 		}
 
 /*
@@ -1439,11 +1468,11 @@ int main(int argc, char** argv){
 		std::cout << "Busca local finalizada!" << std::endl;
 */
 		std::cout << "Executando GRASP para instancia " << pasta[it].data() << std::endl;
-		d_wInicio = getcputime();
+		//d_wInicio = getcputime();
 		//Grasp(o_wMatrizGrasp, f_wAlpha, i_wMaxIteracao, i_wLoopsGrasp);
 		//GraspReativo(o_wMatrizGrasp, i_wMaxIteracao, i_wB, i_wGama, i_wLoopsGrasp);
-		o_wMatrizGrasp = GraspReativo(grafo, i_wMaxIteracao, i_wB, i_wGama, i_wLoopsGrasp);
-		d_wFim = getcputime();
+		GraspReativo(o_wMatrizGrasp, grafo, i_wMaxIteracao, i_wB, i_wGama, i_wLoopsGrasp);
+		//d_wFim = getcputime();
 		f_wArquivoGrasp << o_wMatrizGrasp.v_aColunas.size() << " " << o_wMatrizGrasp.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << i_wLoopsGrasp << std::endl;
 		std::cout << "GRASP finalizado!" << std::endl;
 
