@@ -409,6 +409,56 @@ public:
 
 	}
 
+    std::vector<Vertice> MontaCaminhoUnicaArvore (int i_pOrigem, int i_pDestino)
+	{
+		Vertice o_wVerticeOrigem;
+		Vertice o_wVerticeDestino;
+		Vertice o_wVerticeCaminho;
+		std::vector<bool> v_wPertenceCaminho;
+		std::vector<Vertice> v_wCaminho;
+		std::vector<Vertice> v_wArvore;
+
+		v_wCaminho.clear();
+		v_wArvore.clear();
+
+		v_wArvore = v_aArvores.front();
+		v_aArvores.clear();
+
+		o_wVerticeOrigem = v_wArvore[i_pOrigem];
+		o_wVerticeDestino = v_wArvore[i_pDestino];
+		v_wPertenceCaminho.resize(v_wArvore.size(),false);
+
+		if(o_wVerticeOrigem.i_aPai == -1)
+		{
+            o_wVerticeCaminho = o_wVerticeDestino;
+            while(o_wVertice.i_aPai != -1)
+            {
+                v_wCaminho.push_back(o_wVertice);
+                o_wVertice = v_wArvore[o_wVertice.i_aPai];
+            }
+            v_wCaminho.push_back(o_wVerticeOrigem);
+            return v_wCaminho;
+		}
+
+		if(o_wVerticeDestino.i_aPai == -1)
+		{
+            o_wVerticeCaminho = o_wVerticeOrigem;
+            while(o_wVertice.i_aPai != -1)
+            {
+                v_wCaminho.push_back(o_wVertice);
+                o_wVertice = v_wArvore[o_wVertice.i_aPai];
+            }
+            v_wCaminho.push_back(o_wVerticeDestino);
+            return v_wCaminho;
+		}
+
+
+
+
+
+		return v_wCaminho;
+
+	}
 };
 
 /* Matriz Esparsa */
