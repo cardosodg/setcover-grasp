@@ -371,6 +371,11 @@ public:
 		v_aArvores.push_back(v_wArvore);
 	}
 
+	void LimpaArvores()
+	{
+        v_aArvores.clear();
+	}
+
 	void DijkstraTodosVertices(float f_pAlpha)
 	{
 		for (int j = 0; j < v_aArvores.size(); j++)
@@ -415,46 +420,57 @@ public:
 		Vertice o_wVerticeDestino;
 		Vertice o_wVerticeCaminho;
 		std::vector<bool> v_wPertenceCaminho;
+		std::vector<int> v_wPosicaoCaminho;
+		std::vector<Vertice> v_wCaminhoDestino;
 		std::vector<Vertice> v_wCaminho;
 		std::vector<Vertice> v_wArvore;
 
 		v_wCaminho.clear();
-		v_wArvore.clear();
 
 		v_wArvore = v_aArvores.front();
-		v_aArvores.clear();
 
 		o_wVerticeOrigem = v_wArvore[i_pOrigem];
 		o_wVerticeDestino = v_wArvore[i_pDestino];
 		v_wPertenceCaminho.resize(v_wArvore.size(),false);
+		v_wPosicaoCaminho.resize(v_wArvore.size(),-1);
 
-		if(o_wVerticeOrigem.i_aPai == -1)
+		if(o_wVerticeOrigem.i_aDistancia < o_wVerticeDestino.i_aDistancia)
 		{
-            o_wVerticeCaminho = o_wVerticeDestino;
-            while(o_wVertice.i_aPai != -1)
-            {
-                v_wCaminho.push_back(o_wVertice);
-                o_wVertice = v_wArvore[o_wVertice.i_aPai];
-            }
-            v_wCaminho.push_back(o_wVerticeOrigem);
-            return v_wCaminho;
+            std::swap(o_wVerticeOrigem, o_wVerticeDestino);
 		}
 
-		if(o_wVerticeDestino.i_aPai == -1)
+
+		o_wVerticeCaminho = v_wArvore[o_wVerticeOrigem.i_aID];
+		while(o_wVerticeCaminho.i_aPai != -1)
 		{
-            o_wVerticeCaminho = o_wVerticeOrigem;
-            while(o_wVertice.i_aPai != -1)
-            {
-                v_wCaminho.push_back(o_wVertice);
-                o_wVertice = v_wArvore[o_wVertice.i_aPai];
-            }
+            v_wCaminho.push_back(o_wVerticeCaminho);
+            v_wPertenceCaminho[o_wVerticeCaminho.i_aID] = true;
+            v_wPosicaoCaminho[o_wVerticeCaminho.i_aID] = v_wCaminho.size()-1;
+            o_wVerticeCaminho = v_wArvore[o_wVerticeCaminho.i_aPai];
+		}
+		v_wCaminho.push_back(o_wVerticeCaminho);
+        v_wPertenceCaminho[o_wVerticeCaminho.i_aID] = true;
+        v_wPosicaoCaminho[o_wVerticeCaminho.i_aID] = v_wCaminho.size()-1;
+
+        if(v_wPertenceCaminho[o_wVerticeDestino.i_aID])
+        {
+            v_wCaminho.erase(v_wCaminho.begin()+v_wPosicaoCaminho[o_wVerticeDestino.i_aID],v_wCaminho.end());
             v_wCaminho.push_back(o_wVerticeDestino);
-            return v_wCaminho;
-		}
+        }
 
+        else
+        {
+            o_wVerticeCaminho = o_wVerticeDestino;
+            while(!(v_wPertenceCaminho[o_wVerticeCaminho.i_aID]))
+            {
+                v_wCaminhoDestino.push_back(o_wVerticeCaminho);
+                o_wVerticeCaminho = v_wArvore[o_wVerticeCaminho.i_aPai];
+            }
+            v_wCaminhoDestino.push_back(o_wVerticeCaminho);
 
-
-
+            v_wCaminho.erase(v_wCaminho.begin()+v_wPosicaoCaminho[o_wVerticeCaminho.i_aID],v_wCaminho.end());
+            v_wCaminho.insert(v_wCaminho.end(),v_wCaminhoDestino.begin(),v_wCaminhoDestino.end());
+        }
 
 		return v_wCaminho;
 
@@ -1426,13 +1442,14 @@ int main(int argc, char** argv){
 	float f_wAlpha = 1.0;
 	double d_wInicio = 0.0;
 	double d_wFim = 0.0;
+	Grafo grafo;
 	std::ofstream f_wArquivoGuloso;
 	std::ofstream f_wArquivoBl;
 	std::ofstream f_wArquivoGrasp;
 	MatrizEsparsa o_wMatriz, o_wMatrizGrasp, o_wMatrizLoop;
 	std::vector<std::string> pasta;
 
-	Grafo grafo;
+//	Grafo grafo;
 
 	/*---------------DELETAR---------------------------------------------*/
 	std::vector<int> contador;
@@ -1459,34 +1476,42 @@ int main(int argc, char** argv){
 		//o_wMatrizGrasp = o_wMatriz;
 		grafo.LeArquivoGrafo((char *)pasta[it].data());
 
-		contador.resize(grafo.v_aListaVertice.size(), 0);
+		//contador.resize(grafo.v_aListaVertice.size(), 0);
 
 		float tempoInicial,tempoFinal;
         tempoInicial = getcputime();
-		for(int i=0;i<1;i++)
+		for(int i=0;i<100000;i++)
 		{
             tempoInicial = getcputime();
-			grafo.DijkstraTodosVertices(0.0);
+            int pos = rand()%grafo.v_aListaVertice.size();
+            grafo.Dijkstra(0.5,grafo.v_aListaVertice[pos]);
+
+            for(int i=0;i<grafo.v_aListaVertice.size();i++)
+                for(int j = i+1;j<grafo.v_aListaVertice.size();j++)
+                    grafo.MontaCaminhoUnicaArvore(i,j);
+			//grafo.DijkstraTodosVertices(0.0);
 			tempoFinal = getcputime();
 			std::cout << "Tempo Dijkstra Todos Vertices: " << tempoFinal - tempoInicial << std::endl;
+//
+//            tempoInicial = getcputime();
+//			//o_wMatrizGrasp.ConverteGrafo(grafo);
+//			tempoFinal = getcputime();
+//			std::cout << "Tempo Converte Grafo Matriz: " << tempoFinal - tempoInicial << std::endl;
+//
+//            tempoInicial = getcputime();
+//			//GulosoRandomizado(o_wMatrizGrasp, 0.0);
+//			tempoFinal = getcputime();
+//			std::cout << "Tempo Guloso Randomizado: " << tempoFinal - tempoInicial << std::endl;
+//
+//            std::cout << std::endl;
 
-            tempoInicial = getcputime();
-			o_wMatrizGrasp.ConverteGrafo(grafo);
-			tempoFinal = getcputime();
-			std::cout << "Tempo Converte Grafo Matriz: " << tempoFinal - tempoInicial << std::endl;
-
-            tempoInicial = getcputime();
-			GulosoRandomizado(o_wMatrizGrasp, 0.0);
-			tempoFinal = getcputime();
-			std::cout << "Tempo Guloso Randomizado: " << tempoFinal - tempoInicial << std::endl;
-
-            std::cout << std::endl;
-
-			contador[o_wMatrizGrasp.i_aColunasSelecionadas-1] += 1;
+			//contador[o_wMatrizGrasp.i_aColunasSelecionadas-1] += 1;
 		}
-		for(int i=0;i<contador.size();i++)
+		tempoFinal = getcputime();
+		std::cout << "Tempo decorrido: " << tempoFinal - tempoInicial << std::endl;
+		//for(int i=0;i<contador.size();i++)
 		{
-			distribuicaoGuloso << (i+1) << " - " << contador[i] << std::endl;
+			//distribuicaoGuloso << (i+1) << " - " << contador[i] << std::endl;
 		}
 
 /*
@@ -1508,9 +1533,9 @@ int main(int argc, char** argv){
 		//d_wInicio = getcputime();
 		//Grasp(o_wMatrizGrasp, f_wAlpha, i_wMaxIteracao, i_wLoopsGrasp);
 		//GraspReativo(o_wMatrizGrasp, i_wMaxIteracao, i_wB, i_wGama, i_wLoopsGrasp);
-		GraspReativo(o_wMatrizGrasp, grafo, i_wMaxIteracao, i_wB, i_wGama, i_wLoopsGrasp);
+		//GraspReativo(o_wMatrizGrasp, grafo, i_wMaxIteracao, i_wB, i_wGama, i_wLoopsGrasp);
 		//d_wFim = getcputime();
-		f_wArquivoGrasp << o_wMatrizGrasp.v_aColunas.size() << " " << o_wMatrizGrasp.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << i_wLoopsGrasp << std::endl;
+		//f_wArquivoGrasp << o_wMatrizGrasp.v_aColunas.size() << " " << o_wMatrizGrasp.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << i_wLoopsGrasp << std::endl;
 		std::cout << "GRASP finalizado!" << std::endl;
 
 	}
@@ -1526,4 +1551,3 @@ int main(int argc, char** argv){
 	return 0;
 
 }
-
