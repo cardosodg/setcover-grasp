@@ -935,7 +935,8 @@ public:
 			{
 				v_aLinhas.push_back(new Linha(i_wI, i_wJ));
 
-				v_wCaminho = o_pGrafo.MontaCaminho(i_wI, i_wJ);
+				v_wCaminho = o_pGrafo.MontaCaminhoUnicaArvore(i_wI, i_wJ);
+				//v_wCaminho = o_pGrafo.MontaCaminho(i_wI, i_wJ);
 
 				for(i_wK = 0; i_wK < v_wCaminho.size();i_wK++)
 				{
@@ -1305,7 +1306,9 @@ void GraspReativo (MatrizEsparsa &o_pMatriz, int i_pMaxIteracao, int i_pB, int i
 
 void GraspReativo (MatrizEsparsa &o_pMatriz, Grafo o_pGrafo, int i_pMaxIteracao, int i_pB, int i_pGama, int &i_pLoops)
 {
-	 int i_wI = 0, i_wIndex;
+	 int i_wI = 0;
+	 int i_wIndex;
+	 int i_wVerticeIndex;
 	 int i_wConstTamAlpha = 10;
 	 int i_wLoopsB = 0;
 	 float f_wSorteio, f_wQsum, f_wPsum;
@@ -1352,11 +1355,21 @@ void GraspReativo (MatrizEsparsa &o_pMatriz, Grafo o_pGrafo, int i_pMaxIteracao,
 				i_wIndex=i_wConstTamAlpha-1;
 		 }
 
-		 o_pGrafo.DijkstraTodosVertices(v_wAlpha[i_wIndex]);
+		 o_pGrafo.LimpaArvores();
+		 i_wVerticeIndex = rand()%o_pGrafo.v_aListaVertice.size();
+		 o_pGrafo.Dijkstra(v_wAlpha[i_wIndex],o_pGrafo.v_aListaVertice[i_wVerticeIndex]);
+
+		 //o_pGrafo.DijkstraTodosVertices(v_wAlpha[i_wIndex]);
 		 o_wMatrizAtual.ConverteGrafo(o_pGrafo);
 
 		 GulosoRandomizado(o_wMatrizAtual, 0.0);
 		 //BuscaLocal(o_wMatrizAtual);
+
+//		    grafo.LimpaArvores();
+//            grafo.Dijkstra(0.0,grafo.v_aListaVertice[0]);
+//            o_wMatriz.ConverteGrafo(grafo);
+//            GulosoRandomizado(o_wMatriz, 0.0);
+
 
 		 /*---Contagem para grafico de distribuicao das solucoes do grasp e dos alfas escolhidos-----*/
 		 /*------------------------------------------------------------------------------------------*/
@@ -1435,21 +1448,19 @@ void GraspReativo (MatrizEsparsa &o_pMatriz, Grafo o_pGrafo, int i_pMaxIteracao,
 int main(int argc, char** argv){
 
 	int i_wSeq = 1;
-	int i_wMaxIteracao = 5;
+	int i_wMaxIteracao = 20000;
 	int i_wLoopsGrasp = 0;
-	int i_wB = 2;
+	int i_wB = 100;
 	int i_wGama = 8;
 	float f_wAlpha = 1.0;
 	double d_wInicio = 0.0;
 	double d_wFim = 0.0;
-	Grafo grafo;
 	std::ofstream f_wArquivoGuloso;
 	std::ofstream f_wArquivoBl;
 	std::ofstream f_wArquivoGrasp;
+	Grafo grafo;
 	MatrizEsparsa o_wMatriz, o_wMatrizGrasp, o_wMatrizLoop;
 	std::vector<std::string> pasta;
-
-//	Grafo grafo;
 
 	/*---------------DELETAR---------------------------------------------*/
 	std::vector<int> contador;
@@ -1458,7 +1469,7 @@ int main(int argc, char** argv){
 
 	// Lê a instânica
 	//pasta = listaArquivos(".ssp");
-	pasta = listaArquivos("instGraph_350_0.txt");
+	pasta = listaArquivos(".txt");
 	//pasta = listaArquivos(".sim");
 
 	f_wArquivoGuloso.open("../ComputeResult/execGuloso.txt");
@@ -1472,71 +1483,58 @@ int main(int argc, char** argv){
 	srand(42);
 	for (int it = 0; it < pasta.size(); it++)
 	{
-		//o_wMatriz.LeArquivSSP((char *)pasta[it].data());
-		//o_wMatrizGrasp = o_wMatriz;
+//		//o_wMatriz.LeArquivSSP((char *)pasta[it].data());
+//		//o_wMatrizGrasp = o_wMatriz;
 		grafo.LeArquivoGrafo((char *)pasta[it].data());
-
-		//contador.resize(grafo.v_aListaVertice.size(), 0);
-
-		float tempoInicial,tempoFinal;
-        tempoInicial = getcputime();
-		for(int i=0;i<100000;i++)
-		{
-            tempoInicial = getcputime();
-            int pos = rand()%grafo.v_aListaVertice.size();
-            grafo.Dijkstra(0.5,grafo.v_aListaVertice[pos]);
-
-            for(int i=0;i<grafo.v_aListaVertice.size();i++)
-                for(int j = i+1;j<grafo.v_aListaVertice.size();j++)
-                    grafo.MontaCaminhoUnicaArvore(i,j);
-			//grafo.DijkstraTodosVertices(0.0);
-			tempoFinal = getcputime();
-			std::cout << "Tempo Dijkstra Todos Vertices: " << tempoFinal - tempoInicial << std::endl;
 //
-//            tempoInicial = getcputime();
-//			//o_wMatrizGrasp.ConverteGrafo(grafo);
-//			tempoFinal = getcputime();
-//			std::cout << "Tempo Converte Grafo Matriz: " << tempoFinal - tempoInicial << std::endl;
+//		contador.resize(grafo.v_aListaVertice.size(), 0);
 //
-//            tempoInicial = getcputime();
-//			//GulosoRandomizado(o_wMatrizGrasp, 0.0);
-//			tempoFinal = getcputime();
-//			std::cout << "Tempo Guloso Randomizado: " << tempoFinal - tempoInicial << std::endl;
+//		for(int i=0;i<1;i++)
+//		{
+////            tempoInicial = getcputime();
+//            grafo.LimpaArvores();
+//            grafo.Dijkstra(0.0,grafo.v_aListaVertice[0]);
 //
-//            std::cout << std::endl;
+//            o_wMatriz.ConverteGrafo(grafo);
+//
+//            GulosoRandomizado(o_wMatriz, 0.0);
+//            //BuscaLocal(o_wMatriz);
+//
+//			contador[o_wMatriz.i_aColunasSelecionadas-1] += 1;
+//		}
+//		for(int i=0;i<contador.size();i++)
+//		{
+//			distribuicaoGuloso << (i+1) << " - " << contador[i] << std::endl;
+//		}
 
-			//contador[o_wMatrizGrasp.i_aColunasSelecionadas-1] += 1;
-		}
-		tempoFinal = getcputime();
-		std::cout << "Tempo decorrido: " << tempoFinal - tempoInicial << std::endl;
-		//for(int i=0;i<contador.size();i++)
-		{
-			//distribuicaoGuloso << (i+1) << " - " << contador[i] << std::endl;
-		}
 
-/*
 		std::cout << "Executando guloso para instancia " << pasta[it].data() << std::endl;
 		d_wInicio = getcputime();
+
+		grafo.LimpaArvores();
+        grafo.Dijkstra(0.0,grafo.v_aListaVertice[0]);
+        o_wMatriz.ConverteGrafo(grafo);
 		GulosoRandomizado(o_wMatriz, 0.0);
+
 		d_wFim = getcputime();
 		f_wArquivoGuloso << o_wMatriz.v_aColunas.size() << " " << o_wMatriz.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << " 1 " << std::endl;
-		std::cout << "Algoritmo guloso finalizado!" << std::endl;
+		std::cout << "Algoritmo guloso finalizado!" << std::endl << std::endl;
 
 		std::cout << "Executando busca local para instancia " << pasta[it].data() << std::endl;
 		d_wInicio = getcputime();
 		BuscaLocal(o_wMatriz);
 		d_wFim = getcputime();
 		f_wArquivoBl << o_wMatriz.v_aColunas.size() << " " << o_wMatriz.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << " 1 " << std::endl;
-		std::cout << "Busca local finalizada!" << std::endl;
-*/
+		std::cout << "Busca local finalizada!" << std::endl << std::endl;
+
 		std::cout << "Executando GRASP para instancia " << pasta[it].data() << std::endl;
-		//d_wInicio = getcputime();
+		d_wInicio = getcputime();
 		//Grasp(o_wMatrizGrasp, f_wAlpha, i_wMaxIteracao, i_wLoopsGrasp);
 		//GraspReativo(o_wMatrizGrasp, i_wMaxIteracao, i_wB, i_wGama, i_wLoopsGrasp);
-		//GraspReativo(o_wMatrizGrasp, grafo, i_wMaxIteracao, i_wB, i_wGama, i_wLoopsGrasp);
-		//d_wFim = getcputime();
-		//f_wArquivoGrasp << o_wMatrizGrasp.v_aColunas.size() << " " << o_wMatrizGrasp.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << i_wLoopsGrasp << std::endl;
-		std::cout << "GRASP finalizado!" << std::endl;
+		GraspReativo(o_wMatrizGrasp, grafo, i_wMaxIteracao, i_wB, i_wGama, i_wLoopsGrasp);
+		d_wFim = getcputime();
+		f_wArquivoGrasp << o_wMatrizGrasp.v_aColunas.size() << " " << o_wMatrizGrasp.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << i_wLoopsGrasp << std::endl;
+		std::cout << "GRASP finalizado!" << std::endl << std::endl;
 
 	}
 
