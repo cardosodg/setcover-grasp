@@ -1,0 +1,39 @@
+strict digraph 1 {graph[fontname="Arial";rankdir="LR";pad="0.25"]
+node[fontname="Arial" target="_parent"]
+edge[fontname="Arial"]
+concentrate=true
+3 [style=filled,color=red]
+4 [style=filled,color=red]
+7 [style=filled,color=red]
+10 [style=filled,color=red]
+
+0->1
+0->3
+1->0
+1->2
+1->3
+2->1
+2->4
+3->0
+3->1
+3->5
+4->2
+4->5
+4->8
+5->3
+5->4
+5->7
+6->7
+6->10
+7->5
+7->6
+7->8
+8->4
+8->7
+8->9
+9->8
+9->10
+10->6
+10->9
+
+}

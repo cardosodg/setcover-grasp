@@ -15,7 +15,31 @@
 #include <cstdlib>
 #include <time.h>
 #include <stdlib.h>
+
+#ifdef __unix || __unix__ || __linux__
 #include "tempo.cpp"
+
+#define BARRA		  "/"
+#define PASTA_ENTRADA "../GraphGenerator/input/"
+#define DISTRIBUICAO_GRASP "../ComputeResult/distribuicaoGrasp.txt"
+#define EXCECUCAO_GULOSO "../ComputeResult/ecGuloso.txt"
+#define EXECUCAO_BL "../ComputeResult/execBl.txt
+#define EXECUCAO_GRASP "../ComputeResult/execGrasp.txt"
+#define DISTRIBUICAO_GULOSO "../ComputeResult/distribuicaoGuloso.txt"
+#define PASTA_RESULTADO "../ComputeResult/"
+
+#else
+
+#define BARRA "\\"
+#define PASTA_ENTRADA "..\\GraphGenerator\\input\\"
+#define DISTRIBUICAO_GRASP "..\\ComputeResult\\distribuicaoGrasp.txt"
+#define EXCECUCAO_GULOSO "..\\ComputeResult\\execGuloso.txt"
+#define EXECUCAO_BL "..\\ComputeResult\\execBl.txt"
+#define EXECUCAO_GRASP "..\\ComputeResult\\execGrasp.txt"
+#define DISTRIBUICAO_GULOSO "..\\ComputeResult\\distribuicaoGuloso.txt"
+#define PASTA_RESULTADO "..\\ComputeResult\\"
+
+#endif
 
 /*------------------------------------*/
 /* Define                             */
@@ -189,6 +213,8 @@ public:
 	std::vector<float> v_aCoordY;                            /* Coordenada no eixo y                */
 	std::vector<std::vector<Vertice> > l_aListaAdj;          /* Lista de adjacência do grafo        */
 	std::vector<std::vector<Vertice> > v_aArvores;           /* Árvore resultado do dijkstra por nó */
+	std::string s_aNomeArquivo;								 /* Nome do Arquivo lido                */
+	int i_aRaiz;
 
 	Grafo(){}
 	~Grafo(){
@@ -208,7 +234,16 @@ public:
 		std::string s_wLinhaArquivo;
 		std::ifstream f_wArquivoGrafo;
 
+		/* Lê arquivo de entrada */
 		f_wArquivoGrafo.open(s_pNomeArquivo);
+		s_aNomeArquivo = s_pNomeArquivo;
+
+		/* Da um clear na porra toda pra não dar merda!!! */
+		v_aListaVertice.clear();
+		v_aCoordX.clear();
+		v_aCoordY.clear();
+		l_aListaAdj.clear();
+		v_aArvores.clear();
 
 		f_wArquivoGrafo >> s_wLinhaArquivo;
 		while(s_wLinhaArquivo.compare("COORD_X_Y")!=0)
@@ -223,7 +258,8 @@ public:
 
 		for(int i_wIt = 0; i_wIt < i_wNumVert; i_wIt++)
 		{
-			f_wArquivoGrafo >> v_aCoordX[i_wIt] >> v_aCoordY[i_wIt];
+			/* Comentar para executar as instâncias do artigo 2016 */
+			//f_wArquivoGrafo >> v_aCoordX[i_wIt] >> v_aCoordY[i_wIt];
 			v_aListaVertice[i_wIt].i_aID = i_wIt;
 		}
 
@@ -236,6 +272,9 @@ public:
 		for(int i_wIt = 0; i_wIt < i_wNumLinks; i_wIt++)
 		{
 			f_wArquivoGrafo >> i_wOrigem >> o_wVertex.i_aID >> o_wVertex.f_aCusto;
+			/* Descomentar para executar com as intâncias do Artigo 2016 */
+			i_wOrigem--;
+			o_wVertex.i_aID--;
 			l_aListaAdj[i_wOrigem].push_back(o_wVertex);
 			v_aListaVertice[o_wVertex.i_aID].f_aCusto = o_wVertex.f_aCusto;
 		}
@@ -253,6 +292,95 @@ public:
 				std::cout << i << " " << l_aListaAdj[i][j].i_aID << " " << l_aListaAdj[i][j].f_aCusto << std::endl;
 	}
 
+	/* Imprime o grafo exibindo os nós observadores */
+	void ImprimeGrafoGraphviz(std::vector<Coluna *> o_pVertices){
+
+		std::size_t st_wPosStr;
+		std::string s_wArquivoDot;
+		std::string s_wTexto;
+		std::string s_wHeader;
+		std::string s_wCorpo;
+		std::string s_wFooter;
+		std::string s_wArquivoGraphviz;
+		std::string s_wComandoSistema;
+		std::stringstream s_wStream;
+		std::ofstream f_wArquivo;
+		int i_wI;
+		int i_wJ;
+		int i_wK;
+
+		/* Monta nome do arquivo */
+		s_wArquivoDot = s_aNomeArquivo;
+		while ((st_wPosStr = s_wArquivoDot.find(BARRA)) >= 0 && st_wPosStr < s_wArquivoDot.size())
+			s_wArquivoDot = s_wArquivoDot.substr(st_wPosStr + 1);
+
+		s_wArquivoDot.resize(s_wArquivoDot.size() - 4);
+		//s_wStream << "Seq_" << i_pSeq << "_";
+		//if (s_pClassificacao != "") s_wStream << s_pClassificacao << "_";
+		//s_wArquivoDot = s_wStream.str() + s_wArquivoDot;
+
+		s_wArquivoDot += "_Grafo";
+
+		s_wArquivoDot = PASTA_RESULTADO + s_wArquivoDot;
+
+		s_wArquivoGraphviz = s_wArquivoDot + "." + EXTENSAO;
+		s_wArquivoDot += ".dot";
+
+		/* Monta comando de geração da figura */
+		s_wComandoSistema = (std::string) "dot -T" + EXTENSAO + " " + s_wArquivoDot + " -o " + s_wArquivoGraphviz;
+
+		s_wHeader = "strict digraph 1 {";
+		s_wHeader += "graph[fontname=\"Arial\";rankdir=\"LR\";pad=\"0.25\"]\n";
+		s_wHeader += "node[fontname=\"Arial\" target=\"_parent\"]\n";
+		s_wHeader += "edge[fontname=\"Arial\"]\n";
+		s_wHeader += "concentrate=true\n";
+
+		//s_wHeader = "strict graph G {\n";
+		//s_wHeader += "size=\"8.5,11;\"\n";
+		//s_wHeader += "ratio = \"expand;\"\n";
+		//s_wHeader += "fixedsize=\"true;\"\n";
+		//s_wHeader += "overlap=\"scale;\"\n";
+		//s_wHeader += "node[style=filled,shape=circle,width=.12,hight=.12,fontsize=12]\n";
+		//s_wHeader += "edge[fontsize=12]\n";
+		//s_wHeader += "\n";
+
+		s_wCorpo = "";
+
+		s_wFooter = "\n}\n";
+
+		s_wStream.str("");
+
+		/* Altera cor dos Vértices */
+		for (i_wI = 0; i_wI < o_pVertices.size(); i_wI++){
+			if (o_pVertices[i_wI]->b_aSelecionada) s_wStream << o_pVertices[i_wI]->i_aID << " [style=filled,color=red]" << std::endl;
+
+			s_wCorpo += s_wStream.str();
+			s_wStream.str("");
+		}
+
+		s_wCorpo += "\n";
+		s_wStream.str("");
+
+		/* Imprime as ligações dos vértices */
+		for (int i = 0; i < l_aListaAdj.size(); i++){
+			for (int j = 0; j < l_aListaAdj[i].size(); j++)
+				s_wStream << i << "->" << l_aListaAdj[i][j].i_aID << std::endl;
+
+			s_wCorpo += s_wStream.str();
+			s_wStream.str("");
+		}
+		
+		s_wTexto = s_wHeader + s_wCorpo + s_wFooter;
+
+		f_wArquivo.open(s_wArquivoDot.c_str());
+		f_wArquivo << s_wTexto;
+		f_wArquivo.close();
+
+		system(s_wComandoSistema.c_str());
+
+		
+	}
+
 	static bool ComparadorVertices (Vertice &v1, Vertice &v2)
 	{
 		return v1.i_aDistancia < v2.i_aDistancia;
@@ -263,16 +391,31 @@ public:
 		return v1.i_aID < v2.i_aID;
 	}
 
-	void ImprimeGraphviz(int i_pID)
+	void ImprimeArvoreGraphviz(int i_pID)
 	{
-		std::stringstream stringArquivoSaida;
+		std::string stringArquivoSaida;
 		std::string stringComandoSistema;
 		std::ofstream f_ArquivoSaida;
+		int st_wPosStr;
 
-		stringArquivoSaida << "saida" << i_pID << ".dot";
-		stringComandoSistema = "dot -Tpng " + stringArquivoSaida.str() + " -o " + stringArquivoSaida.str() + ".png";
+		/* Monta nome do arquivo */
+		stringArquivoSaida = s_aNomeArquivo;
+		while ((st_wPosStr = stringArquivoSaida.find(BARRA)) >= 0 && st_wPosStr < stringArquivoSaida.size())
+			stringArquivoSaida = stringArquivoSaida.substr(st_wPosStr + 1);
 
-		f_ArquivoSaida.open(stringArquivoSaida.str().data());
+		stringArquivoSaida.resize(stringArquivoSaida.size() - 4);
+		//s_wStream << "Seq_" << i_pSeq << "_";
+		//if (s_pClassificacao != "") s_wStream << s_pClassificacao << "_";
+		//s_wArquivoDot = s_wStream.str() + s_wArquivoDot;
+
+		stringArquivoSaida += "_Arvore.dot";
+
+		stringArquivoSaida = PASTA_RESULTADO + stringArquivoSaida;
+
+		//stringArquivoSaida << "saida" << i_pID << ".dot";
+		stringComandoSistema = "dot -Tpng " + stringArquivoSaida + " -o " + stringArquivoSaida + ".png";
+
+		f_ArquivoSaida.open(stringArquivoSaida);
 
 		f_ArquivoSaida << "strict graph G {\n";
 
@@ -293,7 +436,7 @@ public:
 	{
 		for(int i=0;i<v_aListaVertice.size();i++)
 		{
-			ImprimeGraphviz(i);
+			ImprimeArvoreGraphviz(i);
 		}
 	}
 
@@ -327,7 +470,7 @@ public:
 		std::vector<Vertice> v_wArvore;
 		std::vector<std::vector<Vertice> > l_wAdj;
 
-
+		i_aRaiz = o_pS.i_aID;
 
 		v_wArvore.clear();
 		v_wListaVerticeQ = v_aListaVertice;
@@ -373,7 +516,7 @@ public:
 
 	void LimpaArvores()
 	{
-        v_aArvores.clear();
+		v_aArvores.clear();
 	}
 
 	void DijkstraTodosVertices(float f_pAlpha)
@@ -414,7 +557,7 @@ public:
 
 	}
 
-    std::vector<Vertice> MontaCaminhoUnicaArvore (int i_pOrigem, int i_pDestino)
+	std::vector<Vertice> MontaCaminhoUnicaArvore (int i_pOrigem, int i_pDestino)
 	{
 		Vertice o_wVerticeOrigem;
 		Vertice o_wVerticeDestino;
@@ -436,41 +579,41 @@ public:
 
 		if(o_wVerticeOrigem.i_aDistancia < o_wVerticeDestino.i_aDistancia)
 		{
-            std::swap(o_wVerticeOrigem, o_wVerticeDestino);
+			std::swap(o_wVerticeOrigem, o_wVerticeDestino);
 		}
 
 
 		o_wVerticeCaminho = v_wArvore[o_wVerticeOrigem.i_aID];
 		while(o_wVerticeCaminho.i_aPai != -1)
 		{
-            v_wCaminho.push_back(o_wVerticeCaminho);
-            v_wPertenceCaminho[o_wVerticeCaminho.i_aID] = true;
-            v_wPosicaoCaminho[o_wVerticeCaminho.i_aID] = v_wCaminho.size()-1;
-            o_wVerticeCaminho = v_wArvore[o_wVerticeCaminho.i_aPai];
+			v_wCaminho.push_back(o_wVerticeCaminho);
+			v_wPertenceCaminho[o_wVerticeCaminho.i_aID] = true;
+			v_wPosicaoCaminho[o_wVerticeCaminho.i_aID] = v_wCaminho.size()-1;
+			o_wVerticeCaminho = v_wArvore[o_wVerticeCaminho.i_aPai];
 		}
 		v_wCaminho.push_back(o_wVerticeCaminho);
-        v_wPertenceCaminho[o_wVerticeCaminho.i_aID] = true;
-        v_wPosicaoCaminho[o_wVerticeCaminho.i_aID] = v_wCaminho.size()-1;
+		v_wPertenceCaminho[o_wVerticeCaminho.i_aID] = true;
+		v_wPosicaoCaminho[o_wVerticeCaminho.i_aID] = v_wCaminho.size()-1;
 
-        if(v_wPertenceCaminho[o_wVerticeDestino.i_aID])
-        {
-            v_wCaminho.erase(v_wCaminho.begin()+v_wPosicaoCaminho[o_wVerticeDestino.i_aID],v_wCaminho.end());
-            v_wCaminho.push_back(o_wVerticeDestino);
-        }
+		if(v_wPertenceCaminho[o_wVerticeDestino.i_aID])
+		{
+			v_wCaminho.erase(v_wCaminho.begin()+v_wPosicaoCaminho[o_wVerticeDestino.i_aID],v_wCaminho.end());
+			v_wCaminho.push_back(o_wVerticeDestino);
+		}
 
-        else
-        {
-            o_wVerticeCaminho = o_wVerticeDestino;
-            while(!(v_wPertenceCaminho[o_wVerticeCaminho.i_aID]))
-            {
-                v_wCaminhoDestino.push_back(o_wVerticeCaminho);
-                o_wVerticeCaminho = v_wArvore[o_wVerticeCaminho.i_aPai];
-            }
-            v_wCaminhoDestino.push_back(o_wVerticeCaminho);
+		else
+		{
+			o_wVerticeCaminho = o_wVerticeDestino;
+			while(!(v_wPertenceCaminho[o_wVerticeCaminho.i_aID]))
+			{
+				v_wCaminhoDestino.push_back(o_wVerticeCaminho);
+				o_wVerticeCaminho = v_wArvore[o_wVerticeCaminho.i_aPai];
+			}
+			v_wCaminhoDestino.push_back(o_wVerticeCaminho);
 
-            v_wCaminho.erase(v_wCaminho.begin()+v_wPosicaoCaminho[o_wVerticeCaminho.i_aID],v_wCaminho.end());
-            v_wCaminho.insert(v_wCaminho.end(),v_wCaminhoDestino.begin(),v_wCaminhoDestino.end());
-        }
+			v_wCaminho.erase(v_wCaminho.begin()+v_wPosicaoCaminho[o_wVerticeCaminho.i_aID],v_wCaminho.end());
+			v_wCaminho.insert(v_wCaminho.end(),v_wCaminhoDestino.begin(),v_wCaminhoDestino.end());
+		}
 
 		return v_wCaminho;
 
@@ -815,12 +958,22 @@ public:
 		int i_wJ;
 		int i_wK;
 
-		st_wPosStr = s_aNomeArquivo.find("instGraph");
-		s_wArquivoDot = s_aNomeArquivo.substr(st_wPosStr);
+		//st_wPosStr = s_aNomeArquivo.find("instGraph");
+		//s_wArquivoDot = s_aNomeArquivo.substr(st_wPosStr);
+
+		/* Monta nome do arquivo */
+		s_wArquivoDot = s_aNomeArquivo;
+		while ((st_wPosStr = s_wArquivoDot.find(BARRA)) >= 0 && st_wPosStr < s_wArquivoDot.size())
+			s_wArquivoDot = s_wArquivoDot.substr(st_wPosStr+1);
+
 		s_wArquivoDot.resize(s_wArquivoDot.size() - 4);
-		s_wStream << "Seq_" << i_pSeq << "_";
-		if(s_pClassificacao != "") s_wStream << s_pClassificacao << "_";
-		s_wArquivoDot = s_wStream.str() + s_wArquivoDot;
+		if (i_pSeq != 0 || s_pClassificacao != ""){
+			if (i_pSeq != 0) s_wStream << "Seq_" << i_pSeq << "_";
+			if (s_pClassificacao != "") s_wStream << s_pClassificacao << "_";
+		}
+		s_wArquivoDot += "_Matriz";
+
+		s_wArquivoDot = PASTA_RESULTADO + s_wArquivoDot;
 
 		s_wArquivoGraphviz = s_wArquivoDot + "." + EXTENSAO;
 		s_wArquivoDot += ".dot";
@@ -905,7 +1058,7 @@ public:
 		i_aLinhasDescobertas = 0;
 		i_aColunasSelecionadas = 0;
 		f_aFuncaoObjetivo = 0.0;
-		s_aNomeArquivo = "";
+		s_aNomeArquivo = o_pGrafo.s_aNomeArquivo;
 
 		/* Deleta as linhas e colunas criadas */
 		for (i_wI = 0; i_wI < v_aColunas.size(); i_wI++){
@@ -972,45 +1125,6 @@ bool ComparaColuna(Coluna *c1, Coluna *c2){
 }
 
 /*-----------------------------------------------------------*/
-/* Função getNomeSo                                          */
-/*   Função que obtém o sistema operacional da máquina.      */
-/*	 Retorna uma string com o nome do SO.                    */
-/*-----------------------------------------------------------*/
-std::string getNomeSo()
-{
-#ifdef _WIN32
-	return "Windows 32-bit";
-#elif _WIN64
-	return "Windows 64-bit";
-#elif __unix || __unix__
-	return "Unix";
-#elif __APPLE__ || __MACH__
-	return "Mac OSX";
-#elif __linux__
-	return "Linux";
-#elif __FreeBSD__
-	return "FreeBSD";
-#else
-	return "Other";
-#endif
-}
-
-/*-----------------------------------------------------------*/
-/* Função getNomeSo                                          */
-/*   Função que obtém o caminho da pasta de instâncias.      */
-/*	 Retorna uma string com o caminho da instância.          */
-/*-----------------------------------------------------------*/
-std::string caminhoInput()
-{
-	if (getNomeSo() == "Unix" || getNomeSo() == "Linux")
-		return "../GraphGenerator/input/";
-	if (getNomeSo() == "Windows 32-bit" || getNomeSo() == "Windows 64-bit")
-		return "..\\GraphGenerator\\input\\";
-	else
-		return "";
-}
-
-/*-----------------------------------------------------------*/
 /* Função listaArquivos                                      */
 /*   Função que obtém lista de instancias dada uma extensao. */
 /*	 Retorna uma lista de strings com os nomes dos arquivos  */
@@ -1022,7 +1136,7 @@ std::vector<std::string> listaArquivos(std::string extensao)
 	DIR *dir = NULL;
 	struct dirent *drnt = NULL;
 	std::string nomeArquivo = "";
-	std::string caminhoPasta = caminhoInput();
+	std::string caminhoPasta = PASTA_ENTRADA;
 
 	dir = opendir(caminhoPasta.c_str());
 	if (dir)
@@ -1284,7 +1398,7 @@ void GraspReativo (MatrizEsparsa &o_pMatriz, int i_pMaxIteracao, int i_pB, int i
 
 	 /*-----------------Salvar distribuicao das solucoes do grasp-----------------------------------------------*/
 	 /*---------------------------------------------------------------------------------------------------------*/
-	 f_wDistribuicao.open("..\\ComputeResult\\distribuicaoGrasp.txt");
+	 f_wDistribuicao.open(DISTRIBUICAO_GRASP);
 	 for(int i_wIt = 0; i_wIt < v_wContadorSolucao.size();i_wIt++)
 	 {
 		//if(v_wContadorSolucao[i_wIt] != 0)
@@ -1304,16 +1418,18 @@ void GraspReativo (MatrizEsparsa &o_pMatriz, int i_pMaxIteracao, int i_pB, int i
 	 /*---------------------------------------------------------------------------------------------------------*/
 }
 
-void GraspReativo (MatrizEsparsa &o_pMatriz, Grafo o_pGrafo, int i_pMaxIteracao, int i_pB, int i_pGama, int &i_pLoops)
+void GraspReativo (MatrizEsparsa &o_pMatriz, Grafo &o_pGrafo, int i_pMaxIteracao, int i_pB, int i_pGama, int &i_pLoops)
 {
 	 int i_wI = 0;
 	 int i_wIndex;
 	 int i_wVerticeIndex;
 	 int i_wConstTamAlpha = 10;
 	 int i_wLoopsB = 0;
+	 int i_wRaiz;
 	 float f_wSorteio, f_wQsum, f_wPsum;
 	 std::vector<float> v_wAlpha, v_wProb, v_wPontuacao, v_wQ, v_wContador;
 	 MatrizEsparsa o_wMatrizAtual;
+	 std::vector<Vertice> v_wArvore;
 
 	 /*----------Variaveis para fazer distribuicao de escolha------------------*/
 	 /*------------------------------------------------------------------------*/
@@ -1384,6 +1500,8 @@ void GraspReativo (MatrizEsparsa &o_pMatriz, Grafo o_pGrafo, int i_pMaxIteracao,
 		 if (o_wMatrizAtual.i_aColunasSelecionadas < o_pMatriz.i_aColunasSelecionadas)
 		 //if (o_wMatrizAtual.f_aFuncaoObjetivo > o_wMelhorSolucao.f_aFuncaoObjetivo)
 		 {
+			 v_wArvore = o_pGrafo.v_aArvores.front();
+			 i_wRaiz = o_pGrafo.v_aListaVertice[i_wVerticeIndex].i_aID;
 			 o_pMatriz = o_wMatrizAtual;
 			 std::cout << "best solution: " << o_pMatriz.i_aColunasSelecionadas << " Iteration: " << i_wI << std::endl;
 			 i_wI = 0;
@@ -1418,9 +1536,15 @@ void GraspReativo (MatrizEsparsa &o_pMatriz, Grafo o_pGrafo, int i_pMaxIteracao,
 		 i_wLoopsB++;
 
 	 }
+	 /* Altera árvore do grafo */
+	 o_pGrafo.i_aRaiz = i_wRaiz;
+	 o_pGrafo.LimpaArvores();
+	 o_pGrafo.v_aArvores.resize(v_wArvore.size());
+	 o_pGrafo.v_aArvores[i_wRaiz] = v_wArvore;
+
 	 /*-----------------Salvar distribuicao das solucoes do grasp-----------------------------------------------*/
 	 /*---------------------------------------------------------------------------------------------------------*/
-	 f_wDistribuicao.open("../ComputeResult/distribuicaoGrasp.txt");
+	 f_wDistribuicao.open(DISTRIBUICAO_GRASP);
 	 for(int i_wIt = 0; i_wIt < v_wContadorSolucao.size();i_wIt++)
 	 {
 		//if(v_wContadorSolucao[i_wIt] != 0)
@@ -1448,7 +1572,7 @@ void GraspReativo (MatrizEsparsa &o_pMatriz, Grafo o_pGrafo, int i_pMaxIteracao,
 int main(int argc, char** argv){
 
 	int i_wSeq = 1;
-	int i_wMaxIteracao = 20000;
+	int i_wMaxIteracao = 10000;
 	int i_wLoopsGrasp = 0;
 	int i_wB = 100;
 	int i_wGama = 8;
@@ -1469,16 +1593,19 @@ int main(int argc, char** argv){
 
 	// Lê a instânica
 	//pasta = listaArquivos(".ssp");
-	pasta = listaArquivos(".txt");
+	//pasta = listaArquivos(".txt");
 	//pasta = listaArquivos(".sim");
+	pasta = listaArquivos(".grp");
 
-	f_wArquivoGuloso.open("../ComputeResult/execGuloso.txt");
-	f_wArquivoBl.open("../ComputeResult/execBl.txt");
-	f_wArquivoGrasp.open("../ComputeResult/execGrasp.txt");
+	f_wArquivoGuloso.open(EXCECUCAO_GULOSO);
+	f_wArquivoBl.open(EXECUCAO_BL);
+	f_wArquivoGrasp.open(EXECUCAO_GRASP);
 
 	/*----------------------DELETAR------------------------------------------------*/
-	distribuicaoGuloso.open("../ComputeResult/distribuicaoGuloso.txt");
+	distribuicaoGuloso.open(DISTRIBUICAO_GULOSO);
 	/*----------------------DELETAR------------------------------------------------*/
+
+	system("dir");
 
 	srand(42);
 	for (int it = 0; it < pasta.size(); it++)
@@ -1509,31 +1636,33 @@ int main(int argc, char** argv){
 
 
 		std::cout << "Executando guloso para instancia " << pasta[it].data() << std::endl;
-		d_wInicio = getcputime();
+		//d_wInicio = getcputime();
 
 		grafo.LimpaArvores();
-        grafo.Dijkstra(0.0,grafo.v_aListaVertice[0]);
-        o_wMatriz.ConverteGrafo(grafo);
+		grafo.Dijkstra(0.0,grafo.v_aListaVertice[0]);
+		o_wMatriz.ConverteGrafo(grafo);
 		GulosoRandomizado(o_wMatriz, 0.0);
 
-		d_wFim = getcputime();
+		//d_wFim = getcputime();
 		f_wArquivoGuloso << o_wMatriz.v_aColunas.size() << " " << o_wMatriz.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << " 1 " << std::endl;
 		std::cout << "Algoritmo guloso finalizado!" << std::endl << std::endl;
 
 		std::cout << "Executando busca local para instancia " << pasta[it].data() << std::endl;
-		d_wInicio = getcputime();
+		//d_wInicio = getcputime();
 		BuscaLocal(o_wMatriz);
-		d_wFim = getcputime();
+		//d_wFim = getcputime();
 		f_wArquivoBl << o_wMatriz.v_aColunas.size() << " " << o_wMatriz.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << " 1 " << std::endl;
 		std::cout << "Busca local finalizada!" << std::endl << std::endl;
 
 		std::cout << "Executando GRASP para instancia " << pasta[it].data() << std::endl;
-		d_wInicio = getcputime();
+		//d_wInicio = getcputime();
 		//Grasp(o_wMatrizGrasp, f_wAlpha, i_wMaxIteracao, i_wLoopsGrasp);
 		//GraspReativo(o_wMatrizGrasp, i_wMaxIteracao, i_wB, i_wGama, i_wLoopsGrasp);
 		GraspReativo(o_wMatrizGrasp, grafo, i_wMaxIteracao, i_wB, i_wGama, i_wLoopsGrasp);
-		d_wFim = getcputime();
+		//d_wFim = getcputime();
 		f_wArquivoGrasp << o_wMatrizGrasp.v_aColunas.size() << " " << o_wMatrizGrasp.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << i_wLoopsGrasp << std::endl;
+		grafo.ImprimeArvoreGraphviz(grafo.i_aRaiz);
+		grafo.ImprimeGrafoGraphviz(o_wMatrizGrasp.v_aColunas);
 		std::cout << "GRASP finalizado!" << std::endl << std::endl;
 
 	}
