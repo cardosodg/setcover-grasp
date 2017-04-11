@@ -249,4 +249,48 @@
 \end{small}
 \end{table}
 
+\begin {table}[h]
+\centering
+\caption{Maxit = 10000; $\alpha$ = reativo B = 100; 1 X 10 instancias; media; arvore}
+\begin{small}
+	\begin{tabular}{|c|r|r|r|r|r|r|r|}
+		\hline
+		& \multicolumn{2}{c|}{GREED} & \multicolumn{2}{c|}{LS} & \multicolumn{3}{c|}{GRASP} \\ 
+		\cline{2-8}
+		$|V|$   &  obser. & tempo (s)  & obser. & tempo (s) & obser. & tempo (s) & loops\\ 
+		\hline
+		100 & 36.7 & 0.0168 & 36.5 & 0 & 30 & 98.9972 & 13354.5 \\ 
+		200 & 77.1 & 0.0392 & 76.6 & 0.002 & 65.4 & 470.969 & 14125.5 \\ 
+		300 & 111.7 & 0.086 & 110.9 & 0.0076 & 100.9 & 1492.84 & 16906 \\ 
+		400 & 150.7 & 0.1556 & 149.7 & 0.0308 & 136.7 & 2401.17 & 14566.1 \\ 
+		500 & 188.7 & 0.2748 & 187 & 0.0576 & 170.7 & 4117.9 & 14277.5 \\ 
+		\hline
+	\end{tabular} \label{}
+\end{small}
+\end{table}
+
+\begin {table}[h]
+\centering
+\caption{Maxit = 10000; $\alpha$ = reativo B = 100; 1 X 1 instancias; CAIDA; arvore}
+\begin{small}
+	\begin{tabular}{|c|r|r|r|r|r|r|r|}
+		\hline
+		& \multicolumn{2}{c|}{GREED} & \multicolumn{2}{c|}{LS} & \multicolumn{3}{c|}{GRASP} \\ 
+		\cline{2-8}
+		$|V|$   &  obser. & tempo (s)  & obser. & tempo (s) & obser. & tempo (s) & loops\\ 
+		\hline
+		5 & 1 & 0 & 1 & 0 & 1 & 0.084 & 10000 \\ 
+		11 & 7 & 0.004 & 6 & 0 & 4 & 0.548 & 10005 \\ 
+		22 & 10 & 0 & 10 & 0 & 6 & 2.552 & 10237 \\ 
+		41 & 11 & 0 & 11 & 0 & 10 & 9.024 & 10000 \\ 
+		44 & 6 & 0 & 6 & 0 & 6 & 10.312 & 10000 \\ 
+		52 & 16 & 0 & 16 & 0 & 15 & 16.788 & 10023 \\ 
+		63 & 16 & 0.004 & 16 & 0 & 13 & 25.916 & 10044 \\ 
+		70 & 26 & 0 & 26 & 0 & 21 & 49.684 & 13703 \\ 
+		115 & 16 & 0.012 & 16 & 0 & 15 & 102.74 & 10000 \\ 
+		\hline
+	\end{tabular} \label{}
+\end{small}
+\end{table}
+
 \end{document}
