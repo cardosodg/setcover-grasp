@@ -1,0 +1,19 @@
+\begin {table}[h]
+\centering
+\caption{}
+\begin{small}
+\begin{tabular}{|c|r|r|r|r|r|r|r|}
+\hline
+          & \multicolumn{2}{c|}{GREED} & \multicolumn{2}{c|}{LS} & \multicolumn{3}{c|}{GRASP} \\ 
+\cline{2-8}
+  $|V|$   &  obser. & tempo (s)  & obser. & tempo (s) & obser. & tempo (s) & loops\\ 
+\hline
+100 & 31.7 & 0.9136 & 31.3 & 0.0004 & 0 & 0 & 0 \\ 
+200 & 68.5 & 7.736 & 68.4 & 0.0028 & 0 & 0 & 0 \\ 
+300 & 103.7 & 30.8216 & 102.8 & 0.0156 & 0 & 0 & 0 \\ 
+400 & 139.9 & 76.1012 & 138.3 & 0.0396 & 0 & 0 & 0 \\ 
+500 & 174.4 & 167.505 & 173.2 & 0.058 & 0 & 0 & 0 \\ 
+\hline
+\end{tabular} \label{}
+\end{small}
+\end{table}
