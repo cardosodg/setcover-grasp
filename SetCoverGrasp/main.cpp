@@ -1625,6 +1625,7 @@ int main(int argc, char** argv){
 	Grafo grafo;
 	MatrizEsparsa o_wMatriz, o_wMatrizGrasp, o_wMatrizLoop;
 	std::vector<std::string> pasta;
+	std::string s_wNomeArquivo;
 
 	/*---------------DELETAR---------------------------------------------*/
 	std::vector<int> contador;
@@ -1715,7 +1716,8 @@ int main(int argc, char** argv){
 		f_wArquivoResultadoGuloso << "]" << std::endl;
 
 		//imprime caminhos utilizados
-		f_wArquivoCaminhos.open((PASTA_RESULTADO + pasta[it] + "_Guloso.paths").data);
+		s_wNomeArquivo = PASTA_RESULTADO + pasta[it] + "_Guloso.paths";
+		f_wArquivoCaminhos.open(s_wNomeArquivo.data());
 		for (w_i = 0; w_i < grafo.v_aListaVertice.size(); w_i++){
 			for (w_j = w_i + 1; w_j < grafo.v_aListaVertice.size(); w_j++){
 				f_wArquivoCaminhos << "[" << grafo.v_aListaVertice[w_i].i_aID << ", " << grafo.v_aListaVertice[w_j].i_aID << "] ";
@@ -1787,10 +1789,11 @@ int main(int argc, char** argv){
 				}
 			}
 		}
+		f_wArquivoResultadoGRASP << "]" << std::endl;
 
 		//imprime caminhos utilizados
-		f_wArquivoResultadoGRASP << "]" << std::endl;
-		f_wArquivoCaminhos.open((PASTA_RESULTADO + pasta[it] + "_GRASP.paths").data);
+		s_wNomeArquivo = PASTA_RESULTADO + pasta[it] + "_GRASP.paths";
+		f_wArquivoCaminhos.open(s_wNomeArquivo.data());
 		for (w_i = 0; w_i < grafo.v_aListaVertice.size(); w_i++){
 			for (w_j = w_i + 1; w_j < grafo.v_aListaVertice.size(); w_j++){
 				f_wArquivoCaminhos << "[" << grafo.v_aListaVertice[w_i].i_aID << ", " << grafo.v_aListaVertice[w_j].i_aID << "] ";
