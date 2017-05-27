@@ -1662,43 +1662,43 @@ int main(int argc, char** argv){
 		//
 		// contador.resize(grafo.v_aListaVertice.size(), 0);
 
-		o_wMatriz.f_aFuncaoObjetivo = 0.0;
-
-		std::cout << "Executando guloso para instancia " << pasta[it].data() << std::endl;
-		d_wInicio = getcputime();
-		for (int i = 0; i < grafo.v_aListaVertice.size(); i++)
-		{
-			//tempoInicial = getcputime();
-			grafo.LimpaArvores();
-			grafo.Dijkstra(0.0, grafo.v_aListaVertice[i]);
-
-			o_wMatrizLoop.ConverteGrafo(grafo);
-
-			GulosoRandomizado(o_wMatriz, 0.0);
-
-			if (o_wMatrizLoop.f_aFuncaoObjetivo > o_wMatriz.f_aFuncaoObjetivo){
-				o_wMatriz = o_wMatrizLoop;
-			}
-
-			//contador[o_wMatriz.i_aColunasSelecionadas - 1] += 1;
-		}
-		d_wFim = getcputime();
-
-		for (int i = 0; i < contador.size(); i++)
-		{
-			distribuicaoGuloso << (i + 1) << " - " << contador[i] << std::endl;
-		}
-
+		//o_wMatriz.f_aFuncaoObjetivo = 0.0;
 
 		//std::cout << "Executando guloso para instancia " << pasta[it].data() << std::endl;
 		//d_wInicio = getcputime();
+		//for (int i = 0; i < grafo.v_aListaVertice.size(); i++)
+		//{
+		//	//tempoInicial = getcputime();
+		//	grafo.LimpaArvores();
+		//	grafo.Dijkstra(0.0, grafo.v_aListaVertice[i]);
 
-		//grafo.LimpaArvores();
-		//grafo.Dijkstra(0.0,grafo.v_aListaVertice[0]);
-		//o_wMatriz.ConverteGrafo(grafo);
-		//GulosoRandomizado(o_wMatriz, 0.0);
+		//	o_wMatrizLoop.ConverteGrafo(grafo);
 
+		//	GulosoRandomizado(o_wMatriz, 0.0);
+
+		//	if (o_wMatrizLoop.f_aFuncaoObjetivo > o_wMatriz.f_aFuncaoObjetivo){
+		//		o_wMatriz = o_wMatrizLoop;
+		//	}
+
+		//	//contador[o_wMatriz.i_aColunasSelecionadas - 1] += 1;
+		//}
 		//d_wFim = getcputime();
+
+		//for (int i = 0; i < contador.size(); i++)
+		//{
+		//	distribuicaoGuloso << (i + 1) << " - " << contador[i] << std::endl;
+		//}
+
+
+		std::cout << "Executando guloso para instancia " << pasta[it].data() << std::endl;
+		d_wInicio = getcputime();
+
+		grafo.LimpaArvores();
+		grafo.Dijkstra(0.0,grafo.v_aListaVertice[0]);
+		o_wMatriz.ConverteGrafo(grafo);
+		GulosoRandomizado(o_wMatriz, 0.0);
+
+		d_wFim = getcputime();
 
 
 		// Imprime observadores selecionados
