@@ -421,7 +421,7 @@ public:
 		//stringArquivoSaida << "saida" << i_pID << ".dot";
 		stringComandoSistema = "dot -Tpng " + stringArquivoSaida + " -o " + stringArquivoSaida + ".png";
 
-		f_ArquivoSaida.open(stringArquivoSaida);
+		f_ArquivoSaida.open(stringArquivoSaida.data());
 
 		f_ArquivoSaida << "strict graph G {\n";
 
@@ -1715,7 +1715,7 @@ int main(int argc, char** argv){
 		f_wArquivoResultadoGuloso << "]" << std::endl;
 
 		//imprime caminhos utilizados
-		f_wArquivoCaminhos.open(PASTA_RESULTADO + pasta[it] + "_Guloso.paths");
+		f_wArquivoCaminhos.open((PASTA_RESULTADO + pasta[it] + "_Guloso.paths").data);
 		for (w_i = 0; w_i < grafo.v_aListaVertice.size(); w_i++){
 			for (w_j = w_i + 1; w_j < grafo.v_aListaVertice.size(); w_j++){
 				f_wArquivoCaminhos << "[" << grafo.v_aListaVertice[w_i].i_aID << ", " << grafo.v_aListaVertice[w_j].i_aID << "] ";
@@ -1790,8 +1790,7 @@ int main(int argc, char** argv){
 
 		//imprime caminhos utilizados
 		f_wArquivoResultadoGRASP << "]" << std::endl;
-		f_wArquivoCaminhos.open(PASTA_RESULTADO + pasta[it] + "_GRASP.paths");
-		std::cout << PASTA_RESULTADO + pasta[it] + ".paths" << std::endl;
+		f_wArquivoCaminhos.open((PASTA_RESULTADO + pasta[it] + "_GRASP.paths").data);
 		for (w_i = 0; w_i < grafo.v_aListaVertice.size(); w_i++){
 			for (w_j = w_i + 1; w_j < grafo.v_aListaVertice.size(); w_j++){
 				f_wArquivoCaminhos << "[" << grafo.v_aListaVertice[w_i].i_aID << ", " << grafo.v_aListaVertice[w_j].i_aID << "] ";
