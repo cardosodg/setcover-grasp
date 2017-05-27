@@ -1660,7 +1660,7 @@ int main(int argc, char** argv){
 		//grafo.LeArquivoGrafo((char *)pasta[it].data());
 		grafo.LeArquivoGrafo((char *)(PASTA_ENTRADA + pasta[it]).data());
 		//
-		contador.resize(grafo.v_aListaVertice.size(), 0);
+		// contador.resize(grafo.v_aListaVertice.size(), 0);
 
 		//o_wMatriz.f_aFuncaoObjetivo = 0.0;
 
@@ -1697,41 +1697,41 @@ int main(int argc, char** argv){
 
 		d_wFim = getcputime();
 
-		//// Imprime observadores selecionados
-		//f_wArquivoResultadoGuloso
-		//	<< pasta[it].data() << ";"
-		//	<< o_wMatriz.v_aColunas.size() << ";"
-		//	<< o_wMatriz.i_aColunasSelecionadas << ";"
-		//	<< "["; //1
-		//first = 1;
-		//for (w_i = 0; w_i < o_wMatriz.v_aColunas.size(); w_i++){
-		//	if (o_wMatriz.v_aColunas[w_i]->b_aSelecionada){
-		//		if (first){
-		//			f_wArquivoResultadoGuloso << o_wMatriz.v_aColunas[w_i]->i_aID;
-		//			first = 0;
-		//		}
-		//		else {
-		//			f_wArquivoResultadoGuloso << ", " << o_wMatriz.v_aColunas[w_i]->i_aID;
-		//		}
-		//	}
-		//}
-		//f_wArquivoResultadoGuloso << "]" << std::endl;
+		// Imprime observadores selecionados
+		f_wArquivoResultadoGuloso
+			<< pasta[it].data() << ";"
+			<< o_wMatriz.v_aColunas.size() << ";"
+			<< o_wMatriz.i_aColunasSelecionadas << ";"
+			<< "["; //1
+		first = 1;
+		for (w_i = 0; w_i < o_wMatriz.v_aColunas.size(); w_i++){
+			if (o_wMatriz.v_aColunas[w_i]->b_aSelecionada){
+				if (first){
+					f_wArquivoResultadoGuloso << o_wMatriz.v_aColunas[w_i]->i_aID;
+					first = 0;
+				}
+				else {
+					f_wArquivoResultadoGuloso << ", " << o_wMatriz.v_aColunas[w_i]->i_aID;
+				}
+			}
+		}
+		f_wArquivoResultadoGuloso << "]" << std::endl;
 
-		////imprime caminhos utilizados
-		//s_wNomeArquivo = PASTA_RESULTADO + pasta[it] + "_Guloso.paths";
-		//f_wArquivoCaminhos.open(s_wNomeArquivo.data());
-		//for (w_i = 0; w_i < grafo.v_aListaVertice.size(); w_i++){
-		//	for (w_j = w_i + 1; w_j < grafo.v_aListaVertice.size(); w_j++){
-		//		f_wArquivoCaminhos << "[" << grafo.v_aListaVertice[w_i].i_aID << ", " << grafo.v_aListaVertice[w_j].i_aID << "] ";
-		//		std::vector<Vertice> caminho = grafo.MontaCaminhoUnicaArvore(w_i, w_j);
-		//		f_wArquivoCaminhos << "[" << caminho[0].i_aID;
-		//		for (w_k = 1; w_k < caminho.size(); w_k++){
-		//			f_wArquivoCaminhos << ", " << caminho[w_k].i_aID;
-		//		}
-		//		f_wArquivoCaminhos << "]" << std::endl;
-		//	}
-		//}
-		//f_wArquivoCaminhos.close();
+		//imprime caminhos utilizados
+		s_wNomeArquivo = PASTA_RESULTADO + pasta[it] + "_Guloso.paths";
+		f_wArquivoCaminhos.open(s_wNomeArquivo.data());
+		for (w_i = 0; w_i < grafo.v_aListaVertice.size(); w_i++){
+			for (w_j = w_i + 1; w_j < grafo.v_aListaVertice.size(); w_j++){
+				f_wArquivoCaminhos << "[" << grafo.v_aListaVertice[w_i].i_aID << ", " << grafo.v_aListaVertice[w_j].i_aID << "] ";
+				std::vector<Vertice> caminho = grafo.MontaCaminhoUnicaArvore(w_i, w_j);
+				f_wArquivoCaminhos << "[" << caminho[0].i_aID;
+				for (w_k = 1; w_k < caminho.size(); w_k++){
+					f_wArquivoCaminhos << ", " << caminho[w_k].i_aID;
+				}
+				f_wArquivoCaminhos << "]" << std::endl;
+			}
+		}
+		f_wArquivoCaminhos.close();
 
 		f_wArquivoGuloso << pasta[it].data() << " - " << o_wMatriz.v_aColunas.size() << " " << o_wMatriz.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << " 1 " << std::endl;
 		std::cout << "Algoritmo guloso finalizado!" << std::endl << std::endl;
@@ -1741,25 +1741,25 @@ int main(int argc, char** argv){
 		BuscaLocal(o_wMatriz);
 		d_wFim = getcputime();
 
-		//// Imprime observadores selecionados
-		//f_wArquivoResultadoBL
-		//	<< pasta[it].data() << ";"
-		//	<< o_wMatriz.v_aColunas.size() << ";"
-		//	<< o_wMatriz.i_aColunasSelecionadas << ";"
-		//	<< "["; //1
-		//first = 1;
-		//for (w_i = 0; w_i < o_wMatriz.v_aColunas.size(); w_i++){
-		//	if (o_wMatriz.v_aColunas[w_i]->b_aSelecionada){
-		//		if (first){
-		//			f_wArquivoResultadoBL << o_wMatriz.v_aColunas[w_i]->i_aID;
-		//			first = 0;
-		//		}
-		//		else {
-		//			f_wArquivoResultadoBL << ", " << o_wMatriz.v_aColunas[w_i]->i_aID;
-		//		}
-		//	}
-		//}
-		//f_wArquivoResultadoBL << "]" << std::endl;
+		// Imprime observadores selecionados
+		f_wArquivoResultadoBL
+			<< pasta[it].data() << ";"
+			<< o_wMatriz.v_aColunas.size() << ";"
+			<< o_wMatriz.i_aColunasSelecionadas << ";"
+			<< "["; //1
+		first = 1;
+		for (w_i = 0; w_i < o_wMatriz.v_aColunas.size(); w_i++){
+			if (o_wMatriz.v_aColunas[w_i]->b_aSelecionada){
+				if (first){
+					f_wArquivoResultadoBL << o_wMatriz.v_aColunas[w_i]->i_aID;
+					first = 0;
+				}
+				else {
+					f_wArquivoResultadoBL << ", " << o_wMatriz.v_aColunas[w_i]->i_aID;
+				}
+			}
+		}
+		f_wArquivoResultadoBL << "]" << std::endl;
 
 		f_wArquivoBl << o_wMatriz.v_aColunas.size() << " " << o_wMatriz.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << " 1 " << std::endl;
 		std::cout << "Busca local finalizada!" << std::endl << std::endl;
