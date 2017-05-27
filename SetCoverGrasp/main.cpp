@@ -1769,11 +1769,11 @@ int main(int argc, char** argv){
 		std::cout << "Busca local finalizada!" << std::endl << std::endl;
 
 		std::cout << "Executando GRASP para instancia " << pasta[it].data() << std::endl;
-		//d_wInicio = getcputime();
+		d_wInicio = getcputime();
 		//Grasp(o_wMatrizGrasp, f_wAlpha, i_wMaxIteracao, i_wLoopsGrasp);
 		//GraspReativo(o_wMatrizGrasp, i_wMaxIteracao, i_wB, i_wGama, i_wLoopsGrasp);
 		GraspReativo(o_wMatrizGrasp, grafo, i_wMaxIteracao, i_wB, i_wGama, i_wLoopsGrasp);
-		//d_wFim = getcputime();
+		d_wFim = getcputime();
 		f_wArquivoGrasp << o_wMatrizGrasp.v_aColunas.size() << " " << o_wMatrizGrasp.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << i_wLoopsGrasp << std::endl;
 
 		// Imprime observadores selecionados
