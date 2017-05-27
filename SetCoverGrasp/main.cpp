@@ -23,7 +23,7 @@
 #define PASTA_ENTRADA "../GraphGenerator/input/"
 #define DISTRIBUICAO_GRASP "../ComputeResult/distribuicaoGrasp.txt"
 #define EXCECUCAO_GULOSO "../ComputeResult/ecGuloso.txt"
-#define EXECUCAO_BL "../ComputeResult/execBl.txt
+#define EXECUCAO_BL "../ComputeResult/execBl.txt"
 #define EXECUCAO_GRASP "../ComputeResult/execGrasp.txt"
 #define RESULTADOS_GRASP "../ComputeResult/resultadosGrasp.txt"
 #define RESULTADOS_GULOSO "../ComputeResult/resultadosGuloso.txt"
