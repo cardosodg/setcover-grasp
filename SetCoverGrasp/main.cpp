@@ -1674,7 +1674,7 @@ int main(int argc, char** argv){
 
 			o_wMatrizLoop.ConverteGrafo(grafo);
 
-			GulosoRandomizado(o_wMatriz, 0.0);
+			GulosoRandomizado(o_wMatrizLoop, 0.0);
 
 			if (o_wMatrizLoop.f_aFuncaoObjetivo > o_wMatriz.f_aFuncaoObjetivo){
 				o_wMatriz = o_wMatrizLoop;
