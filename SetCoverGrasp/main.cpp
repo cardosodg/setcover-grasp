@@ -22,7 +22,7 @@
 #define BARRA		  "/"
 #define PASTA_ENTRADA "../GraphGenerator/input/"
 #define DISTRIBUICAO_GRASP "../ComputeResult/distribuicaoGrasp.txt"
-#define EXCECUCAO_GULOSO "../ComputeResult/ecGuloso.txt"
+#define EXCECUCAO_GULOSO "../ComputeResult/execGuloso.txt"
 #define EXECUCAO_BL "../ComputeResult/execBl.txt"
 #define EXECUCAO_GRASP "../ComputeResult/execGrasp.txt"
 #define RESULTADOS_GRASP "../ComputeResult/resultadosGrasp.txt"
@@ -1660,7 +1660,7 @@ int main(int argc, char** argv){
 		//
 		// contador.resize(grafo.v_aListaVertice.size(), 0);
 
-		//o_wMatriz.f_aFuncaoObjetivo = 0.0;
+		o_wMatriz.f_aFuncaoObjetivo = 0.0;
 
 		std::cout << "Executando guloso para instancia " << pasta[it].data() << std::endl;
 #ifdef __unix || __unix__ || __linux__
