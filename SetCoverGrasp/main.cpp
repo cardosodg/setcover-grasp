@@ -53,7 +53,7 @@
 #define EPS 1.0
 #define EXTENSAO "png"
 #define ARTIGO_2016 1
-//#define GULOSO_PURO 1
+#define GULOSO_PURO 1
 
 /*------------------------------------*/
 /* Namespaces                         */
