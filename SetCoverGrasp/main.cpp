@@ -52,6 +52,8 @@
 /*------------------------------------*/
 #define EPS 1.0
 #define EXTENSAO "png"
+#define ARTIGO_2016 1
+//#define GULOSO_PURO 1
 
 /*------------------------------------*/
 /* Namespaces                         */
@@ -264,8 +266,10 @@ public:
 
 		for (int i_wIt = 0; i_wIt < i_wNumVert; i_wIt++)
 		{
+#ifndef ARTIGO_2016
 			/* Comentar para executar as instâncias do artigo 2016 */
 			f_wArquivoGrafo >> v_aCoordX[i_wIt] >> v_aCoordY[i_wIt];
+#endif
 			v_aListaVertice[i_wIt].i_aID = i_wIt;
 		}
 
@@ -278,9 +282,11 @@ public:
 		for (int i_wIt = 0; i_wIt < i_wNumLinks; i_wIt++)
 		{
 			f_wArquivoGrafo >> i_wOrigem >> o_wVertex.i_aID >> o_wVertex.f_aCusto;
+#ifdef ARTIGO_2016
 			/* Descomentar para executar com as intâncias do Artigo 2016 */
-			//i_wOrigem--;
-			//o_wVertex.i_aID--;
+			i_wOrigem--;
+			o_wVertex.i_aID--;
+#endif
 			l_aListaAdj[i_wOrigem].push_back(o_wVertex);
 			v_aListaVertice[o_wVertex.i_aID].f_aCusto = o_wVertex.f_aCusto;
 		}
@@ -1615,8 +1621,8 @@ int main(int argc, char** argv){
 	double d_wFim = 0.0;
 	std::ofstream f_wArquivoGuloso;
 	std::ofstream f_wArquivoBl;
-	//std::ofstream f_wArquivoGrasp;
-	//std::ofstream f_wArquivoResultadoGRASP;
+	std::ofstream f_wArquivoGrasp;
+	std::ofstream f_wArquivoResultadoGRASP;
 	std::ofstream f_wArquivoCaminhos;
 	std::ofstream f_wArquivoResultadoGuloso;
 	std::ofstream f_wArquivoResultadoBL;
@@ -1632,17 +1638,24 @@ int main(int argc, char** argv){
 
 	// Lê a instânica
 	//pasta = listaArquivos(".ssp");
-	pasta = listaArquivos(".txt");
 	//pasta = listaArquivos(".sim");
-	//pasta = listaArquivos(".grp");
 	//pasta = listaArquivos(".espx");
 
+#ifdef ARTIGO_2016
+	pasta = listaArquivos(".grp");
+#else
+	pasta = listaArquivos(".txt");
+#endif
+
+#ifdef GULOSO_PURO
 	f_wArquivoGuloso.open(EXCECUCAO_GULOSO);
 	f_wArquivoBl.open(EXECUCAO_BL);
-	//f_wArquivoGrasp.open(EXECUCAO_GRASP);
-	//f_wArquivoResultadoGRASP.open(RESULTADOS_GRASP);
 	f_wArquivoResultadoGuloso.open(RESULTADOS_GULOSO);
 	f_wArquivoResultadoBL.open(RESULTADOS_BL);
+#else
+	f_wArquivoGrasp.open(EXECUCAO_GRASP);
+	f_wArquivoResultadoGRASP.open(RESULTADOS_GRASP);
+#endif
 
 	/*----------------------DELETAR------------------------------------------------*/
 	distribuicaoGuloso.open(DISTRIBUICAO_GULOSO);
@@ -1660,6 +1673,7 @@ int main(int argc, char** argv){
 		//
 		// contador.resize(grafo.v_aListaVertice.size(), 0);
 
+#ifdef GULOSO_PURO
 		o_wMatriz.f_aFuncaoObjetivo = 0.0;
 
 		std::cout << "Executando guloso para instancia " << pasta[it].data() << std::endl;
@@ -1691,21 +1705,25 @@ int main(int argc, char** argv){
 		//	distribuicaoGuloso << (i + 1) << " - " << contador[i] << std::endl;
 		//}
 
+#else
 
-		//		std::cout << "Executando guloso para instancia " << pasta[it].data() << std::endl;
-		//#ifdef __unix || __unix__ || __linux__
-		//		d_wInicio = getcputime();
-		//#endif
-		//
-		//		grafo.LimpaArvores();
-		//		grafo.Dijkstra(0.0,grafo.v_aListaVertice[0]);
-		//		o_wMatriz.ConverteGrafo(grafo);
-		//		GulosoRandomizado(o_wMatriz, 0.0);
-		//
-		//#ifdef __unix || __unix__ || __linux__
-		//		d_wFim = getcputime();
-		//#endif
+		std::cout << "Executando guloso para instancia " << pasta[it].data() << std::endl;
+		#ifdef __unix || __unix__ || __linux__
+				d_wInicio = getcputime();
+		#endif
+		
+				grafo.LimpaArvores();
+				grafo.Dijkstra(0.0,grafo.v_aListaVertice[0]);
+				o_wMatriz.ConverteGrafo(grafo);
+				GulosoRandomizado(o_wMatriz, 0.0);
+		
+		#ifdef __unix || __unix__ || __linux__
+				d_wFim = getcputime();
+		#endif
 
+#endif
+
+#ifdef GULOSO_PURO
 		// Imprime observadores selecionados
 		f_wArquivoResultadoGuloso
 			<< pasta[it].data() << ";"
@@ -1742,7 +1760,8 @@ int main(int argc, char** argv){
 		}
 		f_wArquivoCaminhos.close();
 
-		f_wArquivoGuloso << pasta[it].data() << " - " << o_wMatriz.v_aColunas.size() << " " << o_wMatriz.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << " 1 " << std::endl;
+		f_wArquivoGuloso << o_wMatriz.v_aColunas.size() << " " << o_wMatriz.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << " 1 " << std::endl;
+#endif
 		std::cout << "Algoritmo guloso finalizado!" << std::endl << std::endl;
 
 		std::cout << "Executando busca local para instancia " << pasta[it].data() << std::endl;
@@ -1754,6 +1773,7 @@ int main(int argc, char** argv){
 		d_wFim = getcputime();
 #endif
 
+#ifdef GULOSO_PURO
 		// Imprime observadores selecionados
 		f_wArquivoResultadoBL
 			<< pasta[it].data() << ";"
@@ -1775,67 +1795,74 @@ int main(int argc, char** argv){
 		f_wArquivoResultadoBL << "]" << std::endl;
 
 		f_wArquivoBl << o_wMatriz.v_aColunas.size() << " " << o_wMatriz.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << " 1 " << std::endl;
+#endif
 		std::cout << "Busca local finalizada!" << std::endl << std::endl;
 
-//		std::cout << "Executando GRASP para instancia " << pasta[it].data() << std::endl;
-//#ifdef __unix || __unix__ || __linux__
-//		d_wInicio = getcputime();
-//#endif
-//		//Grasp(o_wMatrizGrasp, f_wAlpha, i_wMaxIteracao, i_wLoopsGrasp);
-//		//GraspReativo(o_wMatrizGrasp, i_wMaxIteracao, i_wB, i_wGama, i_wLoopsGrasp);
-//		GraspReativo(o_wMatrizGrasp, grafo, i_wMaxIteracao, i_wB, i_wGama, i_wLoopsGrasp);
-//#ifdef __unix || __unix__ || __linux__
-//		d_wFim = getcputime();
-//#endif
-//		f_wArquivoGrasp << o_wMatrizGrasp.v_aColunas.size() << " " << o_wMatrizGrasp.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << i_wLoopsGrasp << std::endl;
-//
-//		// Imprime observadores selecionados
-//		f_wArquivoResultadoGRASP
-//			<< pasta[it].data() << ";"
-//			<< o_wMatrizGrasp.v_aColunas.size() << ";"
-//			<< o_wMatrizGrasp.i_aColunasSelecionadas << ";"
-//			<< "["; //1
-//		first = 1;
-//		for (w_i = 0; w_i < o_wMatrizGrasp.v_aColunas.size(); w_i++){
-//			if (o_wMatrizGrasp.v_aColunas[w_i]->b_aSelecionada){
-//				if (first){
-//					f_wArquivoResultadoGRASP << o_wMatrizGrasp.v_aColunas[w_i]->i_aID;
-//					first = 0;
-//				}
-//				else {
-//					f_wArquivoResultadoGRASP << ", " << o_wMatrizGrasp.v_aColunas[w_i]->i_aID;
-//				}
-//			}
-//		}
-//		f_wArquivoResultadoGRASP << "]" << std::endl;
-//
-//		//imprime caminhos utilizados
-//		s_wNomeArquivo = PASTA_RESULTADO + pasta[it] + "_GRASP.paths";
-//		f_wArquivoCaminhos.open(s_wNomeArquivo.data());
-//		for (w_i = 0; w_i < grafo.v_aListaVertice.size(); w_i++){
-//			for (w_j = w_i + 1; w_j < grafo.v_aListaVertice.size(); w_j++){
-//				f_wArquivoCaminhos << "[" << grafo.v_aListaVertice[w_i].i_aID << ", " << grafo.v_aListaVertice[w_j].i_aID << "] ";
-//				std::vector<Vertice> caminho = grafo.MontaCaminhoUnicaArvore(w_i, w_j);
-//				f_wArquivoCaminhos << "[" << caminho[0].i_aID;
-//				for (w_k = 1; w_k < caminho.size(); w_k++){
-//					f_wArquivoCaminhos << ", " << caminho[w_k].i_aID;
-//				}
-//				f_wArquivoCaminhos << "]" << std::endl;
-//			}
-//		}
-//		f_wArquivoCaminhos.close();
-//
-//		grafo.ImprimeArvoreGraphviz(grafo.i_aRaiz);
-//		grafo.ImprimeGrafoGraphviz(o_wMatrizGrasp.v_aColunas);
-//		std::cout << "GRASP finalizado!" << std::endl << std::endl;
+#ifndef GULOSO_PURO
+		std::cout << "Executando GRASP para instancia " << pasta[it].data() << std::endl;
+#ifdef __unix || __unix__ || __linux__
+		d_wInicio = getcputime();
+#endif
+		//Grasp(o_wMatrizGrasp, f_wAlpha, i_wMaxIteracao, i_wLoopsGrasp);
+		//GraspReativo(o_wMatrizGrasp, i_wMaxIteracao, i_wB, i_wGama, i_wLoopsGrasp);
+		GraspReativo(o_wMatrizGrasp, grafo, i_wMaxIteracao, i_wB, i_wGama, i_wLoopsGrasp);
+#ifdef __unix || __unix__ || __linux__
+		d_wFim = getcputime();
+#endif
+		f_wArquivoGrasp << o_wMatrizGrasp.v_aColunas.size() << " " << o_wMatrizGrasp.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << i_wLoopsGrasp << std::endl;
+
+		// Imprime observadores selecionados
+		f_wArquivoResultadoGRASP
+			<< pasta[it].data() << ";"
+			<< o_wMatrizGrasp.v_aColunas.size() << ";"
+			<< o_wMatrizGrasp.i_aColunasSelecionadas << ";"
+			<< "["; //1
+		first = 1;
+		for (w_i = 0; w_i < o_wMatrizGrasp.v_aColunas.size(); w_i++){
+			if (o_wMatrizGrasp.v_aColunas[w_i]->b_aSelecionada){
+				if (first){
+					f_wArquivoResultadoGRASP << o_wMatrizGrasp.v_aColunas[w_i]->i_aID;
+					first = 0;
+				}
+				else {
+					f_wArquivoResultadoGRASP << ", " << o_wMatrizGrasp.v_aColunas[w_i]->i_aID;
+				}
+			}
+		}
+		f_wArquivoResultadoGRASP << "]" << std::endl;
+
+		//imprime caminhos utilizados
+		s_wNomeArquivo = PASTA_RESULTADO + pasta[it] + "_GRASP.paths";
+		f_wArquivoCaminhos.open(s_wNomeArquivo.data());
+		for (w_i = 0; w_i < grafo.v_aListaVertice.size(); w_i++){
+			for (w_j = w_i + 1; w_j < grafo.v_aListaVertice.size(); w_j++){
+				f_wArquivoCaminhos << "[" << grafo.v_aListaVertice[w_i].i_aID << ", " << grafo.v_aListaVertice[w_j].i_aID << "] ";
+				std::vector<Vertice> caminho = grafo.MontaCaminhoUnicaArvore(w_i, w_j);
+				f_wArquivoCaminhos << "[" << caminho[0].i_aID;
+				for (w_k = 1; w_k < caminho.size(); w_k++){
+					f_wArquivoCaminhos << ", " << caminho[w_k].i_aID;
+				}
+				f_wArquivoCaminhos << "]" << std::endl;
+			}
+		}
+		f_wArquivoCaminhos.close();
+
+		grafo.ImprimeArvoreGraphviz(grafo.i_aRaiz);
+		grafo.ImprimeGrafoGraphviz(o_wMatrizGrasp.v_aColunas);
+		std::cout << "GRASP finalizado!" << std::endl << std::endl;
+#endif
 	}
 
+
+#ifdef GULOSO_PURO
 	f_wArquivoGuloso.close();
 	f_wArquivoBl.close();
-	//f_wArquivoGrasp.close();
-	//f_wArquivoResultadoGRASP.close();
 	f_wArquivoResultadoGuloso.close();
 	f_wArquivoResultadoBL.close();
+#else
+	f_wArquivoGrasp.close();
+	f_wArquivoResultadoGRASP.close();
+#endif
 
 	/*----------------------DELETAR------------------------------------------------*/
 	distribuicaoGuloso.close();
