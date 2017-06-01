@@ -1639,6 +1639,7 @@ int main(int argc, char** argv){
 	MatrizEsparsa o_wMatriz, o_wMatrizGrasp, o_wMatrizLoop;
 	std::vector<std::string> pasta;
 	std::string s_wNomeArquivo;
+	std::vector<Vertice> v_wArvore;
 
 	/*---------------DELETAR---------------------------------------------*/
 	std::vector<int> contador;
@@ -1689,6 +1690,8 @@ int main(int argc, char** argv){
 #ifdef __unix || __unix__ || __linux__
 		d_wInicio = getcputime();
 #endif
+
+		//tempoInicial = getcputime();
 		for (int i = 0; i < grafo.v_aListaVertice.size(); i++)
 		{
 			//tempoInicial = getcputime();
@@ -1701,11 +1704,15 @@ int main(int argc, char** argv){
 
 			if (o_wMatrizLoop.f_aFuncaoObjetivo > o_wMatriz.f_aFuncaoObjetivo){
 				o_wMatriz = o_wMatrizLoop;
-				grafo.i_aRaiz = grafo.v_aListaVertice[i].i_aID;
+				v_wArvore = grafo.v_aArvores.front();
 			}
 
 			//contador[o_wMatriz.i_aColunasSelecionadas - 1] += 1;
 		}
+
+		grafo.LimpaArvores();
+		grafo.v_aArvores.push_back(v_wArvore);
+
 #ifdef __unix || __unix__ || __linux__
 		d_wFim = getcputime();
 #endif
@@ -1772,7 +1779,7 @@ int main(int argc, char** argv){
 
 		/* Imprime Ávore e grafo */
 		grafo.ImprimeArvoreGraphviz("Guloso", grafo.i_aRaiz);
-		grafo.ImprimeGrafoGraphviz("Guloso", o_wMatrizGrasp.v_aColunas);
+		grafo.ImprimeGrafoGraphviz("Guloso", o_wMatriz.v_aColunas);
 
 
 		f_wArquivoGuloso << o_wMatriz.v_aColunas.size() << " " << o_wMatriz.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << " 1 " << std::endl;
@@ -1811,7 +1818,7 @@ int main(int argc, char** argv){
 
 		/* Imprime Ávore e grafo */
 		grafo.ImprimeArvoreGraphviz("BL", grafo.i_aRaiz);
-		grafo.ImprimeGrafoGraphviz("BL", o_wMatrizGrasp.v_aColunas);
+		grafo.ImprimeGrafoGraphviz("BL", o_wMatriz.v_aColunas);
 
 
 		f_wArquivoBl << o_wMatriz.v_aColunas.size() << " " << o_wMatriz.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << " 1 " << std::endl;
