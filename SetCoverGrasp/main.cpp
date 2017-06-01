@@ -304,8 +304,12 @@ public:
 				std::cout << i << " " << l_aListaAdj[i][j].i_aID << " " << l_aListaAdj[i][j].f_aCusto << std::endl;
 	}
 
-	/* Imprime o grafo exibindo os nós observadores */
 	void ImprimeGrafoGraphviz(std::vector<Coluna *> o_pVertices){
+		ImprimeGrafoGraphviz("", o_pVertices);
+	}
+
+	/* Imprime o grafo exibindo os nós observadores */
+	void ImprimeGrafoGraphviz(std::string ps_tipo, std::vector<Coluna *> o_pVertices){
 
 		std::size_t st_wPosStr;
 		std::string s_wArquivoDot;
@@ -331,7 +335,7 @@ public:
 		//if (s_pClassificacao != "") s_wStream << s_pClassificacao << "_";
 		//s_wArquivoDot = s_wStream.str() + s_wArquivoDot;
 
-		s_wArquivoDot += "_Grafo";
+		s_wArquivoDot += "_" + ps_tipo + "_Grafo";
 
 		s_wArquivoDot = PASTA_RESULTADO + s_wArquivoDot;
 
@@ -403,7 +407,7 @@ public:
 		return v1.i_aID < v2.i_aID;
 	}
 
-	void ImprimeArvoreGraphviz(int i_pID)
+	void ImprimeArvoreGraphviz(std::string ps_tipo, int i_pID)
 	{
 		std::string stringArquivoSaida;
 		std::string stringComandoSistema;
@@ -420,7 +424,7 @@ public:
 		//if (s_pClassificacao != "") s_wStream << s_pClassificacao << "_";
 		//s_wArquivoDot = s_wStream.str() + s_wArquivoDot;
 
-		stringArquivoSaida += "_Arvore.dot";
+		stringArquivoSaida += "_" + ps_tipo + "_Arvore.dot";
 
 		stringArquivoSaida = PASTA_RESULTADO + stringArquivoSaida;
 
@@ -448,6 +452,11 @@ public:
 		f_ArquivoSaida.close();
 
 		//system(stringComandoSistema.data());
+	}
+
+	void ImprimeArvoreGraphviz(int i_pID)
+	{
+		ImprimeArvoreGraphviz("", i_pID);
 	}
 
 	void ImprimeArvoresGraphviz()
@@ -1692,6 +1701,7 @@ int main(int argc, char** argv){
 
 			if (o_wMatrizLoop.f_aFuncaoObjetivo > o_wMatriz.f_aFuncaoObjetivo){
 				o_wMatriz = o_wMatrizLoop;
+				grafo.i_aRaiz = grafo.v_aListaVertice[i].i_aID;
 			}
 
 			//contador[o_wMatriz.i_aColunasSelecionadas - 1] += 1;
@@ -1760,6 +1770,11 @@ int main(int argc, char** argv){
 		}
 		f_wArquivoCaminhos.close();
 
+		/* Imprime Ávore e grafo */
+		grafo.ImprimeArvoreGraphviz("Guloso", grafo.i_aRaiz);
+		grafo.ImprimeGrafoGraphviz("Guloso", o_wMatrizGrasp.v_aColunas);
+
+
 		f_wArquivoGuloso << o_wMatriz.v_aColunas.size() << " " << o_wMatriz.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << " 1 " << std::endl;
 #endif
 		std::cout << "Algoritmo guloso finalizado!" << std::endl << std::endl;
@@ -1793,6 +1808,11 @@ int main(int argc, char** argv){
 			}
 		}
 		f_wArquivoResultadoBL << "]" << std::endl;
+
+		/* Imprime Ávore e grafo */
+		grafo.ImprimeArvoreGraphviz("BL", grafo.i_aRaiz);
+		grafo.ImprimeGrafoGraphviz("BL", o_wMatrizGrasp.v_aColunas);
+
 
 		f_wArquivoBl << o_wMatriz.v_aColunas.size() << " " << o_wMatriz.i_aColunasSelecionadas << " " << (d_wFim - d_wInicio) << " " << " 1 " << std::endl;
 #endif
